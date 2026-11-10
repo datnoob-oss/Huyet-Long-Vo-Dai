@@ -3,863 +3,137 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT - Master Release v4.0</title>
+  <title>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT - Master Release v4.2</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #080b12;
-      color: #e2e8f0;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* THANH TRẠNG THÁI TRÊN CÙNG */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 18px;
-      background: linear-gradient(90deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
-      border-bottom: 2px solid #dc2626;
-      box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .brand-badge {
-      background: #dc2626;
-      color: #fff;
-      font-weight: 800;
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-    }
-
-    .save-badge {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid #10b981;
-      color: #6ee7b7;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-    }
-
-    .brand h1 {
-      font-size: 16px;
-      font-weight: 900;
-      color: #f8fafc;
-      letter-spacing: 0.5px;
-      text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
-    }
-
-    .status-cluster {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .stat-pill {
-      background: #111827;
-      border: 1px solid #334155;
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #080b12; color: #e2e8f0; min-height: 100vh; overflow-x: hidden; }
+    .hidden { display: none !important; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; background: linear-gradient(90deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%); border-bottom: 2px solid #dc2626; box-shadow: 0 4px 20px rgba(220, 38, 38, 0.25); flex-wrap: wrap; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .brand-badge { background: #dc2626; color: #fff; font-weight: 800; font-size: 11px; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+    .save-badge { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #6ee7b7; font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+    .brand h1 { font-size: 16px; font-weight: 900; color: #f8fafc; letter-spacing: 0.5px; text-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
+    .status-cluster { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .stat-pill { background: #111827; border: 1px solid #334155; padding: 5px 10px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
     .stamina-pill { border-color: #10b981; }
     .gold-pill { border-color: #f59e0b; color: #fde68a; }
     .level-pill { border-color: #38bdf8; }
     .power-pill { border-color: #ef4444; color: #fca5a5; }
-
-    .potion-btn {
-      background: #059669;
-      color: #fff;
-      border: none;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .timer-tag {
-      background: #064e3b;
-      color: #6ee7b7;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: 700;
-    }
-
-    .exp-mini-bar {
-      width: 50px;
-      height: 6px;
-      background: #1e293b;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    #ui-exp-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #38bdf8, #818cf8);
-    }
-
-    /* CÔNG CỤ ÂM THANH & QUYỀN SẾP (CÓ KHÓA MẬT KHẨU) */
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      position: relative;
-    }
-
-    .sound-btn, .dev-toggle-btn {
-      background: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #475569;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .dev-toggle-btn {
-      color: #86efac;
-      border-color: #22c55e;
-    }
-
-    .dev-dropdown {
-      position: absolute;
-      right: 0;
-      top: 38px;
-      background: #0f172a;
-      border: 1px solid #22c55e;
-      border-radius: 8px;
-      padding: 10px;
-      width: 310px;
-      z-index: 100;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.9);
-    }
-
-    .dev-auth-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .dev-auth-box input {
-      background: #1e293b;
-      border: 1px solid #475569;
-      color: #fff;
-      padding: 7px 10px;
-      border-radius: 6px;
-      font-size: 13px;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    .dev-auth-box button {
-      background: #16a34a;
-      color: #fff;
-      border: none;
-      padding: 7px;
-      border-radius: 6px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .dev-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .dev-grid button {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #475569;
-      padding: 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .dev-grid button:hover {
-      background: #dc2626;
-      border-color: #f87171;
-    }
-
-    .dev-grid button.danger-reset {
-      grid-column: span 2;
-      background: #450a0a;
-      border-color: #ef4444;
-      color: #fca5a5;
-    }
-
-    /* SẢNH CHÍNH (MAIN HUB) */
-    .hub-container {
-      max-width: 1240px;
-      margin: 12px auto;
-      padding: 0 14px;
-    }
-
-    .hub-tabs {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .tab-btn {
-      background: #111827;
-      color: #94a3b8;
-      border: 1px solid #1e293b;
-      padding: 11px 8px;
-      font-size: 13px;
-      font-weight: 800;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .tab-btn.active, .tab-btn:hover {
-      background: linear-gradient(135deg, #991b1b, #dc2626);
-      color: #ffffff;
-      border-color: #f87171;
-      box-shadow: 0 0 14px rgba(220, 38, 38, 0.4);
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* TAB 1: CHIẾN DỊCH 20 CHƯƠNG X 13 MÀN */
-    .campaign-layout {
-      display: grid;
-      grid-template-columns: 290px 1fr;
-      gap: 16px;
-      height: 540px;
-    }
-
-    .chapter-list {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 10px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .chapter-item {
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: #111827;
-      border: 1px solid #1e293b;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chapter-item.active {
-      background: linear-gradient(90deg, #450a0a, #7f1d1d);
-      border-color: #ef4444;
-    }
-
-    .chapter-item.locked {
-      opacity: 0.45;
-    }
-
-    .stage-panel {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 14px;
-      overflow-y: auto;
-    }
-
-    .chapter-banner {
-      background: linear-gradient(90deg, #1e1b4b, #31102f);
-      border: 1px solid #6366f1;
-      padding: 12px 16px;
-      border-radius: 8px;
-      margin-bottom: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .stage-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .stage-card {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .stage-card.boss-stage {
-      grid-column: span 2;
-      background: linear-gradient(135deg, #2a0808, #450a0a);
-      border: 2px solid #f59e0b;
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.25);
-    }
-
-    .stage-card button {
-      padding: 7px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 800;
-      cursor: pointer;
-      background: #dc2626;
-      color: #fff;
-    }
-
-    .stage-card button.replay {
-      background: #059669;
-    }
-
-    .stage-card button:disabled {
-      background: #334155;
-      color: #64748b;
-      cursor: not-allowed;
-    }
-
-    /* TAB 2: KHO TRANG BỊ & KHUNG XEM TRƯỚC NGOẠI HÌNH */
-    .equip-layout {
-      display: grid;
-      grid-template-columns: 350px 1fr;
-      gap: 16px;
-    }
-
-    .preview-card {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .stance-tag {
-      display: inline-block;
-      margin-top: 4px;
-      font-size: 12px;
-      color: #86efac;
-      background: rgba(16, 185, 129, 0.12);
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
-
-    #hero-preview-canvas {
-      background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
-      border: 1px solid #334155;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-
-    .equipped-slots {
-      text-align: left;
-      font-size: 12px;
-      display: grid;
-      gap: 6px;
-      background: #111827;
-      padding: 10px;
-      border-radius: 8px;
-    }
-
-    .shop-panel {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 14px;
-    }
-
-    .equip-category-tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-
-    .sub-tab {
-      background: #1e293b;
-      color: #cbd5e1;
-      border: 1px solid #334155;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .sub-tab.active {
-      background: #10b981;
-      color: #052e16;
-      border-color: #6ee7b7;
-    }
-
-    .items-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
-      gap: 12px;
-      max-height: 450px;
-      overflow-y: auto;
-    }
-
-    .item-card {
-      background: #111827;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
+    .potion-btn { background: #059669; color: #fff; border: none; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .timer-tag { background: #064e3b; color: #6ee7b7; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+    .exp-mini-bar { width: 50px; height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; }
+    #ui-exp-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #38bdf8, #818cf8); }
+    .top-actions { display: flex; align-items: center; gap: 8px; position: relative; }
+    .sound-btn, .dev-toggle-btn { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
+    .dev-toggle-btn { color: #86efac; border-color: #22c55e; }
+    .dev-dropdown { position: absolute; right: 0; top: 38px; background: #0f172a; border: 1px solid #22c55e; border-radius: 8px; padding: 10px; width: 310px; z-index: 100; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.9); }
+    .dev-auth-box { display: flex; flex-direction: column; gap: 8px; }
+    .dev-auth-box input { background: #1e293b; border: 1px solid #475569; color: #fff; padding: 7px 10px; border-radius: 6px; font-size: 13px; user-select: text; -webkit-user-select: text; }
+    .dev-auth-box button { background: #16a34a; color: #fff; border: none; padding: 7px; border-radius: 6px; font-weight: 800; cursor: pointer; }
+    .dev-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .dev-grid button { background: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .dev-grid button:hover { background: #dc2626; border-color: #f87171; }
+    .dev-grid button.danger-reset { grid-column: span 2; background: #450a0a; border-color: #ef4444; color: #fca5a5; }
+    .hub-container { max-width: 1240px; margin: 12px auto; padding: 0 14px; }
+    .hub-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
+    .tab-btn { background: #111827; color: #94a3b8; border: 1px solid #1e293b; padding: 11px 8px; font-size: 13px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active, .tab-btn:hover { background: linear-gradient(135deg, #991b1b, #dc2626); color: #ffffff; border-color: #f87171; box-shadow: 0 0 14px rgba(220, 38, 38, 0.4); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .campaign-layout { display: grid; grid-template-columns: 290px 1fr; gap: 16px; height: 540px; }
+    .chapter-list { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .chapter-item { padding: 10px 12px; border-radius: 8px; background: #111827; border: 1px solid #1e293b; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .chapter-item.active { background: linear-gradient(90deg, #450a0a, #7f1d1d); border-color: #ef4444; }
+    .chapter-item.locked { opacity: 0.45; }
+    .stage-panel { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; overflow-y: auto; }
+    .chapter-banner { background: linear-gradient(90deg, #1e1b4b, #31102f); border: 1px solid #6366f1; padding: 12px 16px; border-radius: 8px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .stage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .stage-card { background: #111827; border: 1px solid #334155; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+    .stage-card.boss-stage { grid-column: span 2; background: linear-gradient(135deg, #2a0808, #450a0a); border: 2px solid #f59e0b; box-shadow: 0 0 15px rgba(245, 158, 11, 0.25); }
+    .stage-card button { padding: 7px; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; background: #dc2626; color: #fff; }
+    .stage-card button.replay { background: #059669; }
+    .stage-card button:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .equip-layout { display: grid; grid-template-columns: 350px 1fr; gap: 16px; }
+    .preview-card { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; text-align: center; }
+    .stance-tag { display: inline-block; margin-top: 4px; font-size: 12px; color: #86efac; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 4px; }
+    #hero-preview-canvas { background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%); border: 1px solid #334155; border-radius: 8px; margin: 10px 0; }
+    .equipped-slots { text-align: left; font-size: 12px; display: grid; gap: 6px; background: #111827; padding: 10px; border-radius: 8px; }
+    .shop-panel { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; }
+    .equip-category-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .sub-tab { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
+    .sub-tab.active { background: #10b981; color: #052e16; border-color: #6ee7b7; }
+    .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(245px, 1fr)); gap: 12px; max-height: 450px; overflow-y: auto; }
+    .item-card { background: #111827; border: 1px solid #334155; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
     .item-card.tier-5 { border-color: #f59e0b; box-shadow: 0 0 12px rgba(245, 158, 11, 0.2); }
     .item-card.tier-4 { border-color: #a855f7; }
     .item-card.tier-3 { border-color: #38bdf8; }
-
-    .wskill-badge {
-      background: rgba(220, 38, 38, 0.16);
-      border-left: 3px solid #ef4444;
-      padding: 5px 8px;
-      font-size: 11px;
-      color: #fca5a5;
-    }
-
-    .item-card button {
-      padding: 8px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 800;
-      cursor: pointer;
-      background: #f59e0b;
-      color: #090d16;
-    }
-
-    .item-card button.equip-btn {
-      background: #3b82f6;
-      color: #fff;
-    }
-
-    .item-card button.equipped-btn {
-      background: #10b981;
-      color: #052e16;
-    }
-
-    /* TAB 3, TAB 4, TAB 5 */
-    .upgrade-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .upgrade-column {
-      background: #0f172a;
-      border: 1px solid #1e293b;
-      border-radius: 10px;
-      padding: 14px;
-    }
-
-    .upgrade-list {
-      margin-top: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .upgrade-row {
-      background: #111827;
-      border: 1px solid #334155;
-      padding: 10px 12px;
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .upgrade-row button {
-      background: #10b981;
-      color: #052e16;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .upgrade-row button:disabled {
-      background: #334155;
-      color: #64748b;
-      cursor: not-allowed;
-    }
-
-    .heroes-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .hero-card {
-      background: #0f172a;
-      border: 2px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .hero-card.active-hero {
-      border-color: #ef4444;
-      box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
-    }
-
-    .skin-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .skin-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #111827;
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-    }
-
-    .backup-textarea {
-      width: 100%;
-      height: 95px;
-      background: #090d16;
-      color: #86efac;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 10px;
-      font-family: monospace;
-      font-size: 12px;
-      margin: 10px 0;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    /* ĐẤU TRƯỜNG 2D (BATTLE ARENA) */
-    .battle-container {
-      max-width: 1200px;
-      margin: 6px auto;
-      padding: 0 10px;
-    }
-
-    .battle-hud {
-      display: grid;
-      grid-template-columns: 1.25fr 0.5fr 1.25fr;
-      gap: 10px;
-      background: #0f172a;
-      border: 1px solid #334155;
-      padding: 10px 14px;
-      border-radius: 10px 10px 0 0;
-      align-items: center;
-    }
-
-    .bar-wrap {
-      position: relative;
-      height: 18px;
-      background: #1e293b;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 5px;
-      border: 1px solid #334155;
-    }
-
-    .bar-row-dual {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .bar-fill {
-      height: 100%;
-      transition: width 0.1s linear;
-    }
-
+    .wskill-badge { background: rgba(220, 38, 38, 0.16); border-left: 3px solid #ef4444; padding: 5px 8px; font-size: 11px; color: #fca5a5; }
+    .item-card button { padding: 8px; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; background: #f59e0b; color: #090d16; }
+    .item-card button.equip-btn { background: #3b82f6; color: #fff; }
+    .item-card button.equipped-btn { background: #10b981; color: #052e16; }
+    .upgrade-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .upgrade-column { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; }
+    .upgrade-list { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .upgrade-row { background: #111827; border: 1px solid #334155; padding: 10px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .upgrade-row button { background: #10b981; color: #052e16; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .upgrade-row button:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .heroes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .hero-card { background: #0f172a; border: 2px solid #334155; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+    .hero-card.active-hero { border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.25); }
+    .skin-list { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+    .skin-row { display: flex; justify-content: space-between; align-items: center; background: #111827; padding: 6px 10px; border-radius: 6px; font-size: 12px; }
+    .backup-textarea { width: 100%; height: 95px; background: #090d16; color: #86efac; border: 1px solid #334155; border-radius: 8px; padding: 10px; font-family: monospace; font-size: 12px; margin: 10px 0; user-select: text; -webkit-user-select: text; }
+    .battle-container { max-width: 1200px; margin: 6px auto; padding: 0 10px; }
+    .battle-hud { display: grid; grid-template-columns: 1.25fr 0.5fr 1.25fr; gap: 10px; background: #0f172a; border: 1px solid #334155; padding: 10px 14px; border-radius: 10px 10px 0 0; align-items: center; }
+    .bar-wrap { position: relative; height: 18px; background: #1e293b; border-radius: 4px; overflow: hidden; margin-top: 5px; border: 1px solid #334155; }
+    .bar-row-dual { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .bar-fill { height: 100%; transition: width 0.1s linear; }
     .hp-fill { background: linear-gradient(90deg, #16a34a, #22c55e); }
     .wskill-fill { background: linear-gradient(90deg, #0284c7, #38bdf8); }
     .rage-fill { background: linear-gradient(90deg, #d97706, #ef4444); }
     .boss-hp-fill { background: linear-gradient(90deg, #991b1b, #ef4444); }
     .boss-armor-fill { background: linear-gradient(90deg, #1d4ed8, #60a5fa); }
-
-    .bar-text {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 800;
-      color: #fff;
-      text-shadow: 0 1px 2px #000;
-    }
-
-    .input-buffer-box {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #94a3b8;
-    }
-
-    .combo-callout {
-      color: #86efac;
-      font-weight: 800;
-      margin-left: 8px;
-    }
-
-    .hud-center {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      align-items: center;
-    }
-
-    .wave-badge {
-      background: #dc2626;
-      padding: 4px 12px;
-      border-radius: 99px;
-      font-weight: 900;
-      font-size: 12px;
-    }
-
-    .retreat-btn {
-      background: #334155;
-      color: #e2e8f0;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    #battle-canvas {
-      width: 100%;
-      background: #070a10;
-      border-left: 1px solid #334155;
-      border-right: 1px solid #334155;
-      display: block;
-    }
-
-    .controls-bar {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 0 0 10px 10px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .key-guide {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      font-size: 12px;
-      color: #cbd5e1;
-      flex-wrap: wrap;
-    }
-
+    .bar-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000; }
+    .input-buffer-box { margin-top: 6px; font-size: 12px; color: #94a3b8; }
+    .combo-callout { color: #86efac; font-weight: 800; margin-left: 8px; }
+    .hud-center { text-align: center; display: flex; flex-direction: column; gap: 5px; align-items: center; }
+    .wave-badge { background: #dc2626; padding: 4px 12px; border-radius: 99px; font-weight: 900; font-size: 12px; }
+    .retreat-btn { background: #334155; color: #e2e8f0; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 700; }
+    #battle-canvas { width: 100%; background: #070a10; border-left: 1px solid #334155; border-right: 1px solid #334155; display: block; }
+    .controls-bar { background: #0f172a; border: 1px solid #334155; border-radius: 0 0 10px 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .key-guide { display: flex; justify-content: center; gap: 14px; font-size: 12px; color: #cbd5e1; flex-wrap: wrap; }
     .highlight-shift { color: #a855f7; }
     .highlight-u { color: #38bdf8; }
     .highlight-l { color: #f87171; }
-
-    .quick-combo-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .quick-combo-buttons button {
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #475569;
-      padding: 7px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .quick-combo-buttons .btn-shift {
-      background: #581c87;
-      border-color: #c084fc;
-    }
-
-    .quick-combo-buttons .btn-u {
-      background: #0369a1;
-      border-color: #38bdf8;
-    }
-
-    .quick-combo-buttons .btn-l {
-      background: #b91c1c;
-      border-color: #f87171;
-    }
-
-    /* CỤM PHÍM CẢM ỨNG ĐIỆN THOẠI (MOBILE TOUCH CONTROLS) */
-    .touch-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 12px 16px;
-      margin-top: 8px;
-      gap: 12px;
-    }
-
-    .touch-dpad, .touch-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .touch-btn {
-      width: 58px;
-      height: 54px;
-      border-radius: 12px;
-      border: 2px solid #475569;
-      background: #1e293b;
-      color: #fff;
-      font-weight: 900;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      touch-action: manipulation;
-    }
-
-    .touch-btn:active {
-      transform: scale(0.93);
-      background: #334155;
-    }
-
+    .quick-combo-buttons { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
+    .quick-combo-buttons button { background: #1e293b; color: #f8fafc; border: 1px solid #475569; padding: 7px 10px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 12px; }
+    .quick-combo-buttons .btn-shift { background: #581c87; border-color: #c084fc; }
+    .quick-combo-buttons .btn-u { background: #0369a1; border-color: #38bdf8; }
+    .quick-combo-buttons .btn-l { background: #b91c1c; border-color: #f87171; }
+    .touch-controls { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 10px; padding: 12px 16px; margin-top: 8px; gap: 12px; }
+    .touch-dpad, .touch-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .touch-btn { width: 58px; height: 54px; border-radius: 12px; border: 2px solid #475569; background: #1e293b; color: #fff; font-weight: 900; font-size: 13px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; touch-action: manipulation; }
+    .touch-btn:active { transform: scale(0.93); background: #334155; }
     .touch-btn.t-dash { border-color: #c084fc; background: #4c1d95; }
     .touch-btn.t-atk { border-color: #f87171; background: #7f1d1d; }
     .touch-btn.t-u { border-color: #38bdf8; background: #0c4a6e; }
     .touch-btn.t-l { border-color: #fde047; background: #991b1b; }
-
-    /* HỘP THOẠI KẾT QUẢ */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.82);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-    }
-
-    .modal-card {
-      background: #0f172a;
-      border: 2px solid #f59e0b;
-      border-radius: 12px;
-      padding: 24px;
-      width: 440px;
-      max-width: 94vw;
-      text-align: center;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 18px;
-    }
-
-    .modal-actions button {
-      padding: 10px 16px;
-      border-radius: 6px;
-      border: none;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .primary-btn {
-      background: #dc2626;
-      color: #fff;
-    }
-
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.82); display: flex; align-items: center; justify-content: center; z-index: 200; }
+    .modal-card { background: #0f172a; border: 2px solid #f59e0b; border-radius: 12px; padding: 24px; width: 440px; max-width: 94vw; text-align: center; }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 18px; }
+    .modal-actions button { padding: 10px 16px; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; }
+    .primary-btn { background: #dc2626; color: #fff; }
     @media (max-width: 900px) {
-      .campaign-layout, .equip-layout, .upgrade-layout, .heroes-grid {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-      .hub-tabs {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .stage-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+      .campaign-layout, .equip-layout, .upgrade-layout, .heroes-grid { grid-template-columns: 1fr; height: auto; }
+      .hub-tabs { grid-template-columns: repeat(2, 1fr); }
+      .stage-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <!-- THANH TRẠNG THÁI TRÊN CÙNG -->
   <header class="top-bar">
     <div class="brand">
-      <span class="brand-badge">MASTER v4.0</span>
+      <span class="brand-badge">MASTER v4.2</span>
       <h1>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT</h1>
       <span id="save-status" class="save-badge">💾 Đã lưu tự động</span>
     </div>
@@ -882,13 +156,11 @@
       </div>
     </div>
 
-    <!-- ÂM THANH & BẢNG QUYỀN SẾP CÓ KHÓA MẬT KHẨU -->
     <div class="top-actions">
       <button id="btn-sound" class="sound-btn" onclick="toggleSound()">🔊 Âm Thanh: BẬT</button>
       <button id="btn-toggle-dev" class="dev-toggle-btn">🔒 Quyền Sếp</button>
 
       <div id="dev-panel" class="dev-dropdown hidden">
-        <!-- Bước 1: Nhập mật khẩu riêng của Sếp -->
         <div id="dev-auth-view" class="dev-auth-box">
           <div style="font-size:12px;color:#fde047;font-weight:700">🔐 Nhập Mật Khẩu Sếp để mở khóa:</div>
           <input type="password" id="dev-pass-input" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter') unlockDevPanel()" />
@@ -896,9 +168,8 @@
           <div id="dev-auth-msg" style="font-size:11px;color:#f87171"></div>
         </div>
 
-        <!-- Bước 2: Các nút đặc quyền của Sếp sau khi mở khóa -->
         <div id="dev-controls-view" class="dev-grid hidden">
-          <button onclick="devAddGold()">💰 +200K Vàng</button>
+          <button onclick="devAddGold()">💰 +500K Vàng</button>
           <button onclick="devFullStamina()">⚡ Đầy Thể Lực + 5🧪</button>
           <button onclick="devAddLevels(50)">⬆️ +50 Cấp</button>
           <button onclick="devMaxLevel()">👑 Max Lv.1000</button>
@@ -912,7 +183,6 @@
     </div>
   </header>
 
-  <!-- SẢNH CHÍNH (MAIN HUB) -->
   <main id="hub-screen" class="hub-container">
     <nav class="hub-tabs">
       <button class="tab-btn active" onclick="switchTab('campaign')">1. Chiến Dịch (20 Chương)</button>
@@ -922,7 +192,6 @@
       <button class="tab-btn" onclick="switchTab('quests')">5. Nhiệm Vụ Ngày & Sao Lưu</button>
     </nav>
 
-    <!-- TAB 1: CHIẾN DỊCH 20 CHƯƠNG X 13 MÀN -->
     <section id="tab-campaign" class="tab-content active">
       <div class="campaign-layout">
         <aside class="chapter-list" id="chapter-list"></aside>
@@ -933,7 +202,6 @@
       </div>
     </section>
 
-    <!-- TAB 2: KHO TRANG BỊ & XEM TRƯỚC NGOẠI HÌNH HẦM HỐ -->
     <section id="tab-equipment" class="tab-content">
       <div class="equip-layout">
         <div class="preview-card">
@@ -959,7 +227,6 @@
       </div>
     </section>
 
-    <!-- TAB 3: CƯỜNG HÓA CHỈ SỐ & MỞ RỘNG COMBO -->
     <section id="tab-upgrade" class="tab-content">
       <div class="upgrade-layout">
         <div class="upgrade-column">
@@ -973,12 +240,10 @@
       </div>
     </section>
 
-    <!-- TAB 4: NHÂN VẬT & SKIN VIP -->
     <section id="tab-heroes" class="tab-content">
       <div id="heroes-grid" class="heroes-grid"></div>
     </section>
 
-    <!-- TAB 5: NHIỆM VỤ HÀNG NGÀY & MÃ SAO LƯU CHUYỂN MÁY -->
     <section id="tab-quests" class="tab-content">
       <div class="upgrade-layout">
         <div class="upgrade-column">
@@ -1001,7 +266,6 @@
     </section>
   </main>
 
-  <!-- MÀN HÌNH CHIẾN ĐẤU 2D (BATTLE ARENA) -->
   <section id="battle-screen" class="battle-container hidden">
     <div class="battle-hud">
       <div class="hud-left">
@@ -1046,14 +310,13 @@
         </div>
         <div class="bar-wrap boss-armor-wrap">
           <div id="hud-boss-armor-fill" class="bar-fill boss-armor-fill"></div>
-          <span class="bar-text">GIÁP BÁ THỂ (Phá bằng Combo / Phím U / Phím L)</span>
+          <span class="bar-text">GIÁP BÁ THỂ (Tự hồi lại sau khi hết Choáng)</span>
         </div>
       </div>
     </div>
 
     <canvas id="battle-canvas" width="1180" height="460"></canvas>
 
-    <!-- CỤM NÚT CẢM ỨNG ARCADE DÀNH CHO ĐIỆN THOẠI / TABLET -->
     <div id="touch-controls-bar" class="touch-controls">
       <div class="touch-dpad">
         <button class="touch-btn" onmousedown="setHoldKey('A',true)" onmouseup="setHoldKey('A',false)" ontouchstart="setHoldKey('A',true);event.preventDefault()" ontouchend="setHoldKey('A',false)">◀<small>Trái</small></button>
@@ -1069,7 +332,6 @@
       </div>
     </div>
 
-    <!-- THANH ĐIỀU KHIỂN BÀN PHÍM & BẤM NHANH COMBO -->
     <div class="controls-bar">
       <div class="key-guide">
         <span><strong>A / D</strong> Di chuyển</span>
@@ -1088,13 +350,13 @@
         <button onclick="triggerQuickCombo(['W','J'])">⚡ Lôi Đình (W-J)</button>
         <button onclick="triggerQuickCombo(['W','K'])">🐉 Phi Long (W-K)</button>
         <button onclick="triggerQuickCombo(['J','K','W'])">🌊 Bão Tố (J-K-W)</button>
+        <button onclick="triggerQuickCombo(['J','K','J','K'])">🩸 Huyết Ảnh (J-K-J-K)</button>
         <button class="btn-u" onclick="triggerWeaponSkill()">🗡️ Skill Vũ Khí (U)</button>
         <button class="btn-l" onclick="triggerFinalSkill()">🔥 SKILL FINAL (L)</button>
       </div>
     </div>
   </section>
 
-  <!-- HỘP THOẠI THÔNG BÁO KẾT QUẢ -->
   <div id="modal-overlay" class="modal-overlay hidden">
     <div class="modal-card">
       <h2 id="modal-title">CHIẾN THẮNG!</h2>
@@ -1108,7 +370,7 @@
 
   <script>
     // ============================================================================
-    // 1. HỆ THỐNG ÂM THANH TỔNG HỢP WEB AUDIO API (KHÔNG CẦN FILE MP3 NGOÀI)
+    // 1. HỆ THỐNG ÂM THANH WEB AUDIO API
     // ============================================================================
     let soundEnabled = true;
     let audioCtx = null;
@@ -1118,9 +380,7 @@
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         if (AudioContextClass) audioCtx = new AudioContextClass();
       }
-      if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function playSFX(type) {
@@ -1140,32 +400,35 @@
           osc.frequency.exponentialRampToValueAtTime(90, now + 0.09);
           gain.gain.setValueAtTime(0.16, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
-          osc.start(now);
-          osc.stop(now + 0.09);
+          osc.start(now); osc.stop(now + 0.09);
+        } else if (type === 'kick') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(190, now);
+          osc.frequency.exponentialRampToValueAtTime(55, now + 0.12);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now); osc.stop(now + 0.12);
         } else if (type === 'hit') {
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(160, now);
           osc.frequency.exponentialRampToValueAtTime(45, now + 0.12);
           gain.gain.setValueAtTime(0.22, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
-          osc.start(now);
-          osc.stop(now + 0.12);
+          osc.start(now); osc.stop(now + 0.12);
         } else if (type === 'dash') {
           osc.type = 'sine';
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.exponentialRampToValueAtTime(660, now + 0.14);
           gain.gain.setValueAtTime(0.15, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.14);
-          osc.start(now);
-          osc.stop(now + 0.14);
+          osc.start(now); osc.stop(now + 0.14);
         } else if (type === 'skill') {
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(480, now);
           osc.frequency.exponentialRampToValueAtTime(110, now + 0.35);
           gain.gain.setValueAtTime(0.25, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
-          osc.start(now);
-          osc.stop(now + 0.35);
+          osc.start(now); osc.stop(now + 0.35);
         } else if (type === 'boss_siren') {
           osc.type = 'square';
           osc.frequency.setValueAtTime(240, now);
@@ -1173,8 +436,7 @@
           osc.frequency.linearRampToValueAtTime(240, now + 0.5);
           gain.gain.setValueAtTime(0.2, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.5);
-          osc.start(now);
-          osc.stop(now + 0.5);
+          osc.start(now); osc.stop(now + 0.5);
         } else if (type === 'win') {
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(330, now);
@@ -1182,8 +444,7 @@
           osc.frequency.setValueAtTime(660, now + 0.24);
           gain.gain.setValueAtTime(0.22, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
-          osc.start(now);
-          osc.stop(now + 0.45);
+          osc.start(now); osc.stop(now + 0.45);
         }
       } catch (e) {}
     }
@@ -1194,10 +455,14 @@
     }
 
     // ============================================================================
-    // 2. CƠ SỞ DỮ LIỆU NHÂN VẬT, 15 VŨ KHÍ RIÊNG, GIÁP TRỤ HẦM HỐ & 20 CHƯƠNG
+    // 2. DỮ LIỆU NHÂN VẬT, 15 VŨ KHÍ, GIÁP TRỤ & 20 CHƯƠNG CHIẾN DỊCH
     // ============================================================================
     const SAVE_KEY = 'VO_DAI_CYBER_HUYET_LONG_MASTER_V4';
-    const BOSS_DEV_PASSWORD = 'Alo119toinha@'; // Mật khẩu mở bảng Quyền Sếp theo lệnh của Sếp
+    // Kiểm tra mật khẩu Sếp bằng mảng băm (Không lộ chuỗi mật khẩu gốc khi bấm F12)
+    function verifyBossKey(s) {
+      const k = [65, 121, 137, 88, 101, 122, 194, 202, 209, 227, 234, 240, 220];
+      return s.length === k.length && k.every((v, i) => s.charCodeAt(i) + i * 13 === v);
+    }
 
     const HEROES = {
       long: {
@@ -1207,9 +472,7 @@
         stanceDesc: 'Cầm kiếm 1 tay buông thõng, mũi kiếm dài chúc xéo xuống đất cào tia lửa',
         unlockPrice: 0,
         finalName: 'Huyết Long Cuồng Bạo (Gồng Nộ Đỏ + 16 Liên Hoàn Hỏa Quyền)',
-        baseAtk: 42,
-        baseHp: 1100,
-        baseDef: 18,
+        baseAtk: 42, baseHp: 1100, baseDef: 18,
         skins: [
           { id: 'long_default', name: 'Mặc Định: Huyết Võ Giả', price: 0, primary: '#ef4444', aura: '#fca5a5' },
           { id: 'long_jade', name: 'Thanh Long Chiến Thần', price: 25000, primary: '#10b981', aura: '#86efac' },
@@ -1223,9 +486,7 @@
         stanceDesc: 'Tay trước bắt ấn ngạo nghễ, Pháp Khí lơ lửng sau lưng kèm trận pháp',
         unlockPrice: 85000,
         finalName: 'Hỏa Phong Lôi Độn — Hồ Thiên Khí (Cầu Lửa + Gió Phóng Đại + Lôi Điện Hút Tâm)',
-        baseAtk: 56,
-        baseHp: 950,
-        baseDef: 14,
+        baseAtk: 56, baseHp: 950, baseDef: 14,
         skins: [
           { id: 'mage_default', name: 'Mặc Định: Ngạo Thiên Pháp Sư', price: 0, primary: '#38bdf8', aura: '#bae6fd' },
           { id: 'mage_blood', name: 'Huyết Lôi Tà Tôn', price: 30000, primary: '#e11d48', aura: '#fda4af' },
@@ -1239,9 +500,7 @@
         stanceDesc: 'Hai cánh tay bọc Thiết Quyền Cơ Khí hạng nặng xả khói nhiệt áp',
         unlockPrice: 160000,
         finalName: 'Pháo Điện Từ Omega Laser (Quét Hủy Diệt Toàn Chiến Trường)',
-        baseAtk: 68,
-        baseHp: 1450,
-        baseDef: 28,
+        baseAtk: 68, baseHp: 1450, baseDef: 28,
         skins: [
           { id: 'cyber_default', name: 'Mặc Định: Titan MK-I', price: 0, primary: '#f97316', aura: '#fed7aa' },
           { id: 'cyber_neon', name: 'Bóng Ma Neon Pastel', price: 35000, primary: '#4ade80', aura: '#bbf7d0' },
@@ -1251,47 +510,41 @@
     };
 
     const EQUIPMENT_DB = [
-      // 5 Vũ khí Long Võ Sư
-      { id: 'wl_1', cat: 'weapon_long', tier: 1, name: 'Đoản Kiếm Thép Đen', atk: 18, crit: 2, price: 0, color: '#94a3b8', len: 68, skillName: 'Trảm Phong Kích', skillMult: 3.2 },
-      { id: 'wl_2', cat: 'weapon_long', tier: 2, name: 'Thanh Long Trảm Đao', atk: 55, crit: 5, price: 1800, color: '#4ade80', len: 78, skillName: 'Thanh Long Cuồng Vũ', skillMult: 4.0 },
-      { id: 'wl_3', cat: 'weapon_long', tier: 3, name: 'Lôi Nha Đại Kiếm', atk: 140, crit: 9, price: 6500, color: '#38bdf8', len: 86, skillName: 'Thiên Lôi Nhất Kích', skillMult: 4.8 },
-      { id: 'wl_4', cat: 'weapon_long', tier: 4, name: 'Huyết Ngục Ma Đao', atk: 320, crit: 14, price: 22000, color: '#ef4444', len: 95, skillName: 'Huyết Nguyệt Trảm', skillMult: 5.8 },
-      { id: 'wl_5', cat: 'weapon_long', tier: 5, name: 'Hắc Long Thôn Thiên Kiếm', atk: 750, crit: 22, price: 75000, color: '#f59e0b', len: 108, skillName: 'Hắc Long Thôn Thiên', skillMult: 7.5 },
+      { id: 'wl_1', cat: 'weapon_long', tier: 1, name: 'Đoản Kiếm Thép Đen', atk: 18, crit: 2, price: 0, color: '#94a3b8', len: 68, skillName: 'Hỏa Long Kiếm Khí', skillMult: 3.2 },
+      { id: 'wl_2', cat: 'weapon_long', tier: 2, name: 'Thanh Long Trảm Đao', atk: 65, crit: 5, price: 1800, color: '#4ade80', len: 78, skillName: 'Liệt Hỏa Kiếm Khí', skillMult: 4.0 },
+      { id: 'wl_3', cat: 'weapon_long', tier: 3, name: 'Lôi Nha Đại Kiếm', atk: 180, crit: 9, price: 6500, color: '#38bdf8', len: 86, skillName: 'Thiên Hỏa Kiếm Khí', skillMult: 4.8 },
+      { id: 'wl_4', cat: 'weapon_long', tier: 4, name: 'Huyết Ngục Ma Đao', atk: 450, crit: 14, price: 22000, color: '#ef4444', len: 95, skillName: 'Huyết Hỏa Kiếm Khí', skillMult: 5.8 },
+      { id: 'wl_5', cat: 'weapon_long', tier: 5, name: 'Hắc Long Thôn Thiên Kiếm', atk: 1200, crit: 22, price: 75000, color: '#f59e0b', len: 108, skillName: 'Thôn Thiên Hỏa Kiếm Khí', skillMult: 7.5 },
 
-      // 5 Pháp khí Pháp Sư Hỏa Phong Lôi
-      { id: 'wm_1', cat: 'weapon_mage', tier: 1, name: 'Trượng Gỗ Linh Phong', atk: 22, crit: 3, price: 0, color: '#86efac', len: 64, skillName: 'Phong Nhận Liên Kích', skillMult: 3.4 },
-      { id: 'wm_2', cat: 'weapon_mage', tier: 2, name: 'Hỏa Tinh Pháp Trượng', atk: 70, crit: 6, price: 2400, color: '#fb923c', len: 72, skillName: 'Viêm Long Bộc Phá', skillMult: 4.2 },
-      { id: 'wm_3', cat: 'weapon_mage', tier: 3, name: 'Lôi Đế Hồn Châu', atk: 165, crit: 11, price: 8500, color: '#38bdf8', len: 78, skillName: 'Cửu Thiên Lôi Phạt', skillMult: 5.1 },
-      { id: 'wm_4', cat: 'weapon_mage', tier: 4, name: 'Hư Không Tinh Trượng', atk: 370, crit: 16, price: 28000, color: '#c084fc', len: 86, skillName: 'Hắc Động Thôn Phệ', skillMult: 6.2 },
-      { id: 'wm_5', cat: 'weapon_mage', tier: 5, name: 'Thần Trượng Hồ Thiên Khí', atk: 860, crit: 25, price: 85000, color: '#facc15', len: 94, skillName: 'Tam Giới Luân Hồi', skillMult: 8.0 },
+      { id: 'wm_1', cat: 'weapon_mage', tier: 1, name: 'Trượng Gỗ Linh Phong', atk: 22, crit: 3, price: 0, color: '#86efac', len: 64, skillName: 'Hỏa Diệm Liên Kích', skillMult: 3.4 },
+      { id: 'wm_2', cat: 'weapon_mage', tier: 2, name: 'Hỏa Tinh Pháp Trượng', atk: 80, crit: 6, price: 2400, color: '#fb923c', len: 72, skillName: 'Viêm Long Phun Hỏa', skillMult: 4.2 },
+      { id: 'wm_3', cat: 'weapon_mage', tier: 3, name: 'Lôi Đế Hồn Châu', atk: 210, crit: 11, price: 8500, color: '#38bdf8', len: 78, skillName: 'Cửu Thiên Hỏa Diệm', skillMult: 5.1 },
+      { id: 'wm_4', cat: 'weapon_mage', tier: 4, name: 'Hư Không Tinh Trượng', atk: 520, crit: 16, price: 28000, color: '#c084fc', len: 86, skillName: 'Hắc Viêm Thiêu Đốt', skillMult: 6.2 },
+      { id: 'wm_5', cat: 'weapon_mage', tier: 5, name: 'Thần Trượng Hồ Thiên Khí', atk: 1380, crit: 25, price: 85000, color: '#facc15', len: 94, skillName: 'Tam Giới Đại Hỏa Diệm', skillMult: 8.0 },
 
-      // 5 Thiết Quyền Cyber
-      { id: 'wc_1', cat: 'weapon_cyber', tier: 1, name: 'Găng Thủy Lực MK-1', atk: 25, crit: 2, price: 0, color: '#94a3b8', len: 24, skillName: 'Đấm Phản Lực', skillMult: 3.5 },
-      { id: 'wc_2', cat: 'weapon_cyber', tier: 2, name: 'Thiết Quyền Nhiệt Hạch', atk: 85, crit: 6, price: 3000, color: '#f97316', len: 28, skillName: 'Pháo Nhiệt Áp Cận Chiến', skillMult: 4.4 },
-      { id: 'wc_3', cat: 'weapon_cyber', tier: 3, name: 'Cánh Tay Từ Trường', atk: 190, crit: 10, price: 11000, color: '#38bdf8', len: 32, skillName: 'Sóng Xung Kích EMP', skillMult: 5.3 },
-      { id: 'wc_4', cat: 'weapon_cyber', tier: 4, name: 'Trọng Pháo Huyết Titan', atk: 430, crit: 15, price: 35000, color: '#ef4444', len: 36, skillName: 'Mưa Tên Lửa Micro', skillMult: 6.5 },
-      { id: 'wc_5', cat: 'weapon_cyber', tier: 5, name: 'Bàn Tay Hủy Diệt Omega', atk: 980, crit: 25, price: 95000, color: '#eab308', len: 42, skillName: 'Thiên Thạch Cơ Khí Omega', skillMult: 8.5 },
+      { id: 'wc_1', cat: 'weapon_cyber', tier: 1, name: 'Găng Thủy Lực MK-1', atk: 25, crit: 2, price: 0, color: '#94a3b8', len: 24, skillName: 'Lam Nộ Giáng Kích', skillMult: 3.5 },
+      { id: 'wc_2', cat: 'weapon_cyber', tier: 2, name: 'Thiết Quyền Nhiệt Hạch', atk: 95, crit: 6, price: 3000, color: '#f97316', len: 28, skillName: 'Không Kích Phá Địa', skillMult: 4.4 },
+      { id: 'wc_3', cat: 'weapon_cyber', tier: 3, name: 'Cánh Tay Từ Trường', atk: 240, crit: 10, price: 11000, color: '#38bdf8', len: 32, skillName: 'Lôi Minh Thiên Giáng', skillMult: 5.3 },
+      { id: 'wc_4', cat: 'weapon_cyber', tier: 4, name: 'Trọng Pháo Huyết Titan', atk: 580, crit: 15, price: 35000, color: '#ef4444', len: 36, skillName: 'Titan Băng Thiên Kích', skillMult: 6.5 },
+      { id: 'wc_5', cat: 'weapon_cyber', tier: 5, name: 'Bàn Tay Hủy Diệt Omega', atk: 1550, crit: 25, price: 95000, color: '#eab308', len: 42, skillName: 'Thiên Thạch Lam Nộ Omega', skillMult: 8.5 },
 
-      // Mũ Chiến Thần
       { id: 'h_1', cat: 'helmet', tier: 1, name: 'Đai Trán Võ Sĩ', hp: 120, def: 5, price: 0, color: '#64748b' },
-      { id: 'h_2', cat: 'helmet', tier: 2, name: 'Mũ Sừng Thép Đen', hp: 380, def: 16, price: 1500, color: '#4ade80' },
-      { id: 'h_3', cat: 'helmet', tier: 3, name: 'Mũ Chiến Thần Hai Sừng', hp: 950, def: 38, price: 6000, color: '#38bdf8' },
-      { id: 'h_4', cat: 'helmet', tier: 4, name: 'Mũ Ma Vương Huyết Giác', hp: 2400, def: 85, price: 20000, color: '#ef4444' },
-      { id: 'h_5', cat: 'helmet', tier: 5, name: 'Vương Miện Long Đế Cửu Sừng', hp: 6000, def: 190, price: 65000, color: '#f59e0b' },
+      { id: 'h_2', cat: 'helmet', tier: 2, name: 'Mũ Sừng Thép Đen', hp: 480, def: 18, price: 1500, color: '#4ade80' },
+      { id: 'h_3', cat: 'helmet', tier: 3, name: 'Mũ Chiến Thần Hai Sừng', hp: 1400, def: 48, price: 6000, color: '#38bdf8' },
+      { id: 'h_4', cat: 'helmet', tier: 4, name: 'Mũ Ma Vương Huyết Giác', hp: 3800, def: 120, price: 20000, color: '#ef4444' },
+      { id: 'h_5', cat: 'helmet', tier: 5, name: 'Vương Miện Long Đế Cửu Sừng', hp: 11000, def: 320, price: 65000, color: '#f59e0b' },
 
-      // Giáp Vai Gai & Áo Choàng
       { id: 'a_1', cat: 'armor', tier: 1, name: 'Giáp Nhẹ Tân Binh', hp: 200, def: 8, price: 0, color: '#64748b' },
-      { id: 'a_2', cat: 'armor', tier: 2, name: 'Giáp Vai Gai Thép', hp: 620, def: 24, price: 2000, color: '#4ade80' },
-      { id: 'a_3', cat: 'armor', tier: 3, name: 'Giáp Lôi Đình Cánh Thép', hp: 1600, def: 55, price: 7500, color: '#38bdf8' },
-      { id: 'a_4', cat: 'armor', tier: 4, name: 'Huyết Ma Trọng Giáp (Có Áo Choàng)', hp: 3800, def: 120, price: 25000, color: '#ef4444' },
-      { id: 'a_5', cat: 'armor', tier: 5, name: 'Thần Giáp Bất Diệt Hoàng Kim', hp: 9500, def: 280, price: 80000, color: '#f59e0b' },
+      { id: 'a_2', cat: 'armor', tier: 2, name: 'Giáp Vai Gai Thép', hp: 820, def: 28, price: 2000, color: '#4ade80' },
+      { id: 'a_3', cat: 'armor', tier: 3, name: 'Giáp Lôi Đình Cánh Thép', hp: 2400, def: 75, price: 7500, color: '#38bdf8' },
+      { id: 'a_4', cat: 'armor', tier: 4, name: 'Huyết Ma Trọng Giáp (Có Áo Choàng)', hp: 6200, def: 190, price: 25000, color: '#ef4444' },
+      { id: 'a_5', cat: 'armor', tier: 5, name: 'Thần Giáp Bất Diệt Hoàng Kim', hp: 18000, def: 480, price: 80000, color: '#f59e0b' },
 
-      // Giày Chiến
       { id: 'b_1', cat: 'boots', tier: 1, name: 'Giày Vải Chiến Đấu', atk: 10, hp: 90, price: 0, color: '#64748b' },
-      { id: 'b_2', cat: 'boots', tier: 2, name: 'Giày Bọc Thép Gai Gối', atk: 35, hp: 280, price: 1400, color: '#4ade80' },
-      { id: 'b_3', cat: 'boots', tier: 3, name: 'Giày Phản Lực Lôi Quang', atk: 90, hp: 720, price: 5200, color: '#38bdf8' },
-      { id: 'b_4', cat: 'boots', tier: 4, name: 'Chiến Ngoa Huyết Vũ', atk: 210, hp: 1800, price: 18000, color: '#ef4444' },
-      { id: 'b_5', cat: 'boots', tier: 5, name: 'Long Tốc Thần Ngoa', atk: 480, hp: 4500, price: 58000, color: '#f59e0b' }
+      { id: 'b_2', cat: 'boots', tier: 2, name: 'Giày Bọc Thép Gai Gối', atk: 45, hp: 380, price: 1400, color: '#4ade80' },
+      { id: 'b_3', cat: 'boots', tier: 3, name: 'Giày Phản Lực Lôi Quang', atk: 130, hp: 1100, price: 5200, color: '#38bdf8' },
+      { id: 'b_4', cat: 'boots', tier: 4, name: 'Chiến Ngoa Huyết Vũ', atk: 340, hp: 2900, price: 18000, color: '#ef4444' },
+      { id: 'b_5', cat: 'boots', tier: 5, name: 'Long Tốc Thần Ngoa', atk: 880, hp: 8500, price: 58000, color: '#f59e0b' }
     ];
 
     const CHAPTER_NAMES = [
@@ -1310,8 +563,23 @@
       'Chủ Tịch Cyber Tối Cao', 'Kẻ Xé Toạc Không Gian', 'Huyết Long Tà Đế', 'Hỗn Mang Thủy Tổ (Boss Cuối)'
     ];
 
+    const BOSS_ARCHETYPES = [
+      { id: 'charger', label: 'Húc Xung Kích & Cột Lửa' },
+      { id: 'summoner', label: 'Triệu Hồi Đệ Tử & Địa Chấn' },
+      { id: 'meteor', label: 'Mưa Thiên Thạch Liên Hoàn' },
+      { id: 'laser', label: 'Quét Sóng Năng Lượng Tầm Thấp' }
+    ];
+
+    const ARENA_THEMES = [
+      { bg: '#070a10', floor: '#111827', line: '#dc2626' },
+      { bg: '#06121c', floor: '#0f293a', line: '#38bdf8' },
+      { bg: '#14081c', floor: '#271238', line: '#c084fc' },
+      { bg: '#071710', floor: '#0f2e20', line: '#10b981' },
+      { bg: '#1c0b07', floor: '#36150d', line: '#f97316' }
+    ];
+
     // ============================================================================
-    // 3. TRẠNG THÁI NGƯỜI CHƠI, LƯU TRỮ LOCALSTORAGE & NHIỆM VỤ HÀNG NGÀY
+    // 3. TRẠNG THÁI NGƯỜI CHƠI & LOCALSTORAGE (CÓ VERSION 4.2)
     // ============================================================================
     function getTodayString() {
       const d = new Date();
@@ -1328,39 +596,22 @@
 
     function getDefaultState() {
       return {
-        gold: 1500,
-        level: 1,
-        exp: 0,
-        stamina: 100,
-        maxStamina: 100,
-        staminaPotions: 2,
-        staminaSecondsLeft: 420,
-        lastSaveTimestamp: Date.now(),
-        questDate: getTodayString(),
-        dailyQuests: getDefaultQuests(),
-        selectedChapter: 1,
-        maxUnlockedStageGlobal: 1,
-        clearedStages: {},
-        currentHero: 'long',
-        unlockedHeroes: ['long'],
+        version: 4.2,
+        gold: 1500, level: 1, exp: 0, stamina: 100, maxStamina: 100, staminaPotions: 2, staminaSecondsLeft: 420,
+        lastSaveTimestamp: Date.now(), questDate: getTodayString(), dailyQuests: getDefaultQuests(),
+        selectedChapter: 1, maxUnlockedStageGlobal: 1, clearedStages: {},
+        currentHero: 'long', unlockedHeroes: ['long'],
         unlockedSkins: ['long_default', 'mage_default', 'cyber_default'],
         equippedSkin: { long: 'long_default', mage: 'mage_default', cyber: 'cyber_default' },
         ownedItems: ['wl_1', 'wm_1', 'wc_1', 'h_1', 'a_1', 'b_1'],
-        equipped: {
-          weapon_long: 'wl_1',
-          weapon_mage: 'wm_1',
-          weapon_cyber: 'wc_1',
-          helmet: 'h_1',
-          armor: 'a_1',
-          boots: 'b_1'
-        },
+        equipped: { weapon_long: 'wl_1', weapon_mage: 'wm_1', weapon_cyber: 'wc_1', helmet: 'h_1', armor: 'a_1', boots: 'b_1' },
         equipCategoryTab: 'weapon_long',
         statUpgrades: {
-          atk: { lv: 1, name: 'Cường Hóa Tấn Công', bonusPerLv: 14, baseCost: 200 },
-          hp: { lv: 1, name: 'Cường Hóa Máu Tối Đa', bonusPerLv: 95, baseCost: 200 },
-          def: { lv: 1, name: 'Cường Hóa Phòng Thủ', bonusPerLv: 6, baseCost: 220 },
+          atk: { lv: 1, name: 'Cường Hóa Tấn Công', bonusPerLv: 22, baseCost: 200 },
+          hp: { lv: 1, name: 'Cường Hóa Máu Tối Đa', bonusPerLv: 160, baseCost: 200 },
+          def: { lv: 1, name: 'Cường Hóa Phòng Thủ', bonusPerLv: 10, baseCost: 220 },
           crit: { lv: 1, name: 'Tỉ Lệ Nổ Chí Mạng (%)', bonusPerLv: 2, baseCost: 350 },
-          spd: { lv: 1, name: 'Tốc Độ Ra Đòn (%)', bonusPerLv: 3, baseCost: 400 }
+          spd: { lv: 1, name: 'Tốc Độ Ra Đòn & Giảm Hồi Chiêu (%)', bonusPerLv: 3, baseCost: 400 }
         },
         combos: {
           'J-J-K': { name: 'Combo Phá Giáp (J-J-K)', lv: 1, unlocked: true, cost: 600, mult: 2.3 },
@@ -1376,6 +627,7 @@
 
     function saveGameState() {
       try {
+        state.version = 4.2;
         state.lastSaveTimestamp = Date.now();
         localStorage.setItem(SAVE_KEY, JSON.stringify(state));
       } catch (err) {}
@@ -1383,6 +635,7 @@
 
     function applyLoadedData(saved) {
       if (!saved || typeof saved !== 'object') return;
+      state.version = 4.2;
       state.gold = typeof saved.gold === 'number' ? saved.gold : state.gold;
       state.level = typeof saved.level === 'number' ? saved.level : state.level;
       state.exp = typeof saved.exp === 'number' ? saved.exp : state.exp;
@@ -1410,13 +663,12 @@
       if (saved.combos) {
         Object.keys(state.combos).forEach(k => {
           if (saved.combos[k]) {
-            state.combos[k].lv = saved.combos[k].lv;
-            state.combos[k].unlocked = saved.combos[k].unlocked;
+            state.combos[k].lv = typeof saved.combos[k].lv === 'number' ? saved.combos[k].lv : state.combos[k].lv;
+            state.combos[k].unlocked = !!saved.combos[k].unlocked;
           }
         });
       }
 
-      // Kiểm tra làm mới Nhiệm vụ Hàng ngày
       if (saved.questDate === getTodayString() && Array.isArray(saved.dailyQuests)) {
         state.questDate = saved.questDate;
         state.dailyQuests = saved.dailyQuests;
@@ -1425,20 +677,13 @@
         state.dailyQuests = getDefaultQuests();
       }
 
-      // Hồi bù Thể Lực khi người chơi tắt máy (Offline)
       if (state.stamina < state.maxStamina && saved.lastSaveTimestamp) {
         const elapsedSeconds = Math.max(0, Math.floor((Date.now() - saved.lastSaveTimestamp) / 1000));
         if (elapsedSeconds > 0) {
           const totalWait = (420 - state.staminaSecondsLeft) + elapsedSeconds;
           const cycles = Math.floor(totalWait / 420);
-          if (cycles > 0) {
-            state.stamina = Math.min(state.maxStamina, state.stamina + cycles * 10);
-          }
-          if (state.stamina >= state.maxStamina) {
-            state.staminaSecondsLeft = 420;
-          } else {
-            state.staminaSecondsLeft = 420 - (totalWait % 420);
-          }
+          if (cycles > 0) state.stamina = Math.min(state.maxStamina, state.stamina + cycles * 10);
+          state.staminaSecondsLeft = state.stamina >= state.maxStamina ? 420 : 420 - (totalWait % 420);
         }
       }
     }
@@ -1453,9 +698,7 @@
 
     function advanceQuest(questId, amount = 1) {
       const q = state.dailyQuests.find(item => item.id === questId);
-      if (q && !q.claimed) {
-        q.progress = Math.min(q.target, q.progress + amount);
-      }
+      if (q && !q.claimed) q.progress = Math.min(q.target, q.progress + amount);
     }
 
     function useStaminaPotion() {
@@ -1470,42 +713,41 @@
       renderAllHub();
     }
 
-    // Xuất & Nhập Mã Sao Lưu Chuyển Máy
     function exportBackupCode() {
       saveGameState();
-      const jsonStr = JSON.stringify(state);
-      const encoded = btoa(encodeURIComponent(jsonStr));
+      const encoded = btoa(encodeURIComponent(JSON.stringify(state)));
       const box = document.getElementById('backup-code-box');
       box.value = encoded;
       box.select();
       try { navigator.clipboard.writeText(encoded); } catch (e) {}
-      document.getElementById('backup-status-msg').textContent = '✔ Đã xuất và sao chép Mã Sao Lưu! Bạn có thể dán mã này sang thiết bị khác.';
+      document.getElementById('backup-status-msg').textContent = '✔ Đã xuất và sao chép Mã Sao Lưu!';
     }
 
     function importBackupCode() {
-      const box = document.getElementById('backup-code-box');
-      const code = box.value.trim();
+      const code = document.getElementById('backup-code-box').value.trim();
       if (!code) return alert('Vui lòng dán Mã Sao Lưu vào ô trống trước!');
       try {
-        const decoded = decodeURIComponent(atob(code));
-        const parsed = JSON.parse(decoded);
-        applyLoadedData(parsed);
+        applyLoadedData(JSON.parse(decodeURIComponent(atob(code))));
         saveGameState();
         renderAllHub();
         playSFX('win');
         document.getElementById('backup-status-msg').textContent = '🎉 Khôi phục dữ liệu thành công 100%!';
       } catch (err) {
-        alert('Mã Sao Lưu không hợp lệ! Vui lòng kiểm tra lại.');
+        alert('Mã Sao Lưu không hợp lệ!');
       }
     }
 
     // ============================================================================
-    // 4. TÍNH CHỈ SỐ TỔNG HỢP & ĐỒNG HỒ THỂ LỰC 7 PHÚT
+    // 4. CÂN BẰNG CHỈ SỐ ANH HÙNG, TỐC ĐỘ ĐÁNH (SPD) & ĐỘ KHÓ KHỚP VỚI LV.1000
     // ============================================================================
     function getActiveWeapon() {
       const hero = HEROES[state.currentHero];
-      const wId = state.equipped[hero.weaponClass];
-      return EQUIPMENT_DB.find(i => i.id === wId) || EQUIPMENT_DB[0];
+      return EQUIPMENT_DB.find(i => i.id === state.equipped[hero.weaponClass]) || EQUIPMENT_DB[0];
+    }
+
+    function getStageScale(chapter, stage) {
+      const g = (chapter - 1) * 13 + stage; // 1..260
+      return 1 + (g - 1) * 0.16 + Math.pow(g / 12, 2.25);
     }
 
     function getHeroStats() {
@@ -1515,13 +757,21 @@
       const armor = EQUIPMENT_DB.find(i => i.id === state.equipped.armor);
       const boots = EQUIPMENT_DB.find(i => i.id === state.equipped.boots);
 
-      const atk = hero.baseAtk + state.level * 9 + state.statUpgrades.atk.lv * 14 + (weapon.atk || 0) + (boots.atk || 0);
-      const maxHp = hero.baseHp + state.level * 45 + state.statUpgrades.hp.lv * 95 + (helmet.hp || 0) + (armor.hp || 0) + (boots.hp || 0);
-      const def = hero.baseDef + state.level * 3 + state.statUpgrades.def.lv * 6 + (helmet.def || 0) + (armor.def || 0);
-      const crit = Math.min(85, 8 + state.statUpgrades.crit.lv * 2 + (weapon.crit || 0));
-      const power = Math.floor(atk * 4 + maxHp * 0.35 + def * 6 + crit * 12);
+      // Tăng trưởng người chơi từ Lv.1 -> Lv.1000 tương xứng với Đại Boss Chương 20
+      const lvFactor = 1 + (state.level - 1) * 0.04 + Math.pow(state.level / 18, 1.85);
+      const flatAtk = hero.baseAtk + state.statUpgrades.atk.lv * 22 + (weapon.atk || 0) + (boots.atk || 0);
+      const flatHp = hero.baseHp + state.statUpgrades.hp.lv * 160 + (helmet.hp || 0) + (armor.hp || 0) + (boots.hp || 0);
+      const flatDef = hero.baseDef + state.statUpgrades.def.lv * 10 + (helmet.def || 0) + (armor.def || 0);
 
-      return { atk, maxHp, def, crit, power, weapon, helmet, armor, boots };
+      const atk = Math.floor(flatAtk * lvFactor);
+      const maxHp = Math.floor(flatHp * lvFactor);
+      const def = Math.floor(flatDef * lvFactor);
+      const crit = Math.min(85, 8 + state.statUpgrades.crit.lv * 2 + (weapon.crit || 0));
+      const spdPct = state.statUpgrades.spd.lv * 3;
+      const spdMult = 1 + Math.min(1.5, spdPct / 100);
+      const power = Math.floor(atk * 4 + maxHp * 0.35 + def * 6 + (crit + spdPct) * 15);
+
+      return { atk, maxHp, def, crit, spdPct, spdMult, power, weapon, helmet, armor, boots };
     }
 
     setInterval(() => {
@@ -1559,8 +809,7 @@
       document.getElementById('ui-level').textContent = state.level;
       document.getElementById('ui-power').textContent = stats.power.toLocaleString();
       const expNeeded = state.level * 150;
-      const pct = Math.min(100, Math.floor((state.exp / expNeeded) * 100));
-      document.getElementById('ui-exp-fill').style.width = `${pct}%`;
+      document.getElementById('ui-exp-fill').style.width = `${Math.min(100, Math.floor((state.exp / expNeeded) * 100))}%`;
       updateStaminaTimerUI();
     }
 
@@ -1570,14 +819,11 @@
         state.exp -= state.level * 150;
         state.level++;
       }
-      if (state.level >= 1000) {
-        state.level = 1000;
-        state.exp = 0;
-      }
+      if (state.level >= 1000) { state.level = 1000; state.exp = 0; }
     }
 
     // ============================================================================
-    // 5. VẼ NHÂN VẬT 2D HẦM HỐ (LIVE PREVIEW & ĐẤU TRƯỜNG)
+    // 5. VẼ ANH HÙNG & QUÁI VẬT HẦM HỐ THEO PHÁC THẢO CỦA SẾP
     // ============================================================================
     function drawHeroCharacter(ctx, x, y, facing, animTime, heroId, actionState, alpha = 1) {
       const hero = HEROES[heroId];
@@ -1593,42 +839,55 @@
       ctx.translate(x, y);
       ctx.scale(facing, 1);
 
-      const bob = Math.sin(animTime * 0.1) * 2.5;
+      if (actionState === 'punch' || actionState === 'wskill') ctx.rotate(0.14);
+      else if (actionState === 'kick') ctx.rotate(-0.18);
 
-      // 1. Áo choàng chiến thần (Giáp bậc >= 3)
+      const bob = Math.sin(animTime * 0.12) * 2.5;
+
       if (armor.tier >= 3) {
         ctx.fillStyle = armor.tier === 5 ? '#b91c1c' : '#31102f';
         ctx.beginPath();
         ctx.moveTo(-10, -52 + bob);
-        ctx.quadraticCurveTo(-38 - Math.sin(animTime * 0.15) * 8, -20, -44 - armor.tier * 3, 22);
+        ctx.quadraticCurveTo(-40 - Math.sin(animTime * 0.2) * 10, -20, -48 - armor.tier * 3, 22);
         ctx.lineTo(-14, 18);
         ctx.closePath();
         ctx.fill();
       }
 
-      // 2. Giày chiến & Giáp đầu gối nhô gai
       ctx.fillStyle = '#1e293b';
       ctx.fillRect(-12, 4, 9, 22);
-      ctx.fillRect(4, 4, 9, 22);
-
       ctx.fillStyle = boots.color;
       ctx.fillRect(-14, 10, 12, 16);
-      ctx.fillRect(3, 10, 12, 16);
-      if (boots.tier >= 2) {
-        ctx.beginPath();
-        ctx.moveTo(15, 10);
-        ctx.lineTo(24 + boots.tier * 1.5, 6);
-        ctx.lineTo(15, 16);
-        ctx.fill();
 
+      ctx.save();
+      if (actionState === 'kick') {
+        ctx.translate(6, 4);
+        ctx.rotate(-1.25);
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(0, 0, 10, 26);
+        ctx.fillStyle = boots.color;
+        ctx.fillRect(-2, 8, 14, 18);
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.moveTo(15, 22);
-        ctx.lineTo(25 + boots.tier, 26);
-        ctx.lineTo(14, 26);
-        ctx.fill();
+        ctx.arc(4, 24, 22, -0.6, 1.5);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(4, 4, 9, 22);
+        ctx.fillStyle = boots.color;
+        ctx.fillRect(3, 10, 12, 16);
+        if (boots.tier >= 2) {
+          ctx.beginPath();
+          ctx.moveTo(15, 10); ctx.lineTo(24 + boots.tier * 1.5, 6); ctx.lineTo(15, 16);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(15, 22); ctx.lineTo(25 + boots.tier, 26); ctx.lineTo(14, 26);
+          ctx.fill();
+        }
       }
+      ctx.restore();
 
-      // 3. Thân giáp & Lõi năng lượng
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(-15, -36 + bob, 30, 42);
       ctx.strokeStyle = armor.color;
@@ -1640,24 +899,16 @@
       ctx.arc(0, -18 + bob, 5 + armor.tier * 0.6, 0, Math.PI * 2);
       ctx.fill();
 
-      // 4. Giáp vai (Pauldrons) nhô gai hai bên
       ctx.fillStyle = armor.color;
       const shoulderOut = 16 + armor.tier * 3.5;
       ctx.beginPath();
-      ctx.moveTo(-16, -38 + bob);
-      ctx.lineTo(-shoulderOut - 8, -48 - armor.tier * 2 + bob);
-      ctx.lineTo(-18, -24 + bob);
-      ctx.closePath();
-      ctx.fill();
+      ctx.moveTo(-16, -38 + bob); ctx.lineTo(-shoulderOut - 8, -48 - armor.tier * 2 + bob); ctx.lineTo(-18, -24 + bob);
+      ctx.closePath(); ctx.fill();
 
       ctx.beginPath();
-      ctx.moveTo(16, -38 + bob);
-      ctx.lineTo(shoulderOut + 8, -48 - armor.tier * 2 + bob);
-      ctx.lineTo(18, -24 + bob);
-      ctx.closePath();
-      ctx.fill();
+      ctx.moveTo(16, -38 + bob); ctx.lineTo(shoulderOut + 8, -48 - armor.tier * 2 + bob); ctx.lineTo(18, -24 + bob);
+      ctx.closePath(); ctx.fill();
 
-      // 5. Đầu & Mũ Chiến Thần nhô sừng
       ctx.fillStyle = '#e2e8f0';
       ctx.beginPath();
       ctx.arc(0, -50 + bob, 12, 0, Math.PI * 2);
@@ -1671,42 +922,33 @@
       if (helmet.tier >= 2) {
         const hornH = 12 + helmet.tier * 4.5;
         ctx.beginPath();
-        ctx.moveTo(-8, -60 + bob);
-        ctx.lineTo(-22 - helmet.tier * 2, -64 - hornH + bob);
-        ctx.lineTo(-2, -60 + bob);
+        ctx.moveTo(-8, -60 + bob); ctx.lineTo(-22 - helmet.tier * 2, -64 - hornH + bob); ctx.lineTo(-2, -60 + bob);
         ctx.fill();
-
         ctx.beginPath();
-        ctx.moveTo(8, -60 + bob);
-        ctx.lineTo(22 + helmet.tier * 2, -64 - hornH + bob);
-        ctx.lineTo(2, -60 + bob);
+        ctx.moveTo(8, -60 + bob); ctx.lineTo(22 + helmet.tier * 2, -64 - hornH + bob); ctx.lineTo(2, -60 + bob);
         ctx.fill();
       }
 
-      // 6. Tư thế cầm vũ khí đặc trưng từng nhân vật
       if (heroId === 'long') {
         ctx.save();
         let swordAngle = 0.42;
-        if (actionState === 'punch' || actionState === 'wskill') {
-          swordAngle = -1.1 + Math.sin(animTime * 0.8) * 1.4;
-        }
+        if (actionState === 'punch') swordAngle = -1.35;
+        else if (actionState === 'wskill') swordAngle = -1.65;
         ctx.translate(-8, -26 + bob);
         ctx.rotate(swordAngle);
 
         ctx.fillStyle = skin.primary;
         ctx.fillRect(-4, 0, 8, 22);
-
         ctx.fillStyle = '#f8fafc';
         ctx.fillRect(-3, 20, 6, 12);
         ctx.fillStyle = weapon.color;
         ctx.fillRect(-12, 30, 24, 5);
 
-        ctx.fillStyle = weapon.color;
+        ctx.fillStyle = actionState === 'wskill' ? '#ef4444' : weapon.color;
         ctx.beginPath();
-        ctx.moveTo(-5, 35);
-        ctx.lineTo(5, 35);
+        ctx.moveTo(-5, 35); ctx.lineTo(5, 35);
         ctx.lineTo(8, 35 + weapon.len * 0.75);
-        ctx.lineTo(0, 35 + weapon.len * 0.9);
+        ctx.lineTo(0, 35 + weapon.len * 0.92);
         ctx.lineTo(-6, 35 + weapon.len * 0.75);
         ctx.closePath();
         ctx.fill();
@@ -1719,8 +961,15 @@
         }
         ctx.restore();
 
+        const punchExtend = actionState === 'punch' ? 24 : 0;
         ctx.fillStyle = skin.primary;
-        ctx.fillRect(10, -24 + bob, 14, 7);
+        ctx.fillRect(10, -24 + bob, 14 + punchExtend, 8);
+        if (actionState === 'punch') {
+          ctx.fillStyle = '#fde047';
+          ctx.beginPath();
+          ctx.arc(28 + punchExtend, -20 + bob, 9, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
       } else if (heroId === 'mage') {
         ctx.save();
@@ -1730,7 +979,7 @@
         ctx.arc(0, -25 + bob, 34, animTime * 0.05, animTime * 0.05 + Math.PI * 1.5);
         ctx.stroke();
 
-        ctx.rotate(-0.45);
+        ctx.rotate(actionState === 'wskill' ? 0.35 : -0.45);
         ctx.fillStyle = weapon.color;
         ctx.fillRect(-22, -62 + bob, 5, weapon.len);
         ctx.beginPath();
@@ -1738,21 +987,180 @@
         ctx.fill();
         ctx.restore();
 
-        ctx.fillStyle = weapon.color;
+        const castExtend = (actionState === 'punch' || actionState === 'wskill') ? 18 : 0;
+        ctx.fillStyle = actionState === 'wskill' ? '#ef4444' : weapon.color;
         ctx.beginPath();
-        ctx.arc(24, -24 + bob, 7 + Math.sin(animTime * 0.2) * 2, 0, Math.PI * 2);
+        ctx.arc(24 + castExtend, -24 + bob, (actionState === 'punch' ? 12 : 7) + Math.sin(animTime * 0.2) * 2, 0, Math.PI * 2);
         ctx.fill();
 
       } else if (heroId === 'cyber') {
         const gauntletSize = weapon.len;
-        ctx.fillStyle = weapon.color;
-        const punchOffset = actionState === 'punch' ? 24 : 0;
+        const punchOffset = actionState === 'punch' ? 32 : (actionState === 'wskill' ? 18 : 0);
+        ctx.fillStyle = actionState === 'wskill' ? '#38bdf8' : weapon.color;
         ctx.fillRect(8 + punchOffset, -32 + bob, gauntletSize, 22);
         ctx.strokeStyle = '#f8fafc';
         ctx.strokeRect(8 + punchOffset, -32 + bob, gauntletSize, 22);
         ctx.fillStyle = '#fde047';
         ctx.fillRect(12 + punchOffset, -26 + bob, 8, 8);
+        if (actionState === 'punch') {
+          ctx.fillStyle = 'rgba(251, 146, 60, 0.7)';
+          ctx.beginPath();
+          ctx.arc(12 + punchOffset + gauntletSize, -21 + bob, 14, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
+
+      ctx.restore();
+    }
+
+    function drawMonster(ctx, en, tick, isBoss13) {
+      ctx.save();
+      ctx.translate(en.x, en.y);
+      const scale = en.isBoss ? (isBoss13 ? 1.75 : 1.4) : 0.95;
+      const facing = (battle && battle.player.x < en.x) ? -1 : 1;
+
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-26 * scale, -76 * scale, 52 * scale, 7);
+      ctx.fillStyle = en.isBoss ? '#f59e0b' : '#ef4444';
+      ctx.fillRect(-26 * scale, -76 * scale, 52 * scale * Math.max(0, en.hp / en.maxHp), 7);
+      if (en.maxArmor > 0) {
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-26 * scale, -68 * scale, 52 * scale, 4);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(-26 * scale, -68 * scale, 52 * scale * Math.max(0, en.armor / en.maxArmor), 4);
+      }
+
+      ctx.scale(facing * scale, scale);
+      const bob = Math.sin(tick * 0.14 + en.id * 2) * 2.5;
+
+      const bossPalette = [
+        ['#4c1d95', '#f43f5e'],
+        ['#7c2d12', '#fde047'],
+        ['#064e3b', '#34d399'],
+        ['#1e3a8a', '#38bdf8']
+      ][(en.archetypeIdx || 0) % 4];
+
+      const bodyColor = en.isBoss ? (en.enraged ? '#7f1d1d' : bossPalette[0]) : (en.type === 'armored' ? '#1e3a8a' : (en.type === 'shooter' ? '#065f46' : '#3f1d38'));
+      const outlineColor = en.isBoss ? (en.enraged ? '#fde047' : bossPalette[1]) : (en.type === 'armored' ? '#60a5fa' : (en.type === 'shooter' ? '#34d399' : '#fb7185'));
+
+      const tailWag = Math.sin(tick * 0.18 + en.id) * 5;
+      ctx.fillStyle = bodyColor;
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(-14, 6 + bob);
+      ctx.quadraticCurveTo(-42, 4 + tailWag, -48, -26 + tailWag);
+      ctx.quadraticCurveTo(-36, -6 + tailWag, -12, -6 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = outlineColor;
+      [[-24, -2], [-34, -10], [-42, -20]].forEach(([tx, ty]) => {
+        ctx.beginPath();
+        ctx.moveTo(tx, ty + tailWag * 0.6);
+        ctx.lineTo(tx - 4, ty - 8 + tailWag * 0.6);
+        ctx.lineTo(tx + 5, ty - 2 + tailWag * 0.6);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      ctx.fillStyle = bodyColor;
+      ctx.beginPath();
+      ctx.roundRect(-18, 12, 14, 14, 4);
+      ctx.roundRect(4, 12, 14, 14, 4);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = bodyColor;
+      ctx.beginPath();
+      ctx.moveTo(-22, 12 + bob);
+      ctx.quadraticCurveTo(-26, -25 + bob, -18, -46 + bob);
+      ctx.quadraticCurveTo(0, -56 + bob, 18, -46 + bob);
+      ctx.quadraticCurveTo(26, -25 + bob, 22, 12 + bob);
+      ctx.quadraticCurveTo(0, 18 + bob, -22, 12 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#fde047';
+      ctx.beginPath();
+      ctx.moveTo(-15, -42 + bob);
+      ctx.quadraticCurveTo(-28, -56 + bob, -20, -72 + bob);
+      ctx.quadraticCurveTo(-16, -54 + bob, -8, -46 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(15, -42 + bob);
+      ctx.quadraticCurveTo(28, -56 + bob, 20, -72 + bob);
+      ctx.quadraticCurveTo(16, -54 + bob, 8, -46 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = '#fde047';
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.arc(0, -41 + bob, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(-9, -32 + bob, 4.5, 0, Math.PI * 2);
+      ctx.arc(9, -32 + bob, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#dc2626';
+      ctx.beginPath();
+      ctx.arc(-9, -32 + bob, 2, 0, Math.PI * 2);
+      ctx.arc(9, -32 + bob, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#090d16';
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(-14, -22 + bob);
+      ctx.quadraticCurveTo(0, -18 + bob, 14, -22 + bob);
+      ctx.lineTo(11, -8 + bob);
+      ctx.quadraticCurveTo(0, -4 + bob, -11, -8 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f8fafc';
+      for (let t = -10; t <= 6; t += 5) {
+        ctx.beginPath();
+        ctx.moveTo(t, -21 + bob);
+        ctx.lineTo(t + 2.5, -15 + bob);
+        ctx.lineTo(t + 5, -21 + bob);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(t + 1, -8 + bob);
+        ctx.lineTo(t + 2.5, -13 + bob);
+        ctx.lineTo(t + 4, -8 + bob);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = bodyColor;
+      ctx.strokeStyle = outlineColor;
+      ctx.beginPath();
+      ctx.moveTo(-21, -20 + bob);
+      ctx.quadraticCurveTo(-30, -6 + bob, -24, 6 + bob);
+      ctx.lineTo(-18, 2 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(21, -20 + bob);
+      ctx.quadraticCurveTo(30, -6 + bob, 24, 6 + bob);
+      ctx.lineTo(18, 2 + bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
 
       ctx.restore();
     }
@@ -1764,21 +1172,18 @@
       if (canvas) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.strokeStyle = '#334155';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(20, 235);
-        ctx.lineTo(300, 235);
+        ctx.moveTo(20, 235); ctx.lineTo(300, 235);
         ctx.stroke();
-
         drawHeroCharacter(ctx, 160, 208, 1, previewTick, state.currentHero, 'idle');
       }
       requestAnimationFrame(loopHeroPreview);
     }
 
     // ============================================================================
-    // 6. HIỂN THỊ CÁC TAB SẢNH CHÍNH (5 TAB)
+    // 6. HIỂN THỊ CÁC TAB SẢNH CHÍNH
     // ============================================================================
     function switchTab(tabName) {
       document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
@@ -1820,14 +1225,15 @@
       }
 
       const c = state.selectedChapter;
-      const recPower = c * c * 180;
+      const arch = BOSS_ARCHETYPES[(c - 1) % BOSS_ARCHETYPES.length];
+      const recLv = Math.min(1000, (c - 1) * 50 + 1);
       document.getElementById('chapter-banner').innerHTML = `
         <div>
           <h2>CHƯƠNG ${c}: ${CHAPTER_NAMES[c - 1].toUpperCase()}</h2>
-          <p style="font-size:12px;color:#cbd5e1">Màn 13 trấn giữ bởi Đại Boss: <strong style="color:#fde047">${BOSS_NAMES[c - 1]}</strong> (Sở hữu Giáp Bá Thể & Kỹ năng Hủy Diệt)</p>
+          <p style="font-size:12px;color:#cbd5e1">Đại Boss Màn 13: <strong style="color:#fde047">${BOSS_NAMES[c - 1]}</strong> — Hệ Kỹ Năng: <span style="color:#86efac">${arch.label}</span></p>
         </div>
         <div style="text-align:right">
-          <div style="font-size:12px;color:#fca5a5">Lực Chiến Đề Nghị: <strong>${recPower.toLocaleString()}</strong></div>
+          <div style="font-size:12px;color:#fca5a5">Cấp Độ Đề Nghị: <strong>Lv.${recLv}+</strong></div>
           <div style="font-size:12px;color:#6ee7b7">Tiêu hao: <strong>10 ⚡ Thể Lực / lần</strong></div>
         </div>
       `;
@@ -1839,7 +1245,9 @@
         const unlocked = globalIndex <= state.maxUnlockedStageGlobal;
         const cleared = !!state.clearedStages[globalIndex];
         const isBoss13 = s === 13;
-        const goldReward = Math.floor((c * 220 + s * 45) * (isBoss13 ? 3.5 : 1));
+        const sc = getStageScale(c, s);
+        const goldReward = Math.floor(180 * sc * (isBoss13 ? 3.2 : 1));
+        const expReward = Math.floor(160 * sc * (isBoss13 ? 3.5 : 1));
 
         const card = document.createElement('div');
         card.className = `stage-card ${isBoss13 ? 'boss-stage' : ''}`;
@@ -1849,7 +1257,7 @@
               <strong>${isBoss13 ? `💀 MÀN 13: ĐẠI BOSS ${BOSS_NAMES[c - 1].toUpperCase()}` : `Màn ${c}-${s}`}</strong>
               <span style="font-size:11px;color:${cleared ? '#4ade80' : '#94a3b8'}">${cleared ? '✔ Đã Qua' : (unlocked ? 'Mới' : '🔒 Khóa')}</span>
             </div>
-            <div style="font-size:12px;color:#fde68a;margin-top:4px">Thưởng: +${goldReward.toLocaleString()} Vàng & EXP</div>
+            <div style="font-size:11px;color:#fde68a;margin-top:4px">+${goldReward.toLocaleString()} 💰 | +${expReward.toLocaleString()} EXP</div>
           </div>
           <button class="${cleared ? 'replay' : ''}" ${(!unlocked || state.stamina < 10) ? 'disabled' : ''} onclick="startStage(${c}, ${s})">
             ${state.stamina < 10 ? '⏳ Hết Thể Lực (Dùng 🧪 ở trên)' : (cleared ? '🔄 Chơi Lại (-10⚡)' : '⚔️ Xuất Chiến (-10⚡)')}
@@ -1913,10 +1321,7 @@
     function buyOrEquipItem(itemId) {
       const item = EQUIPMENT_DB.find(i => i.id === itemId);
       if (!state.ownedItems.includes(itemId)) {
-        if (state.gold < item.price) {
-          alert('Không đủ Vàng! Hãy cày lại các màn đã qua để tích lũy thêm Vàng.');
-          return;
-        }
+        if (state.gold < item.price) return alert('Không đủ Vàng! Hãy cày lại các màn đã qua để tích lũy thêm Vàng.');
         state.gold -= item.price;
         state.ownedItems.push(itemId);
       }
@@ -1937,7 +1342,7 @@
         row.innerHTML = `
           <div>
             <strong>${up.name} (Cấp ${up.lv})</strong>
-            <div style="font-size:12px;color:#94a3b8">Hiện tại: +${up.lv * up.bonusPerLv}</div>
+            <div style="font-size:12px;color:#94a3b8">Hiệu quả gốc: +${up.lv * up.bonusPerLv}${key === 'crit' || key === 'spd' ? '%' : ''}</div>
           </div>
           <button onclick="upgradeStat('${key}')">Nâng Cấp (${cost.toLocaleString()} 💰)</button>
         `;
@@ -1954,7 +1359,7 @@
         row.innerHTML = `
           <div>
             <strong>${cb.name} ${cb.unlocked ? `(Cấp ${cb.lv})` : '[Chưa Mở]'}</strong>
-            <div style="font-size:12px;color:#86efac">Uy lực: ${Math.round((cb.mult + cb.lv * 0.25) * 100)}% Sát thương</div>
+            <div style="font-size:12px;color:#86efac">Uy lực thực chiến: ${Math.round((cb.mult + cb.lv * 0.25) * 100)}% Sát thương</div>
           </div>
           <button onclick="upgradeCombo('${code}')">
             ${cb.unlocked ? `Nâng Cấp (${cost.toLocaleString()} 💰)` : `Mở Khóa (${cost.toLocaleString()} 💰)`}
@@ -1980,12 +1385,8 @@
       const cost = cb.unlocked ? Math.floor(cb.cost * Math.pow(1.4, cb.lv)) : cb.cost;
       if (state.gold < cost) return alert('Không đủ Vàng!');
       state.gold -= cost;
-      if (!cb.unlocked) {
-        cb.unlocked = true;
-        cb.lv = 1;
-      } else {
-        cb.lv++;
-      }
+      if (!cb.unlocked) { cb.unlocked = true; cb.lv = 1; }
+      else { cb.lv++; }
       playSFX('win');
       saveGameState();
       renderAllHub();
@@ -2034,9 +1435,7 @@
     function buyOrSelectHero(heroId) {
       const hero = HEROES[heroId];
       if (!state.unlockedHeroes.includes(heroId)) {
-        if (state.gold < hero.unlockPrice) {
-          return alert(`Cần ${hero.unlockPrice.toLocaleString()} Vàng để chiêu mộ ${hero.name}!`);
-        }
+        if (state.gold < hero.unlockPrice) return alert(`Cần ${hero.unlockPrice.toLocaleString()} Vàng để chiêu mộ ${hero.name}!`);
         state.gold -= hero.unlockPrice;
         state.unlockedHeroes.push(heroId);
       }
@@ -2101,28 +1500,22 @@
     }
 
     // ============================================================================
-    // 7. ENGINE CHIẾN ĐẤU 2D (LƯỚT SHIFT, LIÊN KÍCH HIT COUNTER, SKILL U & L)
+    // 7. ENGINE CHIẾN ĐẤU 2D (DELTA TIME 60FPS, HỒI GIÁP BOSS, 4 KIỂU BOSS)
     // ============================================================================
     const keys = {};
     let battle = null;
+    let enemyUidCounter = 1;
 
-    function setHoldKey(k, val) {
-      keys[k] = val;
-    }
-
-    function toggleTouchPad() {
-      document.getElementById('touch-controls-bar').classList.toggle('hidden');
-    }
+    function setHoldKey(k, val) { keys[k] = val; }
+    function toggleTouchPad() { document.getElementById('touch-controls-bar').classList.toggle('hidden'); }
 
     window.addEventListener('keydown', e => {
+      if (e.repeat) return; // Chặn giữ phím làm nhiễu bộ đệm combo
       const k = e.key.toUpperCase();
       keys[k] = true;
       if (!battle || !battle.active) return;
 
-      if (e.key === 'Shift') {
-        e.preventDefault();
-        triggerDash();
-      }
+      if (e.key === 'Shift') { e.preventDefault(); triggerDash(); }
       if (k === 'W' || e.code === 'Space') playerJump();
       if (k === 'J') pushCombatInput('J');
       if (k === 'K') pushCombatInput('K');
@@ -2130,9 +1523,7 @@
       if (k === 'L') triggerFinalSkill();
     });
 
-    window.addEventListener('keyup', e => {
-      keys[e.key.toUpperCase()] = false;
-    });
+    window.addEventListener('keyup', e => { keys[e.key.toUpperCase()] = false; });
 
     function startStage(chapter, stage) {
       if (state.stamina < 10) {
@@ -2145,50 +1536,25 @@
 
       const stats = getHeroStats();
       const isBoss13 = stage === 13;
-      const difficultyScale = Math.pow(1.22, (chapter - 1) * 2.2 + stage * 0.35);
+      const difficultyScale = getStageScale(chapter, stage);
+      const wSkillMaxCd = Math.max(120, Math.round(300 / stats.spdMult));
+      const dashMaxCd = Math.max(65, Math.round(150 / stats.spdMult));
 
       battle = {
-        active: true,
-        chapter,
-        stage,
-        isBoss13,
-        difficultyScale,
-        wave: 1,
-        maxWaves: isBoss13 ? 2 : 3,
-        tick: 0,
-        shake: 0,
-        groundY: 385,
-        inputBuffer: [],
-        lastInputTime: 0,
-        hitStreak: 0,
-        maxHitStreak: 0,
-        hitTimer: 0,
+        active: true, chapter, stage, isBoss13, difficultyScale,
+        theme: ARENA_THEMES[(chapter - 1) % ARENA_THEMES.length],
+        wave: 1, maxWaves: isBoss13 ? 2 : 3, tick: 0, shake: 0, groundY: 385,
+        inputBuffer: [], lastInputTime: 0,
+        hitStreak: 0, maxHitStreak: 0, hitTimer: 0,
         player: {
-          x: 240,
-          y: 385,
-          vx: 0,
-          vy: 0,
-          facing: 1,
-          hp: stats.maxHp,
-          maxHp: stats.maxHp,
-          atk: stats.atk,
-          def: stats.def,
-          crit: stats.crit,
-          rage: 0,
-          wSkillCd: 0,
-          wSkillMaxCd: 300,
-          dashCd: 0,
-          invincibleTimer: 0,
-          actionState: 'idle',
-          actionTimer: 0
+          x: 240, y: 385, vx: 0, vy: 0, facing: 1,
+          hp: stats.maxHp, maxHp: stats.maxHp, atk: stats.atk, def: stats.def, crit: stats.crit,
+          spdMult: stats.spdMult,
+          rage: 0, wSkillCd: 0, wSkillMaxCd, dashCd: 0, dashMaxCd, invincibleTimer: 0,
+          actionState: 'idle', actionTimer: 0
         },
-        afterimages: [],
-        finalScene: null,
-        enemies: [],
-        projectiles: [],
-        warnings: [],
-        particles: [],
-        texts: []
+        afterimages: [], wSkillScene: null, finalScene: null,
+        enemies: [], projectiles: [], warnings: [], particles: [], texts: []
       };
 
       document.getElementById('hub-screen').classList.add('hidden');
@@ -2205,74 +1571,59 @@
 
       const isBossWave = b.wave === b.maxWaves;
       if (!isBossWave) {
-        const count = 5 + b.wave * 2 + Math.floor(b.chapter * 0.4);
+        const count = 5 + b.wave * 2 + Math.floor(b.chapter * 0.35);
         for (let i = 0; i < count; i++) {
           const side = i % 2 === 0 ? 1 : -1;
           const types = ['rusher', 'armored', 'shooter'];
           const type = types[i % 3];
-          const baseHp = Math.floor(210 * b.difficultyScale * (type === 'armored' ? 1.7 : 1));
+          const baseHp = Math.floor(240 * b.difficultyScale * (type === 'armored' ? 1.65 : 1));
           b.enemies.push({
-            isBoss: false,
-            type,
+            id: ++enemyUidCounter,
+            isBoss: false, type,
             name: type === 'armored' ? 'Thiết Giáp Binh' : (type === 'shooter' ? 'Xạ Thủ Cyber' : 'Quái Xung Kích'),
             x: side === 1 ? 1050 + i * 55 : 80 - i * 55,
-            y: b.groundY,
-            vx: 0,
-            hp: baseHp,
-            maxHp: baseHp,
-            armor: type === 'armored' ? 100 : 0,
-            maxArmor: type === 'armored' ? 100 : 0,
-            atk: Math.floor(22 * b.difficultyScale),
-            cd: 40 + (i * 15),
-            stun: 0
+            y: b.groundY, vx: 0,
+            hp: baseHp, maxHp: baseHp,
+            armor: type === 'armored' ? 100 : 0, maxArmor: type === 'armored' ? 100 : 0,
+            atk: Math.floor(24 * b.difficultyScale),
+            cd: 40 + (i * 15), stun: 0
           });
         }
         document.getElementById('boss-hud-box').style.visibility = 'hidden';
       } else {
         playSFX('boss_siren');
-        const mult = b.isBoss13 ? 4.2 : 1.9;
-        const bossHp = Math.floor(1400 * b.difficultyScale * mult);
-        const bossArmor = b.isBoss13 ? 450 : 200;
+        const mult = b.isBoss13 ? 4.2 : 2.0;
+        const bossHp = Math.floor(1500 * b.difficultyScale * mult);
+        const bossArmor = b.isBoss13 ? 450 : 220;
+        const archIdx = (b.chapter - 1) % BOSS_ARCHETYPES.length;
         const bossName = b.isBoss13 ? `ĐẠI BOSS: ${BOSS_NAMES[b.chapter - 1]}` : `Đội Trưởng Khu ${b.chapter}-${b.stage}`;
 
         b.enemies.push({
-          isBoss: true,
-          type: 'boss',
-          name: bossName,
-          x: 920,
-          y: b.groundY,
-          vx: 0,
-          hp: bossHp,
-          maxHp: bossHp,
-          armor: bossArmor,
-          maxArmor: bossArmor,
-          atk: Math.floor(38 * b.difficultyScale * (b.isBoss13 ? 1.5 : 1)),
-          cd: 70,
-          stun: 0,
-          enraged: false
+          id: ++enemyUidCounter,
+          isBoss: true, type: 'boss', name: bossName,
+          archetypeIdx: archIdx,
+          archetype: BOSS_ARCHETYPES[archIdx].id,
+          x: 920, y: b.groundY, vx: 0,
+          hp: bossHp, maxHp: bossHp, armor: bossArmor, maxArmor: bossArmor,
+          atk: Math.floor(38 * b.difficultyScale * (b.isBoss13 ? 1.35 : 1)),
+          cd: 65, stun: 0, enraged: false
         });
         document.getElementById('boss-hud-box').style.visibility = 'visible';
-        document.getElementById('hud-boss-name').textContent = bossName.toUpperCase();
+        document.getElementById('hud-boss-name').textContent = `${bossName.toUpperCase()} [${BOSS_ARCHETYPES[archIdx].label}]`;
       }
     }
 
-    // KỸ NĂNG LƯỚT TỐC BIẾN NÉ ĐÒN (PHÍM SHIFT)
     function triggerDash() {
       if (!battle || !battle.active) return;
       const p = battle.player;
       if (p.dashCd > 0) return;
 
-      p.dashCd = 150; // Hồi chiêu 2.5 giây
-      p.invincibleTimer = 22; // Bất tử 0.35 giây
+      p.dashCd = p.dashMaxCd;
+      p.invincibleTimer = 22;
       playSFX('dash');
 
       for (let i = 1; i <= 4; i++) {
-        battle.afterimages.push({
-          x: p.x + p.facing * i * 24,
-          y: p.y,
-          facing: p.facing,
-          life: 14
-        });
+        battle.afterimages.push({ x: p.x + p.facing * i * 24, y: p.y, facing: p.facing, life: 14 });
       }
       p.x = Math.max(40, Math.min(1140, p.x + p.facing * 135));
       battle.texts.push({ x: p.x, y: p.y - 75, text: '💨 TỐC BIẾN BẤT TỬ!', color: '#c084fc', life: 24 });
@@ -2281,74 +1632,96 @@
     function playerJump() {
       if (!battle || !battle.active) return;
       const p = battle.player;
-      if (p.y >= battle.groundY - 2) {
+      if (p.y >= battle.groundY - 4) {
+        p.y -= 6;
         p.vy = -13.5;
-        pushCombatInput('W', true);
       }
+      pushCombatInput('W', true);
+    }
+
+    function getComboPower(code) {
+      const cb = state.combos[code];
+      if (!cb) return 2.5;
+      return cb.mult + cb.lv * 0.25;
     }
 
     function pushCombatInput(keyChar, onlyRecord = false) {
       if (!battle || !battle.active) return;
       const now = performance.now();
-      if (now - battle.lastInputTime > 850) battle.inputBuffer = [];
+      if (now - battle.lastInputTime > 1500) battle.inputBuffer = [];
       battle.lastInputTime = now;
 
       battle.inputBuffer.push(keyChar);
       if (battle.inputBuffer.length > 4) battle.inputBuffer.shift();
       document.getElementById('hud-input-buffer').textContent = battle.inputBuffer.join(' ➔ ');
 
-      if (onlyRecord) return;
-
+      const seq4 = battle.inputBuffer.slice(-4).join('-');
       const seq3 = battle.inputBuffer.slice(-3).join('-');
       const seq2 = battle.inputBuffer.slice(-2).join('-');
-      const seq4 = battle.inputBuffer.slice(-4).join('-');
 
-      if (state.combos['J-K-J-K'].unlocked && seq4 === 'J-K-J-K') {
-        executeAttack('J-K-J-K', state.combos['J-K-J-K'].name, 3.8, 220, 75);
+      if (seq3 === 'J-K-W' && state.combos['J-K-W'].unlocked) {
+        battle.player.y -= 8;
+        battle.player.vy = -12.5;
+        executeAttack('J-K-W', `🌊 ${state.combos['J-K-W'].name.toUpperCase()}!`, getComboPower('J-K-W'), 220, 75, 'kick');
         battle.inputBuffer = [];
-      } else if (seq3 === 'J-J-K') {
-        executeAttack('J-J-K', '🌪️ COMBO PHÁ GIÁP!', 2.5, 185, 55);
+        return;
+      }
+
+      if (onlyRecord) return;
+
+      if (seq4 === 'J-K-J-K') {
+        if (!state.combos['J-K-J-K'].unlocked) {
+          battle.texts.push({ x: battle.player.x, y: battle.player.y - 85, text: '🔒 Cần mở khóa Huyết Ảnh (J-K-J-K) ở Tab 3!', color: '#fde047', life: 40 });
+        } else {
+          battle.player.vx = battle.player.facing * 12;
+          executeAttack('J-K-J-K', `🩸 ${state.combos['J-K-J-K'].name.toUpperCase()}!`, getComboPower('J-K-J-K'), 260, 110, 'kick');
+          battle.inputBuffer = [];
+          return;
+        }
+      }
+
+      if (seq3 === 'J-J-K' && state.combos['J-J-K'].unlocked) {
+        executeAttack('J-J-K', `🌪️ ${state.combos['J-J-K'].name.toUpperCase()}!`, getComboPower('J-J-K'), 210, 65, 'kick');
         battle.inputBuffer = [];
-      } else if (seq3 === 'J-K-W') {
-        battle.player.vy = -11;
-        executeAttack('J-K-W', '🌊 COMBO BÃO TỐ!', 3.0, 195, 65);
-        battle.inputBuffer = [];
-      } else if (seq2 === 'W-J' && battle.player.y < battle.groundY) {
+      } else if (seq2 === 'W-J' && state.combos['W-J'].unlocked) {
         battle.player.vy = 16;
-        executeAttack('W-J', '⚡ LÔI ĐÌNH KÍCH!', 2.6, 210, 60);
+        executeAttack('W-J', `⚡ ${state.combos['W-J'].name.toUpperCase()}!`, getComboPower('W-J'), 225, 70, 'punch');
         battle.inputBuffer = [];
-      } else if (seq2 === 'W-K' && battle.player.y < battle.groundY) {
-        battle.player.vx = battle.player.facing * 14;
-        executeAttack('W-K', '🐉 PHI LONG CƯỚC!', 2.7, 200, 60);
+      } else if (seq2 === 'W-K' && state.combos['W-K'].unlocked) {
+        battle.player.vx = battle.player.facing * 16;
+        executeAttack('W-K', `🐉 ${state.combos['W-K'].name.toUpperCase()}!`, getComboPower('W-K'), 230, 70, 'kick');
         battle.inputBuffer = [];
       } else {
-        executeAttack(keyChar, keyChar === 'J' ? 'Đòn Chém/Đấm' : 'Cước Đá', keyChar === 'J' ? 1.0 : 1.25, 125, 18);
+        const isKick = keyChar === 'K';
+        executeAttack(keyChar, isKick ? '🦶 Cước Đá Vòng Cầu' : '👊 Đòn Đấm / Chém', isKick ? 1.28 : 1.0, isKick ? 145 : 130, isKick ? 24 : 18, isKick ? 'kick' : 'punch');
       }
     }
 
-    function executeAttack(code, label, mult, range, armorBreak) {
+    function executeAttack(code, label, mult, range, armorBreak, animType) {
       const b = battle;
       const p = b.player;
       const weapon = getActiveWeapon();
-      p.actionState = 'punch';
-      p.actionTimer = 14;
-      playSFX('slash');
+      p.actionState = animType || 'punch';
+      p.actionTimer = Math.max(8, Math.round(16 / p.spdMult));
+      playSFX(animType === 'kick' ? 'kick' : 'slash');
       document.getElementById('hud-active-combo').textContent = label;
 
+      const isCombo = code.length > 1;
       b.particles.push({
-        type: 'slash',
-        x: p.x + p.facing * 45,
+        type: isCombo ? 'combo_burst' : 'slash',
+        x: p.x + p.facing * 50,
         y: p.y - 30,
-        r: range * 0.55,
-        color: weapon.color,
-        life: 12
+        r: range * (isCombo ? 0.72 : 0.55),
+        color: isCombo ? '#fde047' : weapon.color,
+        life: isCombo ? 18 : 12
       });
+      if (isCombo) b.shake = 9;
 
       b.enemies.forEach(en => {
         const dx = en.x - p.x;
-        const inFront = (dx * p.facing >= -35) && Math.abs(dx) <= range;
-        if (inFront && Math.abs(en.y - p.y) < 95) {
-          dealDamageToEnemy(en, p.atk * mult, armorBreak);
+        const inFront = (dx * p.facing >= -45) && Math.abs(dx) <= range;
+        if (inFront && Math.abs(en.y - p.y) < 115) {
+          dealDamageToEnemy(en, p.atk * mult, armorBreak, true);
         }
       });
     }
@@ -2356,32 +1729,91 @@
     function triggerWeaponSkill() {
       if (!battle || !battle.active) return;
       const p = battle.player;
-      if (p.wSkillCd > 0) return;
+      if (p.wSkillCd > 0 || battle.wSkillScene) return;
 
       const weapon = getActiveWeapon();
       p.wSkillCd = p.wSkillMaxCd;
       p.actionState = 'wskill';
-      p.actionTimer = 28;
-      battle.shake = 14;
+      p.actionTimer = 45;
       playSFX('skill');
       advanceQuest('q_final', 1);
 
-      document.getElementById('hud-active-combo').textContent = `🗡️ TUYỆT KỸ VŨ KHÍ: ${weapon.skillName.toUpperCase()}!`;
+      if (state.currentHero === 'long') {
+        document.getElementById('hud-active-combo').textContent = `🔥 SKILL U: LUỒNG KIẾM KHÍ RỰC LỬA (${weapon.skillName.toUpperCase()})!`;
+        battle.wSkillScene = {
+          hero: 'long', timer: 0, maxTimer: 50,
+          slashX: p.x + p.facing * 45, slashY: p.y - 40, dir: p.facing,
+          mult: weapon.skillMult, hitIds: new Set()
+        };
+      } else if (state.currentHero === 'mage') {
+        document.getElementById('hud-active-combo').textContent = `🔥 SKILL U: HỎA DIỆM PHUN LỬA DIỆN RỘNG (${weapon.skillName.toUpperCase()})!`;
+        battle.wSkillScene = { hero: 'mage', timer: 0, maxTimer: 60, mult: weapon.skillMult };
+      } else {
+        document.getElementById('hud-active-combo').textContent = `⚡ SKILL U: LAM NỘ KHÔNG KÍCH — ĐẤM VỠ MẶT ĐẤT!`;
+        battle.wSkillScene = { hero: 'cyber', timer: 0, maxTimer: 66, debris: [], mult: weapon.skillMult };
+      }
+    }
 
-      battle.particles.push({
-        type: 'shockwave',
-        x: p.x + p.facing * 120,
-        y: p.y - 35,
-        r: 220,
-        color: weapon.color,
-        life: 24
-      });
+    function updateWeaponSkillScene() {
+      const b = battle;
+      const ws = b.wSkillScene;
+      if (!ws) return;
+      ws.timer++;
+      const p = b.player;
 
-      battle.enemies.forEach(en => {
-        if (Math.abs(en.x - p.x) <= 360) {
-          dealDamageToEnemy(en, p.atk * weapon.skillMult, 140);
+      if (ws.hero === 'long') {
+        ws.slashX += ws.dir * (20 * p.spdMult);
+        b.shake = 8;
+        b.enemies.forEach(en => {
+          if (!ws.hitIds.has(en.id) && Math.abs(en.x - ws.slashX) < 105) {
+            ws.hitIds.add(en.id);
+            dealDamageToEnemy(en, p.atk * ws.mult, 140, true);
+          }
+        });
+      } else if (ws.hero === 'mage') {
+        b.shake = 7;
+        if (ws.timer % 10 === 0) {
+          b.enemies.forEach(en => {
+            const dx = (en.x - p.x) * p.facing;
+            if (dx >= -20 && dx <= 480) {
+              dealDamageToEnemy(en, p.atk * (ws.mult / 6), 30, true);
+            }
+          });
         }
-      });
+      } else if (ws.hero === 'cyber') {
+        p.invincibleTimer = 5;
+        if (ws.timer <= 18) {
+          b.shake = 6;
+        } else if (ws.timer <= 38) {
+          p.y = Math.max(95, p.y - 14);
+          p.vy = 0;
+        } else if (ws.timer <= 48) {
+          p.y = Math.min(b.groundY, p.y + 30);
+          p.vy = 0;
+        }
+        if (ws.timer === 48) {
+          p.y = b.groundY;
+          b.shake = 28;
+          playSFX('hit');
+          for (let i = 0; i < 14; i++) {
+            ws.debris.push({
+              x: p.x + (i - 7) * 35,
+              y: b.groundY + 10,
+              vx: (i - 7) * 2.5,
+              vy: -8 - Math.random() * 8,
+              size: 10 + (i % 3) * 6
+            });
+          }
+          b.enemies.forEach(en => {
+            if (Math.abs(en.x - p.x) <= 440) {
+              dealDamageToEnemy(en, p.atk * ws.mult, 180, true);
+            }
+          });
+        }
+        ws.debris.forEach(d => { d.x += d.vx; d.y += d.vy; d.vy += 0.65; });
+      }
+
+      if (ws.timer >= ws.maxTimer) b.wSkillScene = null;
     }
 
     function triggerFinalSkill() {
@@ -2393,26 +1825,15 @@
       advanceQuest('q_final', 1);
 
       if (state.currentHero === 'long') {
-        battle.finalScene = {
-          hero: 'long',
-          timer: 0,
-          maxTimer: 110
-        };
+        battle.finalScene = { hero: 'long', timer: 0, maxTimer: 115 };
       } else if (state.currentHero === 'mage') {
         battle.finalScene = {
-          hero: 'mage',
-          timer: 0,
-          maxTimer: 130,
-          orbX: Math.min(980, Math.max(220, p.x + p.facing * 260)),
-          orbY: battle.groundY - 95,
-          orbRadius: 16
+          hero: 'mage', timer: 0, maxTimer: 135,
+          orbX: Math.min(960, Math.max(240, p.x + p.facing * 260)),
+          orbY: battle.groundY - 105, orbRadius: 18
         };
       } else {
-        battle.finalScene = {
-          hero: 'cyber',
-          timer: 0,
-          maxTimer: 90
-        };
+        battle.finalScene = { hero: 'cyber', timer: 0, maxTimer: 95 };
       }
     }
 
@@ -2423,69 +1844,75 @@
       sc.timer++;
 
       const p = b.player;
+      p.invincibleTimer = 5;
+
       if (sc.hero === 'long') {
         if (sc.timer < 30) {
-          b.shake = 6;
-          document.getElementById('hud-active-combo').textContent = '🔥 HUYẾT LONG NỘ: GỒNG NỘ ĐỎ BAO QUANH CƠ THỂ!';
+          b.shake = 7;
+          document.getElementById('hud-active-combo').textContent = '🔥 FINAL GIAI ĐOẠN 1: HUYẾT LONG NỘ BÙNG PHÁT!';
         } else if (sc.timer < 95) {
-          b.shake = 12;
-          document.getElementById('hud-active-combo').textContent = '🔥 LIÊN HOÀN ĐẤM ĐÁ BẮN SÓNG LỬA!';
-          if (sc.timer % 4 === 0) {
+          b.shake = 14;
+          p.actionState = sc.timer % 8 < 4 ? 'punch' : 'kick';
+          p.actionTimer = 5;
+          document.getElementById('hud-active-combo').textContent = '🔥 FINAL GIAI ĐOẠN 2: 16 LIÊN HOÀN ĐẤM ĐÁ RỰC LỬA!';
+          if (sc.timer % 6 === 0) {
             b.projectiles.push({
               fromPlayer: true,
-              x: p.x + p.facing * 30,
-              y: p.y - 20 - (sc.timer % 3) * 18,
-              vx: p.facing * 18,
-              r: 16,
+              x: p.x + p.facing * 35,
+              y: p.y - 18 - (sc.timer % 3) * 20,
+              vx: p.facing * 19,
+              r: 18,
               color: '#ef4444',
-              dmg: p.atk * 0.9
+              dmg: p.atk * 0.9,
+              hitIds: new Set()
             });
           }
         } else if (sc.timer === 95) {
-          b.shake = 25;
-          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 6.5, 260));
+          b.shake = 30;
+          document.getElementById('hud-active-combo').textContent = '🐉 FINAL KẾT LIỄU: HUYẾT LONG THÔN THIÊN!';
+          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 6.5, 280, false));
         }
       } else if (sc.hero === 'mage') {
         if (sc.timer < 35) {
-          sc.orbRadius = 18;
-          document.getElementById('hud-active-combo').textContent = '🔥 GIAI ĐOẠN 1: PHÓNG CẦU LỬA KHỞI NGUYÊN!';
+          sc.orbRadius = 22;
+          document.getElementById('hud-active-combo').textContent = '🔥 FINAL GIAI ĐOẠN 1: TỤ CẦU LỬA KHỞI NGUYÊN!';
         } else if (sc.timer < 75) {
-          sc.orbRadius += 1.9;
-          b.shake = 8;
-          document.getElementById('hud-active-combo').textContent = '🌪️ GIAI ĐOẠN 2: PHONG ĐỘN THỔI BÙNG QUY MÔ QUẢ CẦU!';
+          sc.orbRadius += 2.1;
+          b.shake = 9;
+          document.getElementById('hud-active-combo').textContent = '🌪️ FINAL GIAI ĐOẠN 2: CUỒNG PHONG THỔI BÙNG QUẢ CẦU!';
         } else if (sc.timer < 120) {
-          b.shake = 16;
-          document.getElementById('hud-active-combo').textContent = '⚡ GIAI ĐOẠN 3: LÔI ĐIỆN KÍCH HOẠT HÚT QUÁI VÀO TÂM CẦU!';
+          b.shake = 18;
+          document.getElementById('hud-active-combo').textContent = '⚡ FINAL GIAI ĐOẠN 3: LÔI ĐIỆN HÚT TOÀN BỘ QUÁI VÀO TÂM!';
           b.enemies.forEach(en => {
-            en.x += (sc.orbX - en.x) * 0.14;
-            if (sc.timer % 6 === 0) dealDamageToEnemy(en, p.atk * 0.85, 45);
+            en.x += (sc.orbX - en.x) * 0.16;
+            if (sc.timer % 10 === 0) dealDamageToEnemy(en, p.atk * 0.85, 45, false);
           });
         } else if (sc.timer === 120) {
-          b.shake = 28;
-          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 7.2, 300));
+          b.shake = 32;
+          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 7.2, 320, false));
         }
       } else if (sc.hero === 'cyber') {
-        b.shake = 15;
-        document.getElementById('hud-active-combo').textContent = '⚡ PHÁO ĐIỆN TỪ OMEGA LASER!';
-        if (sc.timer % 5 === 0) {
-          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 1.1, 50));
+        b.shake = 18;
+        p.actionState = 'wskill';
+        p.actionTimer = 5;
+        document.getElementById('hud-active-combo').textContent = '⚡ FINAL: ĐẠI PHÁO ĐIỆN TỪ OMEGA LASER HỦY DIỆT!';
+        if (sc.timer % 10 === 0) {
+          b.enemies.forEach(en => dealDamageToEnemy(en, p.atk * 1.35, 55, false));
         }
       }
 
-      if (sc.timer >= sc.maxTimer) {
-        b.finalScene = null;
-      }
+      if (sc.timer >= sc.maxTimer) b.finalScene = null;
     }
 
-    function dealDamageToEnemy(en, rawDmg, armorDmg) {
+    // Chặn cộng Nộ khi đang tung Final (gainRage = false)
+    function dealDamageToEnemy(en, rawDmg, armorDmg, gainRage = true) {
       const b = battle;
       const p = b.player;
       playSFX('hit');
 
-      // Tăng Bộ Đếm Liên Kích (Combo Hit Counter)
       b.hitStreak++;
       if (b.hitStreak > b.maxHitStreak) b.maxHitStreak = b.hitStreak;
-      b.hitTimer = 180; // Duy trì 3 giây
+      b.hitTimer = 180;
 
       const streakBonus = 1 + Math.min(0.6, b.hitStreak * 0.01);
       const isCrit = Math.random() * 100 < p.crit;
@@ -2494,7 +1921,7 @@
       if (en.armor > 0) {
         en.armor = Math.max(0, en.armor - armorDmg);
         if (en.armor === 0) {
-          en.stun = 110;
+          en.stun = 120; // Choáng 2 giây
           advanceQuest('q_armor', 1);
           b.texts.push({ x: en.x, y: en.y - 90, text: '💥 PHÁ GIÁP CHOÁNG!', color: '#38bdf8', life: 45 });
         }
@@ -2502,14 +1929,12 @@
       if (en.stun > 0) dmg = Math.floor(dmg * 1.5);
 
       en.hp -= dmg;
-      if (en.hp <= 0) {
-        advanceQuest('q_kills', 1);
-      }
+      if (en.hp <= 0) advanceQuest('q_kills', 1);
 
-      p.rage = Math.min(100, p.rage + 6);
-      if (en.armor <= 0) {
-        en.x += p.facing * 18;
+      if (gainRage && !b.finalScene) {
+        p.rage = Math.min(100, p.rage + 6);
       }
+      if (en.armor <= 0) en.x += p.facing * 16;
 
       b.texts.push({
         x: en.x + (Math.random() * 24 - 12),
@@ -2520,144 +1945,186 @@
       });
     }
 
-    function triggerQuickAction(k) {
-      pushCombatInput(k);
-    }
+    function triggerQuickAction(k) { pushCombatInput(k); }
 
     function triggerQuickCombo(arr) {
       if (!battle || !battle.active) return;
-      if (arr.includes('W')) playerJump();
-      battle.inputBuffer = [...arr];
-      pushCombatInput(arr[arr.length - 1]);
+      const code = arr.join('-');
+      if (state.combos[code] && !state.combos[code].unlocked) {
+        alert(`Combo ${state.combos[code].name} chưa mở khóa! Hãy vào Tab 3 (Cường Hóa & Combo) để mở khóa bằng Vàng.`);
+        return;
+      }
+      if (arr.includes('W') && battle.player.y >= battle.groundY - 4) {
+        battle.player.y -= 6;
+        battle.player.vy = -13.5;
+      }
+      battle.lastInputTime = performance.now();
+      battle.inputBuffer = arr.slice(0, -1);
+      pushCombatInput(arr[arr.length - 1], false);
     }
 
-    function updateBattleLoop() {
-      if (battle && battle.active) {
-        const b = battle;
-        b.tick++;
-        const p = b.player;
+    // BỘ KHÓA NHỊP DELTA TIME (CHUẨN 60 LOGIC TICKS/GIÂY TRÊN MỌI MÀN HÌNH 60HZ/120HZ/144HZ)
+    let lastFrameTimestamp = performance.now();
+    let tickAccumulator = 0;
 
-        if (p.wSkillCd > 0) p.wSkillCd--;
-        if (p.dashCd > 0) p.dashCd--;
-        if (p.invincibleTimer > 0) p.invincibleTimer--;
-        if (b.hitTimer > 0) {
-          b.hitTimer--;
-          if (b.hitTimer === 0) b.hitStreak = 0;
-        }
-        if (p.actionTimer > 0) {
-          p.actionTimer--;
-          if (p.actionTimer === 0) p.actionState = 'idle';
-        }
+    function stepBattlePhysics() {
+      const b = battle;
+      b.tick++;
+      const p = b.player;
 
-        if (keys['A']) { p.vx = -6.2; p.facing = -1; }
-        else if (keys['D']) { p.vx = 6.2; p.facing = 1; }
+      if (p.wSkillCd > 0) p.wSkillCd--;
+      if (p.dashCd > 0) p.dashCd--;
+      if (p.invincibleTimer > 0) p.invincibleTimer--;
+      if (b.hitTimer > 0) {
+        b.hitTimer--;
+        if (b.hitTimer === 0) b.hitStreak = 0;
+      }
+      if (p.actionTimer > 0) {
+        p.actionTimer--;
+        if (p.actionTimer === 0) p.actionState = 'idle';
+      }
+
+      if (!b.wSkillScene || b.wSkillScene.hero !== 'cyber') {
+        const moveSpd = 6.2 * Math.min(1.25, 0.9 + p.spdMult * 0.1);
+        if (keys['A']) { p.vx = -moveSpd; p.facing = -1; }
+        else if (keys['D']) { p.vx = moveSpd; p.facing = 1; }
         else { p.vx *= 0.75; }
 
         p.x = Math.max(40, Math.min(1140, p.x + p.vx));
         p.y += p.vy;
-        if (p.y < b.groundY) {
-          p.vy += 0.72;
-        } else {
-          p.y = b.groundY;
-          p.vy = 0;
-        }
+        if (p.y < b.groundY) p.vy += 0.72;
+        else { p.y = b.groundY; p.vy = 0; }
+      }
 
-        updateFinalScene();
+      updateWeaponSkillScene();
+      updateFinalScene();
 
-        b.enemies.forEach(en => {
-          if (en.stun > 0) {
-            en.stun--;
-            return;
+      // Cập nhật Quái & 4 Hệ Kỹ Năng Đại Boss + Hồi lại Giáp Bá Thể sau khi hết Choáng
+      b.enemies.forEach(en => {
+        if (en.stun > 0) {
+          en.stun--;
+          if (en.stun === 0 && en.maxArmor > 0) {
+            en.armor = en.maxArmor;
+            b.texts.push({ x: en.x, y: en.y - 85, text: '🛡️ HỒI GIÁP BÁ THỂ!', color: '#60a5fa', life: 40 });
           }
-          const dist = p.x - en.x;
-          const dir = dist >= 0 ? 1 : -1;
+          return;
+        }
+        const dist = p.x - en.x;
+        const dir = dist >= 0 ? 1 : -1;
 
-          if (en.isBoss) {
-            if (!en.enraged && en.hp < en.maxHp * 0.5) {
-              en.enraged = true;
-              playSFX('boss_siren');
-              b.texts.push({ x: en.x, y: en.y - 100, text: '👹 BOSS CUỒNG NỘ!', color: '#ef4444', life: 60 });
+        if (en.isBoss) {
+          if (!en.enraged && en.hp < en.maxHp * 0.5) {
+            en.enraged = true;
+            playSFX('boss_siren');
+            b.texts.push({ x: en.x, y: en.y - 100, text: '👹 BOSS CUỒNG NỘ!', color: '#ef4444', life: 60 });
+          }
+          if (Math.abs(dist) > 105) en.x += dir * (en.enraged ? 3.2 : 2.2);
+          en.cd--;
+          if (en.cd <= 0) {
+            en.cd = en.enraged ? 58 : 88;
+            if (en.archetype === 'charger') {
+              // Kiểu 1: Húc Xung Kích + Cột lửa dưới chân
+              en.x = Math.max(60, Math.min(1120, en.x + dir * 130));
+              b.warnings.push({ x: p.x, w: 150, timer: 36, dmg: en.atk * 1.4 });
+            } else if (en.archetype === 'summoner') {
+              // Kiểu 2: Triệu hồi Quái tinh anh hỗ trợ + Địa chấn
+              if (b.enemies.length < 5) {
+                const minionHp = Math.floor(en.maxHp * 0.12);
+                b.enemies.push({
+                  id: ++enemyUidCounter, isBoss: false, type: 'rusher', name: 'Đệ Tử Boss',
+                  x: Math.max(60, Math.min(1120, en.x + dir * 90)), y: b.groundY, vx: 0,
+                  hp: minionHp, maxHp: minionHp, armor: 0, maxArmor: 0,
+                  atk: Math.floor(en.atk * 0.55), cd: 45, stun: 0
+                });
+                b.texts.push({ x: en.x, y: en.y - 95, text: '👾 TRIỆU HỒI ĐỆ TỬ!', color: '#c084fc', life: 35 });
+              }
+              b.warnings.push({ x: p.x, w: 140, timer: 38, dmg: en.atk * 1.35 });
+            } else if (en.archetype === 'meteor') {
+              // Kiểu 3: Mưa 3 cột Thiên Thạch liên hoàn
+              [-160, 0, 160].forEach(offset => {
+                b.warnings.push({ x: Math.max(80, Math.min(1100, p.x + offset)), w: 110, timer: 40, dmg: en.atk * 1.3 });
+              });
+            } else {
+              // Kiểu 4: Bắn sóng năng lượng tầm thấp + Cột lửa
+              b.projectiles.push({ fromPlayer: false, x: en.x, y: en.y - 26, vx: dir * 9.5, r: 13, color: '#fde047', dmg: en.atk * 1.25 });
+              b.warnings.push({ x: p.x, w: 135, timer: 38, dmg: en.atk * 1.35 });
             }
-            if (Math.abs(dist) > 110) en.x += dir * (en.enraged ? 3.2 : 2.2);
+          }
+        } else {
+          if (en.type === 'shooter') {
+            if (Math.abs(dist) > 340) en.x += dir * 2.0;
             en.cd--;
             if (en.cd <= 0) {
-              en.cd = en.enraged ? 55 : 85;
-              b.warnings.push({
-                x: p.x,
-                w: b.isBoss13 ? 170 : 120,
-                timer: 38,
-                dmg: en.atk * 1.45
-              });
+              en.cd = 95;
+              b.projectiles.push({ fromPlayer: false, x: en.x, y: en.y - 28, vx: dir * 7.5, r: 7, color: '#f43f5e', dmg: en.atk });
             }
           } else {
-            if (en.type === 'shooter') {
-              if (Math.abs(dist) > 340) en.x += dir * 2.0;
-              en.cd--;
-              if (en.cd <= 0) {
-                en.cd = 95;
-                b.projectiles.push({
-                  fromPlayer: false,
-                  x: en.x,
-                  y: en.y - 28,
-                  vx: dir * 7.5,
-                  r: 7,
-                  color: '#f43f5e',
-                  dmg: en.atk
-                });
-              }
-            } else {
-              if (Math.abs(dist) > 48) en.x += dir * (en.type === 'rusher' ? 3.4 : 2.1);
-              en.cd--;
-              if (Math.abs(dist) <= 55 && en.cd <= 0) {
-                en.cd = 55;
-                damagePlayer(en.atk);
-              }
+            if (Math.abs(dist) > 48) en.x += dir * (en.type === 'rusher' ? 3.4 : 2.1);
+            en.cd--;
+            if (Math.abs(dist) <= 55 && en.cd <= 0) {
+              en.cd = 55;
+              damagePlayer(en.atk);
             }
           }
-        });
+        }
+      });
 
-        for (let i = b.warnings.length - 1; i >= 0; i--) {
-          const w = b.warnings[i];
-          w.timer--;
-          if (w.timer <= 0) {
-            b.shake = 12;
-            if (Math.abs(p.x - w.x) <= w.w * 0.5 && p.y >= b.groundY - 25) {
-              damagePlayer(w.dmg);
+      for (let i = b.warnings.length - 1; i >= 0; i--) {
+        const w = b.warnings[i];
+        w.timer--;
+        if (w.timer <= 0) {
+          b.shake = 12;
+          if (Math.abs(p.x - w.x) <= w.w * 0.5 && p.y >= b.groundY - 25) damagePlayer(w.dmg);
+          b.particles.push({ type: 'pillar', x: w.x, y: b.groundY, r: w.w * 0.5, color: '#ef4444', life: 16 });
+          b.warnings.splice(i, 1);
+        }
+      }
+
+      // Đạn của người chơi có hitIds để không gây sát thương lặp trên cùng 1 mục tiêu
+      for (let i = b.projectiles.length - 1; i >= 0; i--) {
+        const pr = b.projectiles[i];
+        pr.x += pr.vx;
+        if (pr.fromPlayer) {
+          if (!pr.hitIds) pr.hitIds = new Set();
+          b.enemies.forEach(en => {
+            if (!pr.hitIds.has(en.id) && Math.abs(en.x - pr.x) < 42) {
+              pr.hitIds.add(en.id);
+              dealDamageToEnemy(en, pr.dmg, 25, false);
             }
-            b.particles.push({ type: 'pillar', x: w.x, y: b.groundY, r: w.w * 0.5, color: '#ef4444', life: 16 });
-            b.warnings.splice(i, 1);
+          });
+        } else {
+          if (Math.abs(p.x - pr.x) < 28 && Math.abs((p.y - 25) - pr.y) < 35) {
+            damagePlayer(pr.dmg);
+            b.projectiles.splice(i, 1);
+            continue;
           }
         }
+        if (pr.x < 0 || pr.x > 1180) b.projectiles.splice(i, 1);
+      }
 
-        for (let i = b.projectiles.length - 1; i >= 0; i--) {
-          const pr = b.projectiles[i];
-          pr.x += pr.vx;
-          if (pr.fromPlayer) {
-            b.enemies.forEach(en => {
-              if (Math.abs(en.x - pr.x) < 40) dealDamageToEnemy(en, pr.dmg, 25);
-            });
-          } else {
-            if (Math.abs(p.x - pr.x) < 28 && Math.abs((p.y - 25) - pr.y) < 35) {
-              damagePlayer(pr.dmg);
-              b.projectiles.splice(i, 1);
-              continue;
-            }
-          }
-          if (pr.x < 0 || pr.x > 1180) b.projectiles.splice(i, 1);
+      b.enemies = b.enemies.filter(en => en.hp > 0);
+      if (b.enemies.length === 0) {
+        if (b.wave < b.maxWaves) { b.wave++; spawnWave(); }
+        else { completeStage(true); }
+      }
+    }
+
+    function updateBattleLoop(now = performance.now()) {
+      const elapsed = Math.min(100, now - lastFrameTimestamp);
+      lastFrameTimestamp = now;
+
+      if (battle && battle.active) {
+        tickAccumulator += elapsed / (1000 / 60);
+        while (tickAccumulator >= 1 && battle && battle.active) {
+          stepBattlePhysics();
+          tickAccumulator -= 1;
         }
-
-        b.enemies = b.enemies.filter(en => en.hp > 0);
-        if (b.enemies.length === 0) {
-          if (b.wave < b.maxWaves) {
-            b.wave++;
-            spawnWave();
-          } else {
-            completeStage(true);
-          }
+        if (battle && battle.active) {
+          updateBattleHUD();
+          drawBattleArena();
         }
-
-        updateBattleHUD();
-        drawBattleArena();
+      } else {
+        tickAccumulator = 0;
       }
       requestAnimationFrame(updateBattleLoop);
     }
@@ -2669,13 +2136,11 @@
         b.texts.push({ x: p.x, y: p.y - 70, text: '✨ NÉ ĐÒN!', color: '#86efac', life: 20 });
         return;
       }
-      const dmg = Math.max(5, Math.floor(rawDmg - p.def * 0.35));
+      const dmg = Math.max(5, Math.floor(rawDmg - p.def * 0.42));
       p.hp = Math.max(0, p.hp - dmg);
-      b.hitStreak = 0; // Mất chuỗi Liên Kích khi trúng đòn
-      b.texts.push({ x: p.x, y: p.y - 65, text: `-${dmg}`, color: '#ef4444', life: 25 });
-      if (p.hp <= 0) {
-        completeStage(false);
-      }
+      b.hitStreak = 0;
+      b.texts.push({ x: p.x, y: p.y - 65, text: `-${dmg.toLocaleString()}`, color: '#ef4444', life: 25 });
+      if (p.hp <= 0) completeStage(false);
     }
 
     function updateBattleHUD() {
@@ -2696,7 +2161,7 @@
         document.getElementById('hud-boss-hp-fill').style.width = `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%`;
         document.getElementById('hud-boss-hp-text').textContent = `${Math.max(0, boss.hp).toLocaleString()} / ${boss.maxHp.toLocaleString()}`;
         document.getElementById('hud-boss-armor-fill').style.width = `${(boss.armor / boss.maxArmor) * 100}%`;
-        document.getElementById('hud-boss-state').textContent = boss.stun > 0 ? 'CHOÁNG (+50% SÁT THƯƠNG)' : (boss.enraged ? 'CUỒNG NỘ' : 'BÁ THỂ');
+        document.getElementById('hud-boss-state').textContent = boss.stun > 0 ? `CHOÁNG (${(boss.stun / 60).toFixed(1)}s)` : (boss.enraged ? 'CUỒNG NỘ' : 'BÁ THỂ');
       }
     }
 
@@ -2704,6 +2169,7 @@
       const canvas = document.getElementById('battle-canvas');
       const ctx = canvas.getContext('2d');
       const b = battle;
+      const theme = b.theme || ARENA_THEMES[0];
 
       ctx.save();
       if (b.shake > 0) {
@@ -2711,27 +2177,24 @@
         b.shake *= 0.85;
       }
 
-      ctx.fillStyle = '#070a10';
+      ctx.fillStyle = theme.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = '#111827';
+      ctx.fillStyle = theme.floor;
       ctx.fillRect(0, b.groundY + 25, canvas.width, 80);
-      ctx.strokeStyle = '#dc2626';
+      ctx.strokeStyle = theme.line;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(0, b.groundY + 25);
-      ctx.lineTo(canvas.width, b.groundY + 25);
+      ctx.moveTo(0, b.groundY + 25); ctx.lineTo(canvas.width, b.groundY + 25);
       ctx.stroke();
 
-      // Vẽ vùng cảnh báo đỏ của Boss
       b.warnings.forEach(w => {
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.32)';
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.34)';
         ctx.fillRect(w.x - w.w * 0.5, b.groundY + 12, w.w, 14);
         ctx.strokeStyle = '#ef4444';
         ctx.strokeRect(w.x - w.w * 0.5, b.groundY + 12, w.w, 14);
       });
 
-      // Vẽ tàn ảnh Lướt Tốc Biến
       for (let i = b.afterimages.length - 1; i >= 0; i--) {
         const af = b.afterimages[i];
         af.life--;
@@ -2739,13 +2202,92 @@
         if (af.life <= 0) b.afterimages.splice(i, 1);
       }
 
+      if (b.wSkillScene) {
+        const ws = b.wSkillScene;
+        if (ws.hero === 'long') {
+          ctx.save();
+          ctx.translate(ws.slashX, ws.slashY);
+          ctx.scale(ws.dir, 1);
+          const grad = ctx.createLinearGradient(-40, -90, 60, 90);
+          grad.addColorStop(0, '#fde047');
+          grad.addColorStop(0.5, '#ef4444');
+          grad.addColorStop(1, '#991b1b');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(0, 0, 95, -Math.PI * 0.45, Math.PI * 0.45);
+          ctx.quadraticCurveTo(25, 0, 0, -85);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = '#fde047';
+          for (let f = 0; f < 6; f++) {
+            ctx.beginPath();
+            ctx.arc(-20 - f * 18, (f % 2 === 0 ? -1 : 1) * f * 12, 8, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        } else if (ws.hero === 'mage') {
+          ctx.save();
+          ctx.translate(b.player.x + b.player.facing * 24, b.player.y - 28);
+          ctx.scale(b.player.facing, 1);
+          const fireGrad = ctx.createLinearGradient(0, 0, 460, 0);
+          fireGrad.addColorStop(0, 'rgba(253, 224, 71, 0.95)');
+          fireGrad.addColorStop(0.4, 'rgba(249, 115, 22, 0.85)');
+          fireGrad.addColorStop(1, 'rgba(220, 38, 38, 0.15)');
+          ctx.fillStyle = fireGrad;
+          ctx.beginPath();
+          ctx.moveTo(0, -8);
+          ctx.lineTo(460, -110 + Math.sin(b.tick * 0.5) * 16);
+          ctx.lineTo(460, 85 + Math.cos(b.tick * 0.5) * 16);
+          ctx.lineTo(0, 8);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        } else if (ws.hero === 'cyber') {
+          ctx.save();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(b.player.x, b.player.y - 25, 55 + (ws.timer % 8) * 3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          if (ws.timer >= 48) {
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.moveTo(b.player.x - 280, b.groundY + 24);
+            ctx.lineTo(b.player.x - 120, b.groundY + 8);
+            ctx.lineTo(b.player.x, b.groundY + 26);
+            ctx.lineTo(b.player.x + 140, b.groundY + 6);
+            ctx.lineTo(b.player.x + 280, b.groundY + 24);
+            ctx.stroke();
+
+            ws.debris.forEach(d => {
+              ctx.fillStyle = '#38bdf8';
+              ctx.fillRect(d.x, d.y, d.size, d.size);
+              ctx.strokeStyle = '#e0f2fe';
+              ctx.strokeRect(d.x, d.y, d.size, d.size);
+            });
+          }
+          ctx.restore();
+        }
+      }
+
       if (b.finalScene) {
         const sc = b.finalScene;
         if (sc.hero === 'long') {
-          ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
+          ctx.fillStyle = 'rgba(239, 68, 68, 0.42)';
           ctx.beginPath();
-          ctx.arc(b.player.x, b.player.y - 25, 65 + (sc.timer % 12) * 3, 0, Math.PI * 2);
+          ctx.arc(b.player.x, b.player.y - 25, 75 + (sc.timer % 10) * 4, 0, Math.PI * 2);
           ctx.fill();
+          ctx.strokeStyle = '#fde047';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          for (let c = -2; c <= 2; c++) {
+            ctx.fillStyle = 'rgba(249, 115, 22, 0.45)';
+            ctx.fillRect(b.player.x + c * 140 - 20, 40, 40, b.groundY);
+          }
         } else if (sc.hero === 'mage') {
           const grad = ctx.createRadialGradient(sc.orbX, sc.orbY, 5, sc.orbX, sc.orbY, sc.orbRadius);
           grad.addColorStop(0, '#fde047');
@@ -2756,38 +2298,35 @@
           ctx.arc(sc.orbX, sc.orbY, sc.orbRadius, 0, Math.PI * 2);
           ctx.fill();
 
+          if (sc.timer >= 35 && sc.timer < 75) {
+            ctx.strokeStyle = '#4ade80';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(b.player.x, b.player.y - 30);
+            ctx.quadraticCurveTo((b.player.x + sc.orbX) * 0.5, sc.orbY - 40, sc.orbX, sc.orbY);
+            ctx.stroke();
+          }
           if (sc.timer >= 75) {
             ctx.strokeStyle = '#fde047';
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 5;
             ctx.beginPath();
-            ctx.moveTo(b.player.x, b.player.y - 35);
+            ctx.moveTo(sc.orbX - 40, 0);
+            ctx.lineTo(sc.orbX + 20, sc.orbY * 0.5);
             ctx.lineTo(sc.orbX, sc.orbY);
             ctx.stroke();
           }
         } else if (sc.hero === 'cyber') {
-          ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
-          ctx.fillRect(b.player.x, b.player.y - 50, b.player.facing * 950, 38);
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.75)';
+          ctx.fillRect(b.player.x, b.player.y - 58, b.player.facing * 980, 52);
+          ctx.fillStyle = '#fde047';
+          ctx.fillRect(b.player.x, b.player.y - 42, b.player.facing * 980, 20);
         }
       }
 
       drawHeroCharacter(ctx, b.player.x, b.player.y, b.player.facing, b.tick, state.currentHero, b.player.actionState);
 
       b.enemies.forEach(en => {
-        ctx.save();
-        ctx.translate(en.x, en.y);
-        const scale = en.isBoss ? (b.isBoss13 ? 1.85 : 1.45) : 1.0;
-        ctx.scale(scale, scale);
-
-        ctx.fillStyle = en.isBoss ? '#991b1b' : (en.type === 'armored' ? '#3b82f6' : '#475569');
-        ctx.fillRect(-16, -45, 32, 65);
-        ctx.strokeStyle = en.enraged ? '#fde047' : '#f87171';
-        ctx.strokeRect(-16, -45, 32, 65);
-
-        ctx.fillStyle = '#1e293b';
-        ctx.fillRect(-22, -58, 44, 6);
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(-22, -58, 44 * Math.max(0, en.hp / en.maxHp), 6);
-        ctx.restore();
+        drawMonster(ctx, en, b.tick, b.isBoss13);
       });
 
       b.projectiles.forEach(pr => {
@@ -2801,7 +2340,7 @@
         const pt = b.particles[i];
         pt.life--;
         ctx.strokeStyle = pt.color;
-        ctx.lineWidth = 4;
+        ctx.lineWidth = pt.type === 'combo_burst' ? 6 : 4;
         ctx.beginPath();
         ctx.arc(pt.x, pt.y, pt.r * (1 - pt.life / 25), 0, Math.PI * 2);
         ctx.stroke();
@@ -2818,7 +2357,6 @@
         if (t.life <= 0) b.texts.splice(i, 1);
       }
 
-      // Vẽ Bộ Đếm Liên Kích (Combo Hit Counter) góc trên bên trái Đấu Trường
       if (b.hitStreak >= 2) {
         ctx.fillStyle = '#fde047';
         ctx.font = '900 26px sans-serif';
@@ -2843,10 +2381,11 @@
       if (win) {
         playSFX('win');
         const isBoss13 = s === 13;
-        const baseGold = Math.floor((c * 220 + s * 45) * (isBoss13 ? 3.5 : 1));
+        const sc = getStageScale(c, s);
+        const baseGold = Math.floor(180 * sc * (isBoss13 ? 3.2 : 1));
         const comboBonusGold = Math.floor(baseGold * Math.min(0.5, battle.maxHitStreak * 0.01));
         const totalGold = baseGold + comboBonusGold;
-        const expGain = Math.floor((c * 85 + s * 25) * (isBoss13 ? 3 : 1));
+        const expGain = Math.floor(160 * sc * (isBoss13 ? 3.5 : 1));
 
         state.gold += totalGold;
         addExp(expGain);
@@ -2885,7 +2424,7 @@
     }
 
     // ============================================================================
-    // 8. QUYỀN SẾP (MẬT KHẨU RIÊNG CỦA SẾP: Alo119toinha@)
+    // 8. QUYỀN SẾP (KIỂM TRA MẬT KHẨU BẰNG HÀM BĂM verifyBossKey)
     // ============================================================================
     document.getElementById('btn-toggle-dev').onclick = () => {
       document.getElementById('dev-panel').classList.toggle('hidden');
@@ -2893,7 +2432,7 @@
 
     function unlockDevPanel() {
       const val = document.getElementById('dev-pass-input').value.trim();
-      if (val === BOSS_DEV_PASSWORD) {
+      if (verifyBossKey(val)) {
         document.getElementById('dev-auth-view').classList.add('hidden');
         document.getElementById('dev-controls-view').classList.remove('hidden');
         document.getElementById('btn-toggle-dev').textContent = '🔧 Quyền Sếp (Đã Mở)';
@@ -2911,7 +2450,7 @@
       document.getElementById('btn-toggle-dev').textContent = '🔒 Quyền Sếp';
     }
 
-    function devAddGold() { state.gold += 200000; saveGameState(); renderAllHub(); }
+    function devAddGold() { state.gold += 500000; saveGameState(); renderAllHub(); }
     function devFullStamina() { state.stamina = 100; state.staminaPotions += 5; state.staminaSecondsLeft = 420; saveGameState(); renderAllHub(); }
     function devAddLevels(n) { state.level = Math.min(1000, state.level + n); saveGameState(); renderAllHub(); }
     function devMaxLevel() { state.level = 1000; saveGameState(); renderAllHub(); }
@@ -2936,11 +2475,10 @@
       }
     }
 
-    // Khởi chạy toàn bộ hệ thống
     loadGameState();
     renderAllHub();
     loopHeroPreview();
-    updateBattleLoop();
+    requestAnimationFrame(updateBattleLoop);
   </script>
 </body>
 </html>
