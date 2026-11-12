@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT - Master Release v4.2</title>
+  <title>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT - Master Release v4.4 (1v1 P2P WebRTC & Cloud Leaderboard)</title>
+  <!-- CDN PeerJS v1.5.4 cho Kiến Trúc Mạng P2P Host Authority -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background: #080b12; color: #e2e8f0; min-height: 100vh; overflow-x: hidden; }
@@ -35,7 +37,7 @@
     .dev-grid button:hover { background: #dc2626; border-color: #f87171; }
     .dev-grid button.danger-reset { grid-column: span 2; background: #450a0a; border-color: #ef4444; color: #fca5a5; }
     .hub-container { max-width: 1240px; margin: 12px auto; padding: 0 14px; }
-    .hub-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 14px; }
+    .hub-tabs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 14px; }
     .tab-btn { background: #111827; color: #94a3b8; border: 1px solid #1e293b; padding: 11px 8px; font-size: 13px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s; }
     .tab-btn.active, .tab-btn:hover { background: linear-gradient(135deg, #991b1b, #dc2626); color: #ffffff; border-color: #f87171; box-shadow: 0 0 14px rgba(220, 38, 38, 0.4); }
     .tab-content { display: none; }
@@ -125,7 +127,7 @@
     .primary-btn { background: #dc2626; color: #fff; }
     .quick-combo-buttons button:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.6); }
     @media (max-width: 900px) {
-      .campaign-layout, .equip-layout, .upgrade-layout, .heroes-grid { grid-template-columns: 1fr; height: auto; }
+      .campaign-layout, .equip-layout, .upgrade-layout, .heroes-grid, .arena-layout { grid-template-columns: 1fr; height: auto; }
       .hub-tabs { grid-template-columns: repeat(2, 1fr); }
       .stage-grid { grid-template-columns: repeat(2, 1fr); }
       body.in-battle .top-bar,
@@ -154,6 +156,55 @@
     .atlas-hero-section { background: #111827; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-top: 12px; }
     .atlas-canvas-scroll { overflow-x: auto; background: repeating-conic-gradient(#1e293b 0% 25%, #0f172a 0% 50%) 50% / 16px 16px; border: 1px solid #475569; border-radius: 8px; padding: 8px; margin-top: 8px; }
     .ref-sheet-img { width: 100%; max-width: 100%; height: auto; border-radius: 8px; border: 1px solid #f59e0b; display: block; margin-top: 8px; }
+
+
+    /* === ĐẤU TRƯỜNG ONLINE (PVP ARENA v4.4 - P2P WEBRTC & CLOUD) STYLES === */
+    .p2p-box { background: linear-gradient(145deg, #0b1325, #111827); border: 1px solid #0284c7; border-radius: 9px; padding: 10px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 0 16px rgba(2, 132, 199, 0.15); }
+    .p2p-role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .p2p-host-btn { background: linear-gradient(135deg, #0284c7, #1d4ed8); color: #fff; border: 1px solid #38bdf8; padding: 9px 10px; border-radius: 7px; font-weight: 900; font-size: 12px; cursor: pointer; transition: 0.15s; }
+    .p2p-host-btn:hover { filter: brightness(1.12); box-shadow: 0 0 12px rgba(56, 189, 248, 0.4); }
+    .p2p-connect-btn { background: linear-gradient(135deg, #059669, #10b981); color: #052e16; border: 1px solid #6ee7b7; padding: 8px 12px; border-radius: 7px; font-weight: 900; font-size: 12px; cursor: pointer; white-space: nowrap; transition: 0.15s; }
+    .p2p-connect-btn:hover { filter: brightness(1.1); box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
+    .p2p-code-banner { background: #090d16; border: 1px dashed #38bdf8; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .p2p-code-value { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 900; letter-spacing: 3px; color: #fde047; text-shadow: 0 0 8px rgba(253, 224, 71, 0.45); user-select: text; -webkit-user-select: text; }
+    .p2p-input-row { display: flex; gap: 6px; align-items: center; }
+    .p2p-code-input { background: #090d16; border: 1px solid #475569; color: #38bdf8; padding: 8px 10px; border-radius: 7px; font-family: 'Courier New', monospace; font-size: 14px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; width: 100%; user-select: text; -webkit-user-select: text; }
+    .p2p-code-input:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.35); }
+    .p2p-status-bar { background: rgba(15, 23, 42, 0.9); border-left: 3px solid #fde047; border-radius: 5px; padding: 7px 9px; font-size: 11px; color: #fef08a; font-weight: 700; line-height: 1.4; min-height: 32px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .p2p-telemetry-row { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #94a3b8; background: #090d16; padding: 5px 8px; border-radius: 5px; border: 1px solid #1e293b; }
+    .cloud-bar { background: #111827; border: 1px solid #334155; border-radius: 7px; padding: 6px 8px; font-size: 11px; display: flex; flex-direction: column; gap: 6px; }
+    .cloud-cfg-box { background: #090d16; border: 1px solid #38bdf8; border-radius: 6px; padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 11px; }
+    .cloud-cfg-box input, .cloud-cfg-box select { background: #111827; border: 1px solid #475569; color: #f8fafc; padding: 5px 8px; border-radius: 5px; font-size: 11px; width: 100%; user-select: text; -webkit-user-select: text; }
+    .arena-layout { display: grid; grid-template-columns: 1.15fr 1fr 0.95fr; gap: 14px; align-items: start; }
+    .arena-col { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+    .arena-col h3 { font-size: 14px; color: #f8fafc; display: flex; align-items: center; justify-content: space-between; gap: 6px; border-bottom: 1px solid #1e293b; padding-bottom: 8px; }
+    .arena-sub-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .arena-sub-btn { background: #111827; color: #94a3b8; border: 1px solid #334155; padding: 7px 8px; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.15s; }
+    .arena-sub-btn.active { background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff; border-color: #60a5fa; }
+    .arena-sub-btn.sandbox-tab.active { background: linear-gradient(135deg, #7c2d12, #ea580c); color: #fff; border-color: #fdba74; }
+    .arena-rank-list { display: flex; flex-direction: column; gap: 7px; max-height: 430px; overflow-y: auto; padding-right: 2px; }
+    .arena-rank-row { background: #111827; border: 1px solid #334155; border-radius: 8px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; }
+    .arena-rank-row.top-1 { border-color: #f59e0b; background: linear-gradient(90deg, rgba(245,158,11,0.14), #111827); }
+    .arena-rank-row.top-2 { border-color: #38bdf8; }
+    .arena-rank-row.top-3 { border-color: #a855f7; }
+    .arena-rank-row.is-player-row { border-color: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.22); }
+    .rank-badge-num { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 900; font-size: 11px; background: #1e293b; color: #e2e8f0; margin-right: 6px; }
+    .top-1 .rank-badge-num { background: #f59e0b; color: #090d16; }
+    .top-2 .rank-badge-num { background: #38bdf8; color: #090d16; }
+    .top-3 .rank-badge-num { background: #a855f7; color: #fff; }
+    .arena-challenge-btn { background: #dc2626; color: #fff; border: none; padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .arena-challenge-btn:hover { background: #ef4444; }
+    .arena-challenge-btn:disabled { background: #334155; color: #64748b; cursor: not-allowed; }
+    .arena-mode-card { background: #111827; border: 2px solid #334155; border-radius: 8px; padding: 10px; cursor: pointer; transition: 0.15s; text-align: left; }
+    .arena-mode-card.active { border-color: #ef4444; background: rgba(220, 38, 38, 0.12); box-shadow: 0 0 12px rgba(239, 68, 68, 0.2); }
+    .arena-fame-box { background: linear-gradient(90deg, #1e1b4b, #31102f); border: 1px solid #6366f1; border-radius: 8px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .title-shop-list { display: flex; flex-direction: column; gap: 6px; max-height: 210px; overflow-y: auto; }
+    .title-shop-row { background: #111827; border: 1px solid #334155; border-radius: 6px; padding: 7px 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 6px; }
+    .ghost-code-textarea { width: 100%; height: 84px; background: #090d16; color: #38bdf8; border: 1px solid #334155; border-radius: 8px; padding: 8px; font-family: monospace; font-size: 11px; user-select: text; -webkit-user-select: text; resize: vertical; }
+    .arena-name-input { background: #111827; border: 1px solid #475569; color: #f8fafc; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; width: 100%; user-select: text; -webkit-user-select: text; }
+    .anti-cheat-pill { font-size: 10px; padding: 2px 7px; border-radius: 99px; font-weight: 800; }
+    .anti-cheat-pill.clean { background: rgba(16, 185, 129, 0.16); border: 1px solid #10b981; color: #6ee7b7; }
+    .anti-cheat-pill.sandbox { background: rgba(245, 158, 11, 0.18); border: 1px solid #f59e0b; color: #fde047; }
 
   </style>
 </head>
@@ -219,6 +270,7 @@
       <button class="tab-btn" onclick="switchTab('upgrade')">3. Cường Hóa & Combo</button>
       <button class="tab-btn" onclick="switchTab('heroes')">4. Nhân Vật & Skin VIP</button>
       <button class="tab-btn" onclick="switchTab('quests')">5. Nhiệm Vụ Ngày & Sao Lưu</button>
+      <button class="tab-btn" onclick="switchTab('arena')">6. Đấu Trường Online</button>
     </nav>
 
     <section id="tab-campaign" class="tab-content active">
@@ -338,6 +390,174 @@
         </div>
       </div>
     </section>
+
+    <section id="tab-arena" class="tab-content">
+      <div class="arena-layout">
+        <!-- CỘT 1: BẢNG XẾP HẠNG ĐẤU TRƯỜNG -->
+        <div class="arena-col">
+          <h3>
+            <span>🏆 Bảng Xếp Hạng Đấu Trường</span>
+            <span id="arena-account-badge" class="anti-cheat-pill clean">✔ Chính Thống</span>
+          </h3>
+          <div class="arena-sub-tabs">
+            <button id="arena-tab-official" class="arena-sub-btn active" onclick="switchArenaBoard('official')">🛡️ Bảng Chính Thống</button>
+            <button id="arena-tab-sandbox" class="arena-sub-btn sandbox-tab" onclick="switchArenaBoard('sandbox')">⚡ Bảng Sandbox (Quyền Sếp)</button>
+          </div>
+          <div style="font-size:11px;color:#94a3b8;display:flex;justify-content:space-between;align-items:center;gap:4px;flex-wrap:wrap">
+            <span id="arena-board-desc">Kiểm duyệt trần chỉ số Anti-Cheat theo Cấp & Trang bị</span>
+            <div style="display:flex;gap:4px">
+              <button class="preview-mini-btn" onclick="syncPlayerToLeaderboard()">🔄 Cập Nhật Hạng</button>
+              <button class="preview-mini-btn" style="color:#38bdf8;border-color:#0284c7" onclick="toggleCloudConfigPanel()">☁️ Cloud API</button>
+            </div>
+          </div>
+          <div class="cloud-bar">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+              <span id="cloud-leaderboard-status" style="color:#86efac;font-weight:700">☁️ CloudLeaderboard: Chế độ Hybrid (REST API + Local)</span>
+              <button class="preview-mini-btn" style="padding:3px 7px;font-size:10px" onclick="refreshCloudLeaderboard()">📥 Tải Top Cloud</button>
+            </div>
+            <div id="cloud-config-panel" class="cloud-cfg-box hidden">
+              <div style="color:#fde047;font-weight:800">⚙️ Cấu Hình CloudLeaderboard (Firebase REST / Supabase)</div>
+              <select id="cloud-provider-select" onchange="onCloudProviderChange(this.value)">
+                <option value="firebase">Firebase Realtime Database (REST API)</option>
+                <option value="supabase">Supabase REST API (PostgREST)</option>
+              </select>
+              <input id="cloud-api-url-input" placeholder="Điền URL Firebase (VD: https://xxx.firebasedatabase.app) hoặc Supabase..." />
+              <input id="cloud-api-key-input" placeholder="Supabase Anon Key (Để trống nếu dùng Firebase public rules)..." />
+              <div style="display:flex;gap:6px;justify-content:flex-end">
+                <button class="preview-mini-btn" style="background:#10b981;color:#052e16;border:none" onclick="saveCloudConfigFromUI()">💾 Lưu & Đồng Bộ</button>
+                <button class="preview-mini-btn" onclick="toggleCloudConfigPanel()">Đóng</button>
+              </div>
+            </div>
+          </div>
+          <div id="arena-leaderboard-list" class="arena-rank-list"></div>
+        </div>
+
+        <!-- CỘT 2: ĐÀI KHIÊU CHIẾN & CHẾ ĐỘ -->
+        <div class="arena-col">
+          <h3>
+            <span>⚔️ Đài Khiêu Chiến & Chế Độ</span>
+            <span id="arena-current-title-tag" style="font-size:11px;color:#fde047">Danh hiệu: Tân Binh Cyber</span>
+          </h3>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="arena-fighter-name" class="arena-name-input" maxlength="22" placeholder="Nhập biệt danh Đấu Sĩ..." onchange="saveArenaFighterName(this.value)" />
+            <button class="preview-mini-btn" style="white-space:nowrap;padding:7px 10px" onclick="saveArenaFighterName(document.getElementById('arena-fighter-name').value)">💾 Lưu Tên</button>
+          </div>
+
+          <div id="arena-mode-fair" class="arena-mode-card active" onclick="selectArenaMode('fair')">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong style="color:#38bdf8;font-size:13px">⚖️ Võ Đài Công Bằng (Chuẩn Hóa)</strong>
+              <span style="font-size:10px;background:#0284c7;color:#fff;padding:2px 6px;border-radius:4px;font-weight:800">KHUYÊN DÙNG</span>
+            </div>
+            <p style="font-size:11px;color:#cbd5e1;margin-top:4px">Chuẩn hóa HP & ATK ngang tầm nhau, giữ nguyên 100% hiệu ứng Vũ Khí (U), Tổ hợp Combo và kỹ năng đặc trưng 3 phái.</p>
+          </div>
+
+          <div id="arena-mode-overlord" class="arena-mode-card" onclick="selectArenaMode('overlord')">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <strong style="color:#f87171;font-size:13px">🐉 Bá Chủ Huyết Long (Thực Chiến)</strong>
+              <span style="font-size:10px;background:#991b1b;color:#fff;padding:2px 6px;border-radius:4px;font-weight:800">LỰC CHIẾN GỐC</span>
+            </div>
+            <p style="font-size:11px;color:#cbd5e1;margin-top:4px">Giữ nguyên toàn bộ Lực Chiến, Cấp độ và Cường Hóa thực tế. Đấu sức trực diện giành ngôi Bá Chủ!</p>
+          </div>
+
+          <button style="background:linear-gradient(135deg,#dc2626,#991b1b);color:#fff;border:1px solid #f87171;padding:11px;border-radius:8px;font-weight:900;font-size:13px;cursor:pointer;box-shadow:0 0 14px rgba(220,38,38,0.35)" onclick="startRandomArenaMatch()">
+            🎲 Tìm Đối Thủ Ngẫu Nhiên (-5 ⚡)
+          </button>
+
+          <div class="arena-fame-box">
+            <div>
+              <div style="font-size:11px;color:#cbd5e1">🎖️ Điểm Danh Vọng Đấu Trường:</div>
+              <strong id="arena-fame-points" style="font-size:16px;color:#fde047">0 Điểm</strong>
+            </div>
+            <div style="text-align:right;font-size:11px;color:#86efac">
+              <div>Thắng: <strong id="arena-win-count">0</strong> | Chuỗi: <strong id="arena-streak-count">0</strong></div>
+              <div>Thưởng Thắng: <strong>+25 Danh Vọng & Vàng</strong></div>
+            </div>
+          </div>
+
+          <div style="font-size:12px;font-weight:800;color:#e2e8f0;margin-top:2px">👑 Cửa Hàng Đổi Danh Hiệu Đấu Sĩ:</div>
+          <div id="arena-titles-shop" class="title-shop-list"></div>
+        </div>
+
+        <!-- CỘT 3: ĐẤU TAY ĐÔI THỜI GIAN THỰC (1v1 P2P WEBRTC - PEERJS) & GHOST PVP -->
+        <div class="arena-col">
+          <h3>
+            <span>🌐 Đấu Tay Đôi 1v1 P2P (WebRTC)</span>
+            <span id="p2p-role-pill" class="anti-cheat-pill clean">PeerJS v1.5.4 • Host Authority</span>
+          </h3>
+
+          <div style="background:#111827;border:1px solid #334155;border-radius:8px;padding:8px 10px;font-size:11px;display:grid;gap:4px" id="arena-my-fighter-summary"></div>
+
+          <!-- KHUNG GHÉP PHÒNG P2P THỜI GIAN THỰC -->
+          <div class="p2p-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+              <strong style="font-size:12px;color:#38bdf8">⚡ Ghép Phòng Trực Tuyến (Host Authority 60Hz)</strong>
+              <span id="p2p-net-transport-tag" style="font-size:10px;color:#86efac;font-weight:700">Sẵn sàng</span>
+            </div>
+
+            <!-- 1. HOST: TẠO PHÒNG & SINH MÃ 6 KÝ TỰ -->
+            <div style="display:flex;gap:6px;align-items:center">
+              <button id="btn-p2p-create-room" class="p2p-host-btn" style="flex:1" onclick="createP2PRoom()">
+                🏠 Tạo Phòng (HOST - P1)
+              </button>
+              <button id="btn-p2p-cancel-room" class="preview-mini-btn hidden" style="padding:8px 10px;background:#7f1d1d;color:#fff;border-color:#f87171" onclick="disconnectP2PSession(true)">
+                ✖ Hủy Phòng
+              </button>
+            </div>
+
+            <div id="p2p-room-code-wrap" class="p2p-code-banner hidden">
+              <div>
+                <div style="font-size:10px;color:#94a3b8">Mã Phòng 6 Ký Tự (Gửi cho Player 2):</div>
+                <div id="p2p-room-code-display" class="p2p-code-value">------</div>
+              </div>
+              <button class="preview-mini-btn" style="padding:6px 10px;color:#fde047;border-color:#eab308" onclick="copyP2PRoomCode()">📋 Copy Mã</button>
+            </div>
+
+            <!-- 2. CLIENT: NHẬP MÃ PHÒNG 6 KÝ TỰ & KẾT NỐI -->
+            <div class="p2p-input-row">
+              <input id="p2p-join-code-input" class="p2p-code-input" maxlength="6" placeholder="Nhập mã 6 ký tự (VD: CYBER9)" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6)" />
+              <button id="btn-p2p-connect-room" class="p2p-connect-btn" onclick="connectP2PRoom()">
+                🔗 Kết nối
+              </button>
+            </div>
+
+            <!-- TRẠNG THÁI PHÒNG & GÓI TIN INIT_MATCH -->
+            <div class="p2p-status-bar">
+              <span id="p2p-matchmaking-status">Bấm "Tạo Phòng" (Host P1) hoặc nhập mã 6 ký tự rồi bấm "Kết nối" (Client P2).</span>
+            </div>
+
+            <div class="p2p-telemetry-row">
+              <span>Quyền vật lý: <strong id="p2p-auth-label" style="color:#fde047">HOST (P1)</strong></span>
+              <span>Input Client: <strong style="color:#38bdf8">60Hz</strong></span>
+              <span>Timeout rớt mạng: <strong style="color:#f87171">3.0s</strong></span>
+            </div>
+
+            <!-- NÚT KIỂM THỬ LOOPBACK P2P 2 PEER TRỰC TIẾP TRÊN 1 MÁY -->
+            <button class="preview-mini-btn" style="width:100%;padding:7px;background:#1e1b4b;border-color:#6366f1;color:#c7d2fe" onclick="startP2PLoopbackTestMatch()">
+              🧪 Test Nhanh Luồng P2P (Tạo Phòng ➔ INIT_MATCH ➔ Đếm Ngược 3-2-1)
+            </button>
+          </div>
+
+          <!-- KHUNG PHỤ: MÃ KHIÊU CHIẾN GHOST PVP (GIỮ NGUYÊN TÍNH NĂNG GIAI ĐOẠN 1) -->
+          <details style="background:#111827;border:1px solid #334155;border-radius:8px;padding:8px">
+            <summary style="font-size:12px;font-weight:800;color:#cbd5e1;cursor:pointer">👻 Mã Khiêu Chiến Đấu Sĩ (Ghost PvP - Đấu Bản Sao AI)</summary>
+            <div style="display:flex;flex-direction:column;gap:7px;margin-top:8px">
+              <textarea id="ghost-pvp-code-box" class="ghost-code-textarea" style="height:64px" placeholder="Bấm 'Xuất Mã Đấu Sĩ' để gửi cho bạn bè, hoặc dán Mã Đấu Sĩ của bạn bè vào đây..."></textarea>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <button style="background:#0284c7;color:#fff;border:none;padding:8px;border-radius:6px;font-weight:800;font-size:11px;cursor:pointer" onclick="exportFighterGhostCode()">📤 Xuất Mã Đấu Sĩ</button>
+                <button style="background:#10b981;color:#052e16;border:none;padding:8px;border-radius:6px;font-weight:800;font-size:11px;cursor:pointer" onclick="challengeGhostFromCode()">⚔️ Đánh Với Mã Này (-5 ⚡)</button>
+              </div>
+              <div id="ghost-code-status" style="font-size:11px;color:#fde047;min-height:14px"></div>
+            </div>
+          </details>
+
+          <div style="background:rgba(168,85,247,0.1);border:1px solid #a855f7;border-radius:8px;padding:8px 9px;font-size:11px;color:#e9d5ff;line-height:1.4">
+            <strong>🛡️ Kiến Trúc Host Authority (Chống Desync):</strong><br/>
+            • <strong>Player 1 (Host):</strong> Tính toàn bộ vật lý, va chạm, sát thương, máu, nộ &amp; tín hiệu âm thanh (<code>punch</code>, <code>kick</code>, <code>metal-impact</code>...).<br/>
+            • <strong>Player 2 (Client):</strong> Gửi phím bấm/touch lên Host ở <strong>60Hz</strong> &amp; nhận tọa độ, hoạt ảnh, thanh Máu từ Host để vẽ lên <code>#battle-canvas</code>.
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <section id="battle-screen" class="battle-container hidden">
@@ -384,7 +604,7 @@
         </div>
         <div class="bar-wrap boss-armor-wrap">
           <div id="hud-boss-armor-fill" class="bar-fill boss-armor-fill"></div>
-          <span class="bar-text">GIÁP BÁ THỂ (Tự hồi lại sau khi hết Choáng)</span>
+          <span id="hud-boss-armor-text" class="bar-text">GIÁP BÁ THỂ (Tự hồi lại sau khi hết Choáng)</span>
         </div>
       </div>
     </div>
@@ -3409,6 +3629,15 @@ window.AUDIO_BUNDLE = {
         ownedItems: ['wl_1', 'wm_1', 'wc_1', 'h_1', 'a_1', 'b_1'],
         equipped: { weapon_long: 'wl_1', weapon_mage: 'wm_1', weapon_cyber: 'wc_1', helmet: 'h_1', armor: 'a_1', boots: 'b_1' },
         equipCategoryTab: 'weapon_long',
+        isDevAccount: false,
+        playerName: 'Chiến Thần Cyber',
+        arenaFame: 120,
+        arenaWins: 0,
+        arenaStreak: 0,
+        arenaMode: 'fair',
+        arenaBoardTab: 'official',
+        ownedTitles: ['title_rookie'],
+        equippedTitle: 'title_rookie',
         statUpgrades: {
           atk: { lv: 1, name: 'Cường Hóa Tấn Công', bonusPerLv: 22, baseCost: 200 },
           hp: { lv: 1, name: 'Cường Hóa Máu Tối Đa', bonusPerLv: 160, baseCost: 200 },
@@ -3483,6 +3712,15 @@ window.AUDIO_BUNDLE = {
       if (saved.equippedSkin) Object.assign(state.equippedSkin, saved.equippedSkin);
       if (Array.isArray(saved.ownedItems)) state.ownedItems = saved.ownedItems;
       if (saved.equipped) Object.assign(state.equipped, saved.equipped);
+      state.isDevAccount = Boolean(saved.isDevAccount);
+      state.playerName = (typeof saved.playerName === 'string' && saved.playerName.trim()) ? saved.playerName.trim().slice(0, 22) : 'Chiến Thần Cyber';
+      state.arenaFame = typeof saved.arenaFame === 'number' && saved.arenaFame >= 0 ? Math.floor(saved.arenaFame) : 120;
+      state.arenaWins = typeof saved.arenaWins === 'number' && saved.arenaWins >= 0 ? Math.floor(saved.arenaWins) : 0;
+      state.arenaStreak = typeof saved.arenaStreak === 'number' && saved.arenaStreak >= 0 ? Math.floor(saved.arenaStreak) : 0;
+      state.arenaMode = (saved.arenaMode === 'overlord' || saved.arenaMode === 'fair') ? saved.arenaMode : 'fair';
+      state.arenaBoardTab = (saved.arenaBoardTab === 'sandbox' || saved.arenaBoardTab === 'official') ? saved.arenaBoardTab : 'official';
+      state.ownedTitles = Array.isArray(saved.ownedTitles) && saved.ownedTitles.length ? saved.ownedTitles : ['title_rookie'];
+      state.equippedTitle = typeof saved.equippedTitle === 'string' ? saved.equippedTitle : 'title_rookie';
 
       if (saved.statUpgrades) {
         Object.keys(state.statUpgrades).forEach(k => {
@@ -3624,9 +3862,12 @@ window.AUDIO_BUNDLE = {
       const crit = Math.min(85, 8 + state.statUpgrades.crit.lv * 2 + (weapon.crit || 0) + (state.currentHero === 'long' ? 8 : 0));
       const spdPct = state.statUpgrades.spd.lv * 3 + (state.currentHero === 'long' ? 12 : 0);
       const spdMult = 1 + Math.min(1.5, spdPct / 100);
-      const power = Math.floor(atk * 4 + maxHp * 0.35 + def * 6 + (crit + spdPct) * 15);
+      const titleObj = (typeof ARENA_TITLES !== 'undefined' ? ARENA_TITLES.find(t => t.id === state.equippedTitle) : null) || { atkPct: 0, hpPct: 0 };
+      const finalAtk = Math.floor(atk * (1 + (titleObj.atkPct || 0) / 100));
+      const finalMaxHp = Math.floor(maxHp * (1 + (titleObj.hpPct || 0) / 100));
+      const power = Math.floor(finalAtk * 4 + finalMaxHp * 0.35 + def * 6 + (crit + spdPct) * 15);
 
-      return { atk, maxHp, def, crit, spdPct, spdMult, power, weapon, helmet, armor, boots };
+      return { atk: finalAtk, maxHp: finalMaxHp, def, crit, spdPct, spdMult, power, weapon, helmet, armor, boots };
     }
 
     setInterval(() => {
@@ -4182,10 +4423,72 @@ window.AUDIO_BUNDLE = {
     }
 
     // Xác định trạng thái hoạt ảnh tự động từ dữ liệu chiến đấu thực tế nếu gọi bằng mã chuẩn ('idle' | 'punch' | 'kick' | 'wskill')
+    function resolveEntityActionState(ent, actionState, wSkillScene, finalScene) {
+      if (!ent) return actionState || 'idle';
+      if (ent.hp <= 0) return 'defeat';
+      if (finalScene) {
+        const sc = finalScene;
+        if (sc.hero === 'long') {
+          if (sc.timer < 30) return 'energy_charge';
+          if (sc.timer < 95) return (sc.timer % 8 < 4) ? 'punch' : 'kick';
+          if (sc.timer <= 104) return 'ultimate_impact';
+          return 'recovery';
+        } else if (sc.hero === 'mage') {
+          if (sc.timer < 35) return 'skill_prep';
+          if (sc.timer < 75) return 'energy_charge';
+          if (sc.timer < 120) return 'final_skill';
+          if (sc.timer <= 128) return 'energy_release';
+          return 'recovery';
+        } else {
+          if (sc.timer <= 14) return 'skill_prep';
+          if (sc.timer <= 42) return 'energy_charge';
+          if (sc.timer <= 80) return 'final_skill';
+          return 'recovery';
+        }
+      }
+      if (wSkillScene) {
+        const ws = wSkillScene;
+        if (ws.hero === 'long') {
+          if (ws.timer <= 8) return 'skill_prep';
+          if (ws.timer <= 16) return 'energy_charge';
+          if (ws.timer <= 40) return 'wskill';
+          return 'recovery';
+        } else if (ws.hero === 'mage') {
+          if (ws.timer <= 10) return 'skill_prep';
+          if (ws.timer <= 50) return 'wskill';
+          return 'recovery';
+        } else {
+          if (ws.timer <= 18) return 'skill_prep';
+          if (ws.timer <= 38) return 'jump_rise';
+          if (ws.timer <= 52) return 'ultimate_impact';
+          return 'recovery';
+        }
+      }
+      if (ent.stun && ent.stun > 0) return 'stun';
+      if (ent.stunTimer && ent.stunTimer > 0) return 'stun';
+      if (ent.hitReactionTimer && ent.hitReactionTimer > 0) return 'hit';
+      if (ent.hitFlash && ent.hitFlash > 2 && actionState === 'knockback') return 'knockback';
+      if (ent.invincibleTimer > 12 && ent.dashCd > (ent.dashMaxCd || 120) - 20) return 'dash';
+      if (actionState === 'punch' || actionState === 'kick' || actionState === 'combo_attack' || actionState === 'heavy_attack' || actionState === 'skill_prep') {
+        if (battle && ent.y < battle.groundY - 12) return 'air_attack';
+        if (actionState === 'combo_attack' || (ent.actionTimer && ent.actionTimer > 16 && actionState !== 'skill_prep')) return 'combo_attack';
+        return actionState;
+      }
+      if (battle && ent.y < battle.groundY - 6) {
+        return (ent.vy || 0) < 0 ? 'jump_rise' : 'jump_fall';
+      }
+      if (ent.landingTimer && ent.landingTimer > 0) return 'landing';
+      if (ent.turnTimer && ent.turnTimer > 0) return 'turn_around';
+      if (Math.abs(ent.vx || 0) > 3.2) return 'run';
+      if (Math.abs(ent.vx || 0) > 0.6) return 'walk';
+      return actionState || 'idle';
+    }
+
     function resolveBattleActionState(actionState) {
       if (!battle || !battle.active || !battle.player) return actionState || 'idle';
       const p = battle.player;
       if (p.hp <= 0) return 'defeat';
+      if (p.stunTimer && p.stunTimer > 0) return 'stun';
       if (battle.finalScene) {
         const sc = battle.finalScene;
         if (sc.hero === 'long') {
@@ -4241,21 +4544,27 @@ window.AUDIO_BUNDLE = {
       return actionState || 'idle';
     }
 
-    // Hàm vẽ nhân vật 14 Lớp (Modular Character System) tương thích 100% chữ ký gốc
-    function drawHeroCharacter(ctx, x, y, facing, animTime, heroId, actionState, alpha = 1, customView = null) {
+    // Hàm vẽ nhân vật 14 Lớp (Modular Character System) tương thích 100% chữ ký gốc + hỗ trợ customGear cho Đối Thủ PvP
+    function drawHeroCharacter(ctx, x, y, facing, animTime, heroId, actionState, alpha = 1, customView = null, customGear = null) {
       const hero = HEROES[heroId] || HEROES.long;
-      const skinId = state.equippedSkin[heroId];
+      const skinId = (customGear && customGear.skinId) ? customGear.skinId : state.equippedSkin[heroId];
       const skin = hero.skins.find(s => s.id === skinId) || hero.skins[0];
-      const weapon = EQUIPMENT_DB.find(i => i.id === state.equipped[hero.weaponClass]) || EQUIPMENT_DB[0];
-      const helmet = EQUIPMENT_DB.find(i => i.id === state.equipped.helmet) || EQUIPMENT_DB[15];
-      const armor = EQUIPMENT_DB.find(i => i.id === state.equipped.armor) || EQUIPMENT_DB[20];
-      const boots = EQUIPMENT_DB.find(i => i.id === state.equipped.boots) || EQUIPMENT_DB[25];
+      const weaponId = (customGear && customGear.weaponId) ? customGear.weaponId : state.equipped[hero.weaponClass];
+      const helmetId = (customGear && customGear.helmetId) ? customGear.helmetId : state.equipped.helmet;
+      const armorId = (customGear && customGear.armorId) ? customGear.armorId : state.equipped.armor;
+      const bootsId = (customGear && customGear.bootsId) ? customGear.bootsId : state.equipped.boots;
+      const weapon = EQUIPMENT_DB.find(i => i.id === weaponId) || EQUIPMENT_DB.find(i => i.cat === hero.weaponClass) || EQUIPMENT_DB[0];
+      const helmet = EQUIPMENT_DB.find(i => i.id === helmetId) || EQUIPMENT_DB[15];
+      const armor = EQUIPMENT_DB.find(i => i.id === armorId) || EQUIPMENT_DB[20];
+      const boots = EQUIPMENT_DB.find(i => i.id === bootsId) || EQUIPMENT_DB[25];
 
-      const isBattlePlayer = battle && battle.active && Math.abs(x - battle.player.x) < 2 && Math.abs(y - battle.player.y) < 2 && alpha > 0.9;
-      const effectiveState = isBattlePlayer ? resolveBattleActionState(actionState) : (actionState || 'idle');
+      const isBattlePlayer = !customGear && battle && battle.active && Math.abs(x - battle.player.x) < 2 && Math.abs(y - battle.player.y) < 2 && alpha > 0.9;
+      const effectiveState = customGear && customGear.resolvedState
+        ? customGear.resolvedState
+        : (isBattlePlayer ? resolveBattleActionState(actionState) : (actionState || 'idle'));
       const viewAngle = customView || (!battle || !battle.active ? previewViewAngle : 'side');
       const pose = computeHeroSkeletalPose(heroId, effectiveState, animTime, viewAngle);
-      const L = modularLayerEnabled;
+      const L = (customGear && customGear.modularLayers) ? customGear.modularLayers : modularLayerEnabled;
       const hiGfx = graphicsQuality !== 'low';
 
       ctx.save();
@@ -5635,11 +5944,12 @@ window.AUDIO_BUNDLE = {
     function switchTab(tabName) {
       try { AudioEngine.play('tap', { source: 'ui' }); } catch (e) {}
       document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
-        const map = ['campaign', 'equipment', 'upgrade', 'heroes', 'quests'];
+        const map = ['campaign', 'equipment', 'upgrade', 'heroes', 'quests', 'arena'];
         btn.classList.toggle('active', map[idx] === tabName);
       });
       document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
-      document.getElementById(`tab-${tabName}`).classList.add('active');
+      const targetSec = document.getElementById(`tab-${tabName}`);
+      if (targetSec) targetSec.classList.add('active');
       renderAllHub();
     }
 
@@ -5978,6 +6288,7 @@ window.AUDIO_BUNDLE = {
       renderUpgrades();
       renderHeroes();
       renderQuests();
+      if (typeof renderArenaHub === 'function') renderArenaHub();
     }
 
     // ============================================================================
@@ -6132,6 +6443,8 @@ window.AUDIO_BUNDLE = {
       document.getElementById('battle-screen').classList.remove('hidden');
       document.getElementById('hud-hero-name').textContent = HEROES[state.currentHero].name.toUpperCase();
       document.getElementById('hud-stage-label').textContent = `Chương ${chapter} - Màn ${stage} ${isBoss13 ? '(ĐẠI BOSS)' : ''}`;
+      const armorTextEl = document.getElementById('hud-boss-armor-text');
+      if (armorTextEl) armorTextEl.textContent = 'GIÁP BÁ THỂ (Tự hồi lại sau khi hết Choáng)';
 
       try {
         AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
@@ -6193,7 +6506,53 @@ window.AUDIO_BUNDLE = {
 
     function triggerDash() {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          queueP2PClientAction('SHIFT');
+          return;
+        }
+      }
       const p = battle.player;
+
+      // Cơ chế "Bộc Phá Thoát Hiểm" (Combo Breaker): Khi đang bị trúng đòn liên hoàn (hit / stun) và có >= 30% Nộ
+      const isUnderHitOrStun = (p.hitReactionTimer && p.hitReactionTimer > 0) || (p.stunTimer && p.stunTimer > 0) || (battle.enemyComboStreak && battle.enemyComboStreak >= 2);
+      if (isUnderHitOrStun && p.rage >= 30) {
+        p.rage = Math.max(0, p.rage - 30);
+        p.hitReactionTimer = 0;
+        p.stunTimer = 0;
+        p.attackLockTimer = 0;
+        battle.enemyComboStreak = 0;
+        p.invincibleTimer = 21; // 0.35s bất tử (21 ticks ở 60fps)
+        p.actionState = 'energy_release';
+        p.actionTimer = 16;
+        battle.shake = 18;
+        battle.flashAlpha = 0.35;
+        battle.flashColor = '#c084fc';
+        try {
+          AudioEngine.play('explosion-small', { source: 'player', sourceX: p.x, bypassCooldown: true });
+          AudioEngine.play('shield-hit', { source: 'player', sourceX: p.x, bypassCooldown: true });
+        } catch (e) {}
+        spawnPooledVFX({ kind: 'shockwave', x: p.x, y: p.y - 25, r: 18, maxR: 210, color: '#c084fc', subColor: '#fde047', life: 18 });
+        battle.enemies.forEach(en => {
+          if (Math.abs(en.x - p.x) <= 260) {
+            const pushDir = en.x >= p.x ? 1 : -1;
+            en.x = Math.max(50, Math.min(1130, en.x + pushDir * 150));
+            en.vx = pushDir * 10;
+            en.hitFlash = 8;
+            if (en.isEnemyHero) {
+              en.actionState = 'knockback';
+              en.actionTimer = 18;
+              en.attackLockTimer = 18;
+            } else {
+              en.stun = Math.max(en.stun, 35);
+            }
+          }
+        });
+        battle.texts.push({ x: p.x, y: p.y - 88, text: '💥 BỘC PHÁ THOÁT HIỂM (-30% NỘ)!', color: '#fde047', life: 36 });
+        return;
+      }
+
       if (p.dashCd > 0) return;
 
       p.dashCd = p.dashMaxCd;
@@ -6223,6 +6582,13 @@ window.AUDIO_BUNDLE = {
 
     function playerJump() {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          queueP2PClientAction('W');
+          return;
+        }
+      }
       const p = battle.player;
       if (p.y >= battle.groundY - 4) {
         try { AudioEngine.play('jump', { source: 'player', sourceX: p.x }); } catch (e) {}
@@ -6242,6 +6608,13 @@ window.AUDIO_BUNDLE = {
 
     function pushCombatInput(keyChar, onlyRecord = false) {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          if (!onlyRecord) queueP2PClientAction(keyChar);
+          return;
+        }
+      }
       if (!onlyRecord && battle.player.attackLockTimer > 0) {
         battle.queuedKey = keyChar;
         return;
@@ -6469,6 +6842,13 @@ window.AUDIO_BUNDLE = {
 
     function triggerWeaponSkill() {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          queueP2PClientAction('U');
+          return;
+        }
+      }
       const p = battle.player;
       if (p.wSkillCd > 0 || battle.wSkillScene) return;
 
@@ -6664,6 +7044,13 @@ window.AUDIO_BUNDLE = {
 
     function triggerFinalSkill() {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          queueP2PClientAction('L');
+          return;
+        }
+      }
       const p = battle.player;
       if (p.rage < 100 || battle.finalScene) return;
       p.rage = 0;
@@ -6902,6 +7289,11 @@ window.AUDIO_BUNDLE = {
     function dealDamageToEnemy(en, rawDmg, armorDmg, gainRage = true) {
       const b = battle;
       const p = b.player;
+      if (en.isEnemyHero && en.invincibleTimer > 0) {
+        try { AudioEngine.play('shield-hit', { source: 'enemy', sourceX: en.x, volDb: -6.0 }); } catch (e) {}
+        b.texts.push({ x: en.x, y: en.y - 75, text: '✨ ĐỐI THỦ NÉ ĐÒN!', color: '#38bdf8', life: 22 });
+        return;
+      }
       const hadArmorBefore = en.armor > 0;
 
       b.hitStreak++;
@@ -6912,6 +7304,14 @@ window.AUDIO_BUNDLE = {
       const streakBonus = 1 + Math.min(0.6, b.hitStreak * 0.01);
       const isCrit = Math.random() * 100 < p.crit;
       let dmg = Math.floor(rawDmg * streakBonus * (isCrit ? 1.75 : 1));
+      if (en.isEnemyHero) {
+        const defRed = (en.def || 100) / ((en.def || 100) + 420);
+        dmg = Math.max(12, Math.floor(dmg * (1 - defRed * 0.58)));
+        en.hitReactionTimer = 12;
+        en.comboHitTaken = (en.comboHitTaken || 0) + 1;
+        en.comboResetTimer = 45;
+        en.rage = Math.min(100, (en.rage || 0) + 5.5);
+      }
 
       if (en.armor > 0) {
         en.armor = Math.max(0, en.armor - armorDmg);
@@ -6965,12 +7365,46 @@ window.AUDIO_BUNDLE = {
         color: isCrit ? '#fde047' : '#f8fafc',
         life: 28
       });
+
+      // AI Võ Sư kích hoạt "Bộc Phá Thoát Hiểm" (Combo Breaker) khi bị trúng liên hoàn / choáng và có >= 30% Nộ
+      if (en.isEnemyHero && en.hp > 0 && (en.stun > 0 || (en.comboHitTaken || 0) >= 3) && (en.rage || 0) >= 30 && (en.breakerCd || 0) <= 0) {
+        if (Math.random() < 0.65 || en.stun > 0) {
+          en.rage = Math.max(0, en.rage - 30);
+          en.stun = 0;
+          en.hitReactionTimer = 0;
+          en.comboHitTaken = 0;
+          en.invincibleTimer = 21; // 0.35s bất tử
+          en.breakerCd = 210;
+          en.actionState = 'energy_release';
+          en.actionTimer = 16;
+          b.shake = 16;
+          b.flashAlpha = 0.28;
+          b.flashColor = '#f43f5e';
+          try {
+            AudioEngine.play('explosion-small', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+            AudioEngine.play('shield-hit', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          } catch (e) {}
+          spawnPooledVFX({ kind: 'shockwave', x: en.x, y: en.y - 25, r: 18, maxR: 200, color: '#f43f5e', subColor: '#fde047', life: 16 });
+          const pushDir = p.x <= en.x ? -1 : 1;
+          p.x = Math.max(40, Math.min(1140, p.x + pushDir * 140));
+          p.vx = pushDir * 9;
+          p.hitReactionTimer = 10;
+          b.texts.push({ x: en.x, y: en.y - 95, text: '💥 ĐỐI THỦ BỘC PHÁ THOÁT HIỂM (-30% NỘ)!', color: '#f43f5e', life: 38 });
+        }
+      }
     }
 
     function triggerQuickAction(k) { pushCombatInput(k); }
 
     function triggerQuickCombo(arr) {
       if (!battle || !battle.active) return;
+      if (battle.isP2P) {
+        if (battle.countdownTicks > 0) return;
+        if (battle.p2pRole === 'client') {
+          queueP2PClientAction('COMBO:' + arr.join('-'));
+          return;
+        }
+      }
       const code = arr.join('-');
       if (state.combos[code] && !state.combos[code].unlocked) {
         alert(`Combo ${state.combos[code].name} chưa mở khóa! Hãy vào Tab 3 (Cường Hóa & Combo) để mở khóa bằng Vàng.`);
@@ -6998,8 +7432,31 @@ window.AUDIO_BUNDLE = {
 
     function stepBattlePhysics() {
       const b = battle;
+      // CLIENT (Player 2) tuyệt đối không tự chạy stepBattlePhysics để chống Desync
+      if (b.isP2P && b.p2pRole === 'client') {
+        return;
+      }
       b.tick++;
       const p = b.player;
+      try { AudioEngine.setListenerX(p.x); } catch (e) {}
+
+      // Xử lý đếm ngược 3 - 2 - 1 đầu trận P2P trên Host
+      if (b.isP2P && b.countdownTicks && b.countdownTicks > 0) {
+        if (b.countdownTicks === 180 || b.countdownTicks === 120 || b.countdownTicks === 60) {
+          try { AudioEngine.play('confirm', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+        } else if (b.countdownTicks === 1) {
+          try {
+            AudioEngine.play('dragon-roar', { source: 'boss', sourceX: 590, bypassCooldown: true });
+            AudioEngine.play('notification', { source: 'ui', bypassCooldown: true });
+          } catch (e) {}
+          b.texts.push({ x: 560, y: 210, text: '⚔️ KHAI CHIẾN 1v1 P2P!', color: '#fde047', life: 40 });
+        }
+        b.countdownTicks--;
+        if (typeof broadcastHostState60Hz === 'function') {
+          broadcastHostState60Hz();
+        }
+        return;
+      }
       try { AudioEngine.setListenerX(p.x); } catch (e) {}
 
       if (b.shake > 0) {
@@ -7053,6 +7510,11 @@ window.AUDIO_BUNDLE = {
       if (p.landingTimer > 0) p.landingTimer--;
       if (p.turnTimer > 0) p.turnTimer--;
       if (p.hitReactionTimer > 0) p.hitReactionTimer--;
+      if (p.stunTimer && p.stunTimer > 0) p.stunTimer--;
+      if (b.enemyComboResetTimer && b.enemyComboResetTimer > 0) {
+        b.enemyComboResetTimer--;
+        if (b.enemyComboResetTimer === 0) b.enemyComboStreak = 0;
+      }
       if (b.quickComboCd > 0) b.quickComboCd--;
 
       if (p.attackLockTimer > 0) {
@@ -7105,8 +7567,19 @@ window.AUDIO_BUNDLE = {
 
       updateWeaponSkillScene();
       updateFinalScene();
+      if (b.isPvP && typeof updateEnemyPvPSkills === 'function') {
+        updateEnemyPvPSkills();
+      }
 
       b.enemies.forEach(en => {
+        if (en.isEnemyHero) {
+          if (b.isP2P && en.isP2PPlayer2 && typeof updateP2PPlayer2OnHost === 'function') {
+            updateP2PPlayer2OnHost(en);
+          } else {
+            updateEnemyHeroAI(en);
+          }
+          return;
+        }
         if (en.stun > 0) {
           en.stun--;
           if (en.stun === 0 && en.maxArmor > 0) {
@@ -7244,6 +7717,9 @@ window.AUDIO_BUNDLE = {
         }
         else { completeStage(true); }
       }
+      if (b.isP2P && b.p2pRole === 'host' && typeof broadcastHostState60Hz === 'function') {
+        broadcastHostState60Hz();
+      }
     }
 
     function updateBattleLoop(now = performance.now()) {
@@ -7251,14 +7727,34 @@ window.AUDIO_BUNDLE = {
       lastFrameTimestamp = now;
 
       if (battle && battle.active) {
-        tickAccumulator += elapsed / (1000 / 60);
-        while (tickAccumulator >= 1 && battle && battle.active) {
-          stepBattlePhysics();
-          tickAccumulator -= 1;
+        if (battle.isP2P && typeof checkP2PConnectionHealth === 'function') {
+          checkP2PConnectionHealth(now);
         }
-        if (battle && battle.active) {
-          updateBattleHUD();
-          drawBattleArena();
+        if (battle && battle.active && battle.isP2P && battle.p2pRole === 'client') {
+          // CLIENT (Player 2): Vô hiệu hóa tính toán vật lý, chỉ:
+          // (1) Đọc phím bấm/touch gửi lên Host ở tốc độ 60Hz
+          // (2) Nhận tọa độ, trạng thái hoạt ảnh & thanh Máu từ Host để vẽ lên #battle-canvas
+          tickAccumulator += elapsed / (1000 / 60);
+          while (tickAccumulator >= 1 && battle && battle.active) {
+            if (typeof stepClientVisualOnlyAndSendInput60Hz === 'function') {
+              stepClientVisualOnlyAndSendInput60Hz();
+            }
+            tickAccumulator -= 1;
+          }
+          if (battle && battle.active) {
+            updateBattleHUD();
+            drawBattleArena();
+          }
+        } else {
+          tickAccumulator += elapsed / (1000 / 60);
+          while (tickAccumulator >= 1 && battle && battle.active) {
+            stepBattlePhysics();
+            tickAccumulator -= 1;
+          }
+          if (battle && battle.active) {
+            updateBattleHUD();
+            drawBattleArena();
+          }
         }
       } else {
         tickAccumulator = 0;
@@ -7277,8 +7773,13 @@ window.AUDIO_BUNDLE = {
       const defReduction = p.def / (p.def + 65 * b.difficultyScale);
       const dmg = Math.max(5, Math.floor(rawDmg * (1 - defReduction * 0.65)));
       p.hp = Math.max(0, p.hp - dmg);
-      p.hitReactionTimer = 10;
+      p.hitReactionTimer = 14;
       b.hitStreak = 0;
+      b.enemyComboStreak = (b.enemyComboStreak || 0) + 1;
+      b.enemyComboResetTimer = 50;
+      if (b.isPvP) {
+        p.rage = Math.min(100, p.rage + 6.5);
+      }
       try {
         AudioEngine.play('punch', { source: 'player', sourceX: p.x, blend: 0.25 });
         AudioEngine.play('heavy-thud', { source: 'player', sourceX: p.x, blend: 0.25 });
@@ -7290,6 +7791,10 @@ window.AUDIO_BUNDLE = {
 
     function updateBattleHUD() {
       const b = battle;
+      if (b.isP2P && b.p2pRole === 'client' && typeof updateP2PClientBattleHUD === 'function') {
+        updateP2PClientBattleHUD();
+        return;
+      }
       const p = b.player;
       document.getElementById('hud-hp-fill').style.width = `${(p.hp / p.maxHp) * 100}%`;
       document.getElementById('hud-hp-text').textContent = `${p.hp.toLocaleString()} / ${p.maxHp.toLocaleString()}`;
@@ -7310,8 +7815,21 @@ window.AUDIO_BUNDLE = {
       if (boss) {
         document.getElementById('hud-boss-hp-fill').style.width = `${Math.max(0, (boss.hp / boss.maxHp) * 100)}%`;
         document.getElementById('hud-boss-hp-text').textContent = `${Math.max(0, boss.hp).toLocaleString()} / ${boss.maxHp.toLocaleString()}`;
-        document.getElementById('hud-boss-armor-fill').style.width = `${(boss.armor / boss.maxArmor) * 100}%`;
-        document.getElementById('hud-boss-state').textContent = boss.stun > 0 ? `CHOÁNG (${(boss.stun / 60).toFixed(1)}s)` : (boss.enraged ? 'CUỒNG NỘ' : 'BÁ THỂ');
+        if (boss.isEnemyHero) {
+          const armorPct = boss.maxArmor > 0 ? Math.max(0, Math.round((boss.armor / boss.maxArmor) * 100)) : 0;
+          const ragePct = Math.min(100, Math.floor(boss.rage || 0));
+          document.getElementById('hud-boss-armor-fill').style.width = `${boss.armor > 0 ? armorPct : ragePct}%`;
+          const armorTextEl = document.getElementById('hud-boss-armor-text');
+          if (armorTextEl) {
+            armorTextEl.textContent = `NỘI NĂNG HỘ THỂ: ${armorPct}% | NỘ FINAL ĐỐI THỦ: ${ragePct}%`;
+          }
+          document.getElementById('hud-boss-state').textContent = boss.stun > 0
+            ? `CHOÁNG (${(boss.stun / 60).toFixed(1)}s)`
+            : (boss.invincibleTimer > 0 ? 'BẤT TỬ (0.35s)' : `NỘ: ${ragePct}%`);
+        } else {
+          document.getElementById('hud-boss-armor-fill').style.width = `${(boss.armor / boss.maxArmor) * 100}%`;
+          document.getElementById('hud-boss-state').textContent = boss.stun > 0 ? `CHOÁNG (${(boss.stun / 60).toFixed(1)}s)` : (boss.enraged ? 'CUỒNG NỘ' : 'BÁ THỂ');
+        }
       }
     }
 
@@ -7564,9 +8082,9 @@ window.AUDIO_BUNDLE = {
         ctx.strokeRect(w.x - w.w * 0.5, b.groundY + 10, w.w, 16);
       });
 
-      // Tàn ảnh Afterimages
+      // Tàn ảnh Afterimages (Hỗ trợ cả Người chơi và Đối Thủ PvP)
       b.afterimages.forEach(af => {
-        drawHeroCharacter(ctx, af.x, af.y, af.facing, b.tick, state.currentHero, 'dash', af.life / 28, 'side');
+        drawHeroCharacter(ctx, af.x, af.y, af.facing, b.tick, af.heroId || state.currentHero, 'dash', af.life / 28, 'side', af.customGear || null);
       });
 
       // =========================================================================
@@ -8145,12 +8663,35 @@ window.AUDIO_BUNDLE = {
         }
       }
 
-      // Vẽ Nhân Vật Chính (14 Lớp)
-      drawHeroCharacter(ctx, b.player.x, b.player.y, b.player.facing, b.tick, state.currentHero, b.player.actionState, 1, 'side');
+      // Vẽ Nhân Vật Chính / Player 1 Host (14 Lớp + hỗ trợ customGear đồng bộ P2P)
+      drawHeroCharacter(
+        ctx,
+        b.player.x,
+        b.player.y,
+        b.player.facing,
+        b.tick,
+        b.player.heroId || state.currentHero,
+        b.player.actionState,
+        1,
+        'side',
+        b.player.customGear || null
+      );
+      if ((b.isPvP || b.isP2P) && typeof drawPlayer1FloatingPlate === 'function') {
+        drawPlayer1FloatingPlate(ctx, b.player, b);
+      }
 
-      // Vẽ Quái Vật & Đại Boss
+      // Vẽ Hiệu ứng Kỹ năng Vũ Khí (U) & Final (L) của Đối Thủ PvP nếu có
+      if (b.isPvP && typeof drawEnemyPvPSkills === 'function') {
+        drawEnemyPvPSkills(ctx, b);
+      }
+
+      // Vẽ Quái Vật, Đại Boss hoặc Thực Thể Anh Hùng Đối Thủ (PvP 14 Lớp)
       b.enemies.forEach(en => {
-        drawMonster(ctx, en, b.tick, b.isBoss13);
+        if (en.isEnemyHero) {
+          drawEnemyHeroFighter(ctx, en, b.tick);
+        } else {
+          drawMonster(ctx, en, b.tick, b.isBoss13);
+        }
       });
 
       // Vẽ Đạn / Cầu Pháp Thuật / Long Ảnh Kiếm Khí
@@ -8299,10 +8840,21 @@ window.AUDIO_BUNDLE = {
         ctx.fillRect(0, 0, W, H);
         ctx.restore();
       }
+
+      // Lớp phủ đếm ngược 3 - 2 - 1 đầu trận P2P & chỉ báo trạng thái mạng
+      if (b.isP2P && typeof drawP2PBattleOverlay === 'function') {
+        drawP2PBattleOverlay(ctx, b, W, H);
+      }
     }
 
     function completeStage(win) {
       battle.active = false;
+      if (battle.isPvP) {
+        completeArenaMatch(win);
+        return;
+      }
+      const replayBtn = document.getElementById('modal-replay-btn');
+      if (replayBtn) replayBtn.textContent = '🔄 Chơi Lại (-10 ⚡)';
       const c = battle.chapter;
       const s = battle.stage;
       const globalIdx = (c - 1) * 13 + s;
@@ -8354,7 +8906,11 @@ window.AUDIO_BUNDLE = {
     function replayCurrentStage() {
       document.getElementById('modal-overlay').classList.add('hidden');
       try { AudioEngine.setSnapshot('UI_PAUSE_OPEN', false); } catch (e) {}
-      startStage(battle.chapter, battle.stage);
+      if (battle && battle.isPvP && battle.pvpOpponent) {
+        startArenaBattle(battle.pvpOpponent);
+      } else {
+        startStage(battle.chapter, battle.stage);
+      }
     }
 
     function closeModalToHub() {
@@ -8389,6 +8945,9 @@ window.AUDIO_BUNDLE = {
       const val = document.getElementById('dev-pass-input').value.trim();
       if (verifyBossKey(val)) {
         isDevAuthorized = true;
+        state.isDevAccount = true;
+        saveGameState();
+        renderAllHub();
         document.getElementById('dev-auth-view').classList.add('hidden');
         document.getElementById('dev-controls-view').classList.remove('hidden');
         document.getElementById('btn-toggle-dev').textContent = '🔧 Quyền Sếp (Đã Mở)';
@@ -8432,6 +8991,2686 @@ window.AUDIO_BUNDLE = {
         Object.assign(state, getDefaultState());
         saveGameState();
         renderAllHub();
+      }
+    }
+
+
+    // ============================================================================
+    // 9. HỆ THỐNG ĐẤU TRƯỜNG ONLINE (PVP 1v1), GHOST PVP, AI VÕ SƯ & ANTI-CHEAT
+    // ============================================================================
+    const ARENA_TITLES = [
+      { id: 'title_rookie', name: 'Tân Binh Cyber', costFame: 0, atkPct: 0, hpPct: 0, color: '#94a3b8' },
+      { id: 'title_gladiator', name: 'Võ Sĩ Huyết Chiến (+4% Công/Máu)', costFame: 100, atkPct: 4, hpPct: 4, color: '#4ade80' },
+      { id: 'title_grandmaster', name: 'Đại Tông Sư Võ Đài (+8% Công/Máu)', costFame: 260, atkPct: 8, hpPct: 8, color: '#38bdf8' },
+      { id: 'title_bloodlord', name: 'Bá Chủ Huyết Long (+14% Công/Máu)', costFame: 520, atkPct: 14, hpPct: 14, color: '#f59e0b' },
+      { id: 'title_cyber_emperor', name: 'Độc Cô Cầu Bại Cyber (+20% Công/Máu)', costFame: 900, atkPct: 20, hpPct: 20, color: '#ef4444' }
+    ];
+
+    const OFFICIAL_ARENA_SEED = [
+      { name: 'Long Hoàng Quyết', heroId: 'long', level: 85, fame: 980, skinId: 'long_emp', weaponId: 'wl_5', helmetId: 'h_5', armorId: 'a_5', bootsId: 'b_5', titleId: 'title_cyber_emperor', upLv: 18 },
+      { name: 'Lôi Đế Cửu Thiên', heroId: 'mage', level: 78, fame: 890, skinId: 'mage_void', weaponId: 'wm_5', helmetId: 'h_4', armorId: 'a_5', bootsId: 'b_4', titleId: 'title_bloodlord', upLv: 16 },
+      { name: 'Titan Thiết Bá', heroId: 'cyber', level: 72, fame: 810, skinId: 'cyber_crimson', weaponId: 'wc_5', helmetId: 'h_4', armorId: 'a_4', bootsId: 'b_4', titleId: 'title_bloodlord', upLv: 15 },
+      { name: 'Kiếm Thánh Thanh Long', heroId: 'long', level: 60, fame: 690, skinId: 'long_jade', weaponId: 'wl_4', helmetId: 'h_4', armorId: 'a_4', bootsId: 'b_4', titleId: 'title_grandmaster', upLv: 13 },
+      { name: 'Huyết Lôi Tiên Tử', heroId: 'mage', level: 52, fame: 580, skinId: 'mage_blood', weaponId: 'wm_4', helmetId: 'h_3', armorId: 'a_3', bootsId: 'b_3', titleId: 'title_grandmaster', upLv: 11 },
+      { name: 'Bóng Ma Cơ Khí', heroId: 'cyber', level: 44, fame: 470, skinId: 'cyber_neon', weaponId: 'wc_3', helmetId: 'h_3', armorId: 'a_3', bootsId: 'b_3', titleId: 'title_gladiator', upLv: 9 },
+      { name: 'Phong Vân Kiếm Khách', heroId: 'long', level: 35, fame: 360, skinId: 'long_jade', weaponId: 'wl_3', helmetId: 'h_3', armorId: 'a_2', bootsId: 'b_2', titleId: 'title_gladiator', upLv: 7 },
+      { name: 'Tinh Hà Pháp Vương', heroId: 'mage', level: 26, fame: 275, skinId: 'mage_default', weaponId: 'wm_2', helmetId: 'h_2', armorId: 'a_2', bootsId: 'b_2', titleId: 'title_gladiator', upLv: 5 },
+      { name: 'Thiết Giáp Tiên Phong', heroId: 'cyber', level: 16, fame: 190, skinId: 'cyber_default', weaponId: 'wc_2', helmetId: 'h_2', armorId: 'a_2', bootsId: 'b_1', titleId: 'title_rookie', upLv: 3 },
+      { name: 'Đao Khách Phố Neon', heroId: 'long', level: 8, fame: 110, skinId: 'long_default', weaponId: 'wl_1', helmetId: 'h_1', armorId: 'a_1', bootsId: 'b_1', titleId: 'title_rookie', upLv: 2 }
+    ];
+
+    const SANDBOX_ARENA_SEED = [
+      { name: '[SẾP] Long Đế Tối Thượng', heroId: 'long', level: 1000, fame: 9999, skinId: 'long_emp', weaponId: 'wl_5', helmetId: 'h_5', armorId: 'a_5', bootsId: 'b_5', titleId: 'title_cyber_emperor', upLv: 95, isDevAccount: true },
+      { name: '[SẾP] Pháp Thần Hỗn Mang', heroId: 'mage', level: 1000, fame: 8850, skinId: 'mage_void', weaponId: 'wm_5', helmetId: 'h_5', armorId: 'a_5', bootsId: 'b_5', titleId: 'title_cyber_emperor', upLv: 88, isDevAccount: true },
+      { name: '[SẾP] Omega Hủy Diệt Giả', heroId: 'cyber', level: 950, fame: 7900, skinId: 'cyber_crimson', weaponId: 'wc_5', helmetId: 'h_5', armorId: 'a_5', bootsId: 'b_5', titleId: 'title_cyber_emperor', upLv: 80, isDevAccount: true },
+      { name: '[GM] Huyết Ngục Chi Vương', heroId: 'long', level: 800, fame: 6400, skinId: 'long_jade', weaponId: 'wl_5', helmetId: 'h_5', armorId: 'a_5', bootsId: 'b_5', titleId: 'title_bloodlord', upLv: 65, isDevAccount: true },
+      { name: '[GM] Lôi Phạt Thiên Tôn', heroId: 'mage', level: 680, fame: 5200, skinId: 'mage_blood', weaponId: 'wm_5', helmetId: 'h_5', armorId: 'a_4', bootsId: 'b_5', titleId: 'title_bloodlord', upLv: 55, isDevAccount: true },
+      { name: '[MOD] Thiết Quyền Bất Bại', heroId: 'cyber', level: 550, fame: 4100, skinId: 'cyber_neon', weaponId: 'wc_4', helmetId: 'h_4', armorId: 'a_5', bootsId: 'b_4', titleId: 'title_grandmaster', upLv: 45, isDevAccount: true },
+      { name: '[SANDBOX] Kiếm Ma Vô Cực', heroId: 'long', level: 420, fame: 3200, skinId: 'long_emp', weaponId: 'wl_4', helmetId: 'h_4', armorId: 'a_4', bootsId: 'b_4', titleId: 'title_grandmaster', upLv: 38, isDevAccount: true },
+      { name: '[SANDBOX] Hư Không Ma Đạo', heroId: 'mage', level: 300, fame: 2300, skinId: 'mage_void', weaponId: 'wm_4', helmetId: 'h_4', armorId: 'a_4', bootsId: 'b_3', titleId: 'title_gladiator', upLv: 30, isDevAccount: true },
+      { name: '[SANDBOX] Titan Thử Nghiệm', heroId: 'cyber', level: 200, fame: 1500, skinId: 'cyber_crimson', weaponId: 'wc_3', helmetId: 'h_3', armorId: 'a_3', bootsId: 'b_3', titleId: 'title_gladiator', upLv: 22, isDevAccount: true },
+      { name: '[SANDBOX] Tân Thủ Quyền Sếp', heroId: 'long', level: 100, fame: 800, skinId: 'long_jade', weaponId: 'wl_3', helmetId: 'h_3', armorId: 'a_3', bootsId: 'b_3', titleId: 'title_rookie', upLv: 15, isDevAccount: true }
+    ];
+
+    // Tính chỉ số chuẩn từ cấu hình Đấu Sĩ
+    function computeFighterStatsFromConfig(cfg) {
+      const hero = HEROES[cfg.heroId] || HEROES.long;
+      const lv = Math.max(1, Math.min(1000, Math.floor(cfg.level || 1)));
+      const upLv = Math.max(1, Math.min(250, Math.floor(cfg.upLv || 1)));
+      const weapon = EQUIPMENT_DB.find(i => i.id === cfg.weaponId) || EQUIPMENT_DB.find(i => i.cat === hero.weaponClass) || EQUIPMENT_DB[0];
+      const helmet = EQUIPMENT_DB.find(i => i.id === cfg.helmetId) || EQUIPMENT_DB[15];
+      const armor = EQUIPMENT_DB.find(i => i.id === cfg.armorId) || EQUIPMENT_DB[20];
+      const boots = EQUIPMENT_DB.find(i => i.id === cfg.bootsId) || EQUIPMENT_DB[25];
+      const titleObj = ARENA_TITLES.find(t => t.id === cfg.titleId) || ARENA_TITLES[0];
+
+      const lvFactor = 1 + (lv - 1) * 0.022 + Math.pow(lv / 36, 1.42);
+      const eqFactor = 1 + (lv - 1) * 0.015;
+
+      const coreAtk = hero.baseAtk + upLv * 22;
+      const equipAtk = (weapon.atk || 0) + (boots.atk || 0);
+      const atk = Math.floor((coreAtk * lvFactor + equipAtk * eqFactor) * (1 + (titleObj.atkPct || 0) / 100));
+
+      const coreHp = hero.baseHp + upLv * 160;
+      const equipHp = (helmet.hp || 0) + (armor.hp || 0) + (boots.hp || 0);
+      const maxHp = Math.floor(((coreHp * lvFactor + equipHp * eqFactor) * 0.35) * (1 + (titleObj.hpPct || 0) / 100));
+
+      const coreDef = hero.baseDef + upLv * 10;
+      const equipDef = (helmet.def || 0) + (armor.def || 0);
+      const def = Math.floor(coreDef * lvFactor + equipDef * eqFactor);
+
+      const crit = Math.min(85, 8 + upLv * 2 + (weapon.crit || 0) + (hero.id === 'long' ? 8 : 0));
+      const spdPct = upLv * 3 + (hero.id === 'long' ? 12 : 0);
+      const spdMult = 1 + Math.min(1.5, spdPct / 100);
+      const power = Math.floor(atk * 4 + maxHp * 0.35 + def * 6 + (crit + spdPct) * 15);
+
+      return { atk, maxHp, def, crit, spdPct, spdMult, power, weapon, helmet, armor, boots };
+    }
+
+    // Hàm kiểm tra trần chỉ số hợp lệ theo Cấp độ & Trang bị (Anti-Cheat)
+    function validateFighterStats(fighterData) {
+      const reasons = [];
+      if (!fighterData || typeof fighterData !== 'object') {
+        return { valid: false, isSandbox: true, reasons: ['Dữ liệu đấu sĩ rỗng hoặc sai định dạng'], clampedFighter: null };
+      }
+
+      const heroId = HEROES[fighterData.heroId] ? fighterData.heroId : 'long';
+      const hero = HEROES[heroId];
+      const level = Math.max(1, Math.min(1000, Math.floor(Number(fighterData.level) || 1)));
+      if (Number(fighterData.level) < 1 || Number(fighterData.level) > 1000) {
+        reasons.push('Cấp độ vượt ngoài phạm vi 1..1000');
+      }
+
+      const weapon = EQUIPMENT_DB.find(i => i.id === fighterData.weaponId && i.cat === hero.weaponClass)
+        || EQUIPMENT_DB.find(i => i.cat === hero.weaponClass);
+      const helmet = EQUIPMENT_DB.find(i => i.id === fighterData.helmetId && i.cat === 'helmet') || EQUIPMENT_DB[15];
+      const armor = EQUIPMENT_DB.find(i => i.id === fighterData.armorId && i.cat === 'armor') || EQUIPMENT_DB[20];
+      const boots = EQUIPMENT_DB.find(i => i.id === fighterData.bootsId && i.cat === 'boots') || EQUIPMENT_DB[25];
+      const skinObj = hero.skins.find(s => s.id === fighterData.skinId) || hero.skins[0];
+      const titleObj = ARENA_TITLES.find(t => t.id === fighterData.titleId) || ARENA_TITLES[0];
+
+      // Trần nâng cấp hợp lệ trên Bảng Chính Thống theo cấp độ (cho phép cày vàng hợp lệ: tối đa level * 1.5 + 22)
+      const maxLegitUpgradeLv = Math.min(180, Math.floor(level * 1.5 + 22));
+      const ceilingStats = computeFighterStatsFromConfig({
+        heroId, level,
+        weaponId: weapon.id, helmetId: helmet.id, armorId: armor.id, bootsId: boots.id,
+        titleId: titleObj.id,
+        upLv: maxLegitUpgradeLv
+      });
+
+      const rawAtk = Math.max(10, Math.floor(Number(fighterData.atk) || ceilingStats.atk));
+      const rawHp = Math.max(100, Math.floor(Number(fighterData.maxHp) || ceilingStats.maxHp));
+      const rawDef = Math.max(5, Math.floor(Number(fighterData.def) || ceilingStats.def));
+      const rawCrit = Math.max(5, Math.min(85, Math.floor(Number(fighterData.crit) || ceilingStats.crit)));
+
+      let isSandbox = Boolean(fighterData.isDevAccount);
+      if (rawAtk > Math.ceil(ceilingStats.atk * 1.05)) {
+        isSandbox = true;
+        reasons.push(`ATK (${rawAtk}) vượt trần hợp lệ (${ceilingStats.atk}) ở Lv.${level}`);
+      }
+      if (rawHp > Math.ceil(ceilingStats.maxHp * 1.05)) {
+        isSandbox = true;
+        reasons.push(`HP (${rawHp}) vượt trần hợp lệ (${ceilingStats.maxHp}) ở Lv.${level}`);
+      }
+      if (rawDef > Math.ceil(ceilingStats.def * 1.05)) {
+        isSandbox = true;
+        reasons.push(`DEF (${rawDef}) vượt trần hợp lệ (${ceilingStats.def}) ở Lv.${level}`);
+      }
+
+      const clampedAtk = Math.min(rawAtk, ceilingStats.atk);
+      const clampedHp = Math.min(rawHp, ceilingStats.maxHp);
+      const clampedDef = Math.min(rawDef, ceilingStats.def);
+      const clampedPower = Math.floor(clampedAtk * 4 + clampedHp * 0.35 + clampedDef * 6 + (rawCrit + ceilingStats.spdPct) * 15);
+      const rawPower = Math.floor(rawAtk * 4 + rawHp * 0.35 + rawDef * 6 + (rawCrit + ceilingStats.spdPct) * 15);
+
+      const clampedFighter = {
+        name: String(fighterData.name || 'Đấu Sĩ Ẩn Danh').slice(0, 22),
+        heroId,
+        level,
+        fame: Math.max(0, Math.floor(Number(fighterData.fame) || 100)),
+        skinId: skinObj.id,
+        weaponId: weapon.id,
+        helmetId: helmet.id,
+        armorId: armor.id,
+        bootsId: boots.id,
+        titleId: titleObj.id,
+        atk: isSandbox ? rawAtk : clampedAtk,
+        maxHp: isSandbox ? rawHp : clampedHp,
+        def: isSandbox ? rawDef : clampedDef,
+        legitAtk: clampedAtk,
+        legitMaxHp: clampedHp,
+        legitDef: clampedDef,
+        crit: rawCrit,
+        spdMult: ceilingStats.spdMult,
+        power: isSandbox ? rawPower : clampedPower,
+        legitPower: clampedPower,
+        isDevAccount: isSandbox
+      };
+
+      return {
+        valid: reasons.length === 0,
+        isSandbox,
+        reasons,
+        clampedFighter
+      };
+    }
+
+    function buildPlayerFighterSnapshot() {
+      const stats = getHeroStats();
+      const hero = HEROES[state.currentHero];
+      return {
+        name: state.playerName || 'Chiến Thần Cyber',
+        heroId: state.currentHero,
+        level: state.level,
+        fame: state.arenaFame || 120,
+        skinId: state.equippedSkin[state.currentHero] || hero.skins[0].id,
+        weaponId: state.equipped[hero.weaponClass],
+        helmetId: state.equipped.helmet,
+        armorId: state.equipped.armor,
+        bootsId: state.equipped.boots,
+        titleId: state.equippedTitle || 'title_rookie',
+        atk: stats.atk,
+        maxHp: stats.maxHp,
+        def: stats.def,
+        crit: stats.crit,
+        spdMult: stats.spdMult,
+        power: stats.power,
+        isDevAccount: Boolean(state.isDevAccount),
+        isPlayerSelf: true
+      };
+    }
+
+    function getArenaLeaderboardEntries(boardType) {
+      const seeds = boardType === 'sandbox' ? SANDBOX_ARENA_SEED : OFFICIAL_ARENA_SEED;
+      const list = seeds.map(s => {
+        const calc = computeFighterStatsFromConfig(s);
+        return {
+          name: s.name,
+          heroId: s.heroId,
+          level: s.level,
+          fame: s.fame,
+          skinId: s.skinId,
+          weaponId: s.weaponId,
+          helmetId: s.helmetId,
+          armorId: s.armorId,
+          bootsId: s.bootsId,
+          titleId: s.titleId,
+          atk: calc.atk,
+          maxHp: calc.maxHp,
+          def: calc.def,
+          crit: calc.crit,
+          spdMult: calc.spdMult,
+          power: calc.power,
+          isDevAccount: Boolean(s.isDevAccount),
+          isPlayerSelf: false
+        };
+      });
+
+      const playerSnap = buildPlayerFighterSnapshot();
+      const check = validateFighterStats(playerSnap);
+      const playerBelongsToSandbox = state.isDevAccount || check.isSandbox;
+
+      if ((boardType === 'official' && !playerBelongsToSandbox) || (boardType === 'sandbox' && playerBelongsToSandbox)) {
+        list.push(Object.assign({}, check.clampedFighter, { isPlayerSelf: true, fame: state.arenaFame }));
+      }
+
+      list.sort((a, b) => (b.fame - a.fame) || (b.power - a.power));
+      return list.slice(0, 10);
+    }
+
+    function switchArenaBoard(boardType) {
+      state.arenaBoardTab = boardType === 'sandbox' ? 'sandbox' : 'official';
+      saveGameState();
+      renderArenaHub();
+    }
+
+    function selectArenaMode(mode) {
+      state.arenaMode = mode === 'overlord' ? 'overlord' : 'fair';
+      saveGameState();
+      renderArenaHub();
+    }
+
+    function saveArenaFighterName(newName) {
+      const cleaned = String(newName || '').trim().slice(0, 22);
+      if (!cleaned) return alert('Vui lòng nhập tên Đấu Sĩ hợp lệ!');
+      state.playerName = cleaned;
+      saveGameState();
+      renderArenaHub();
+    }
+
+    async function syncPlayerToLeaderboard() {
+      const snap = buildPlayerFighterSnapshot();
+      const check = validateFighterStats(snap);
+      if (state.isDevAccount || check.isSandbox) {
+        state.arenaBoardTab = 'sandbox';
+        saveGameState();
+        renderArenaHub();
+        if (window.cloudLeaderboard) {
+          await window.cloudLeaderboard.submitPlayerScore(snap);
+        }
+        alert('Tài khoản đã mở Quyền Sếp hoặc vượt trần chỉ số: Đã đồng bộ lên Bảng Sandbox (Quyền Sếp) & CloudLeaderboard!');
+      } else {
+        state.arenaBoardTab = 'official';
+        saveGameState();
+        renderArenaHub();
+        try { AudioEngine.play('confirm', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+        if (window.cloudLeaderboard) {
+          await window.cloudLeaderboard.submitPlayerScore(snap);
+        }
+      }
+    }
+
+    function buyOrEquipArenaTitle(titleId) {
+      const tObj = ARENA_TITLES.find(t => t.id === titleId);
+      if (!tObj) return;
+      const owned = state.ownedTitles.includes(titleId);
+      if (!owned) {
+        if (state.arenaFame < tObj.costFame) {
+          return alert(`Cần ${tObj.costFame} Điểm Danh Vọng để đổi danh hiệu "${tObj.name}"!`);
+        }
+        state.arenaFame -= tObj.costFame;
+        state.ownedTitles.push(titleId);
+      }
+      state.equippedTitle = titleId;
+      try { AudioEngine.play('power-up', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+      saveGameState();
+      renderAllHub();
+    }
+
+    function exportFighterGhostCode() {
+      const snap = buildPlayerFighterSnapshot();
+      const compact = {
+        v: 43,
+        n: snap.name,
+        h: snap.heroId,
+        lv: snap.level,
+        fm: snap.fame,
+        sk: snap.skinId,
+        w: snap.weaponId,
+        hm: snap.helmetId,
+        ar: snap.armorId,
+        bt: snap.bootsId,
+        tt: snap.titleId,
+        a: snap.atk,
+        hp: snap.maxHp,
+        df: snap.def,
+        cr: snap.crit,
+        dv: snap.isDevAccount ? 1 : 0
+      };
+      const rawJson = JSON.stringify(compact);
+      const code = 'CYBERPVP-' + btoa(encodeURIComponent(rawJson));
+      const box = document.getElementById('ghost-pvp-code-box');
+      if (box) {
+        box.value = code;
+        box.select();
+      }
+      try { navigator.clipboard.writeText(code); } catch (e) {}
+      const statusEl = document.getElementById('ghost-code-status');
+      if (statusEl) {
+        statusEl.textContent = `✔ Đã nén & sao chép Mã Đấu Sĩ (${code.length} ký tự)! Gửi mã này cho bạn bè để khiêu chiến.`;
+      }
+    }
+
+    function decodeFighterGhostCode(codeStr) {
+      const clean = String(codeStr || '').trim().replace(/^CYBERPVP-/i, '');
+      const obj = JSON.parse(decodeURIComponent(atob(clean)));
+      const rawFighter = {
+        name: obj.n || 'Đấu Sĩ Ghost',
+        heroId: obj.h || 'long',
+        level: obj.lv || 1,
+        fame: obj.fm || 100,
+        skinId: obj.sk,
+        weaponId: obj.w,
+        helmetId: obj.hm,
+        armorId: obj.ar,
+        bootsId: obj.bt,
+        titleId: obj.tt || 'title_rookie',
+        atk: obj.a,
+        maxHp: obj.hp,
+        def: obj.df,
+        crit: obj.cr,
+        isDevAccount: Boolean(obj.dv)
+      };
+      return validateFighterStats(rawFighter);
+    }
+
+    function challengeGhostFromCode() {
+      const box = document.getElementById('ghost-pvp-code-box');
+      const code = box ? box.value.trim() : '';
+      if (!code) {
+        return alert('Vui lòng dán Mã Đấu Sĩ của bạn bè (hoặc bấm Xuất Mã Đấu Sĩ để tự đấu với phân thân) trước!');
+      }
+      try {
+        const res = decodeFighterGhostCode(code);
+        if (!res.clampedFighter) return alert('Mã Đấu Sĩ không hợp lệ!');
+        const statusEl = document.getElementById('ghost-code-status');
+        if (statusEl) {
+          statusEl.textContent = res.isSandbox
+            ? `⚠️ Mã Đấu Sĩ thuộc diện Sandbox/Vượt trần (${res.reasons.join(', ') || 'Quyền Sếp'}) — Đã nạp vào Võ Đài!`
+            : `✔ Đã xác thực Mã Đấu Sĩ Chính Thống: ${res.clampedFighter.name} (Lv.${res.clampedFighter.level})!`;
+        }
+        startArenaBattle(res.clampedFighter);
+      } catch (err) {
+        alert('Không thể giải mã Mã Đấu Sĩ! Hãy kiểm tra lại chuỗi Base64.');
+      }
+    }
+
+    function renderArenaHub() {
+      const badge = document.getElementById('arena-account-badge');
+      if (!badge) return;
+
+      const playerSnap = buildPlayerFighterSnapshot();
+      const validation = validateFighterStats(playerSnap);
+      const isSandboxAcc = state.isDevAccount || validation.isSandbox;
+
+      badge.className = 'anti-cheat-pill ' + (isSandboxAcc ? 'sandbox' : 'clean');
+      badge.textContent = isSandboxAcc ? '⚡ Sandbox (Quyền Sếp)' : '✔ Chính Thống';
+
+      const tabOff = document.getElementById('arena-tab-official');
+      const tabSand = document.getElementById('arena-tab-sandbox');
+      if (tabOff) tabOff.classList.toggle('active', state.arenaBoardTab === 'official');
+      if (tabSand) tabSand.classList.toggle('active', state.arenaBoardTab === 'sandbox');
+
+      const descEl = document.getElementById('arena-board-desc');
+      if (descEl) {
+        descEl.textContent = state.arenaBoardTab === 'official'
+          ? 'Top 10 Chính Thống (Kiểm duyệt Anti-Cheat theo Cấp & Trang bị)'
+          : 'Top 10 Sandbox (Dành cho tài khoản mở Quyền Sếp / Thử nghiệm)';
+      }
+
+      const boardList = document.getElementById('arena-leaderboard-list');
+      const entries = getArenaLeaderboardEntries(state.arenaBoardTab);
+      window._currentArenaEntries = entries;
+      if (boardList) {
+        boardList.innerHTML = '';
+        entries.forEach((item, idx) => {
+          const rank = idx + 1;
+          const hero = HEROES[item.heroId] || HEROES.long;
+          const row = document.createElement('div');
+          row.className = `arena-rank-row ${rank <= 3 ? 'top-' + rank : ''} ${item.isPlayerSelf ? 'is-player-row' : ''}`;
+          row.innerHTML = `
+            <div style="display:flex;align-items:center;gap:4px">
+              <span class="rank-badge-num">${rank}</span>
+              <div>
+                <div style="font-weight:800;color:${item.isPlayerSelf ? '#6ee7b7' : '#f8fafc'}">
+                  ${item.name} ${item.isPlayerSelf ? '(Bạn)' : ''}
+                </div>
+                <div style="font-size:11px;color:#94a3b8">
+                  ${hero.name} • Lv.${item.level} • ⚔️ ${item.power.toLocaleString()} • 🎖️ ${item.fame}
+                </div>
+              </div>
+            </div>
+            <button class="arena-challenge-btn" ${state.stamina < 5 ? 'disabled' : ''} onclick="challengeLeaderboardEntry(${idx})">
+              ${item.isPlayerSelf ? '👻 Đấu Phân Thân (-5⚡)' : '⚔️ Khiêu Chiến (-5⚡)'}
+            </button>
+          `;
+          boardList.appendChild(row);
+        });
+      }
+
+      const nameInput = document.getElementById('arena-fighter-name');
+      if (nameInput && document.activeElement !== nameInput) {
+        nameInput.value = state.playerName || 'Chiến Thần Cyber';
+      }
+
+      const curTitle = ARENA_TITLES.find(t => t.id === state.equippedTitle) || ARENA_TITLES[0];
+      const titleTag = document.getElementById('arena-current-title-tag');
+      if (titleTag) {
+        titleTag.textContent = `Danh hiệu: ${curTitle.name}`;
+        titleTag.style.color = curTitle.color;
+      }
+
+      const modeFair = document.getElementById('arena-mode-fair');
+      const modeOver = document.getElementById('arena-mode-overlord');
+      if (modeFair) modeFair.classList.toggle('active', state.arenaMode === 'fair');
+      if (modeOver) modeOver.classList.toggle('active', state.arenaMode === 'overlord');
+
+      const fameEl = document.getElementById('arena-fame-points');
+      if (fameEl) fameEl.textContent = `${(state.arenaFame || 0).toLocaleString()} Điểm`;
+      const winEl = document.getElementById('arena-win-count');
+      if (winEl) winEl.textContent = state.arenaWins || 0;
+      const streakEl = document.getElementById('arena-streak-count');
+      if (streakEl) streakEl.textContent = state.arenaStreak || 0;
+
+      const shopEl = document.getElementById('arena-titles-shop');
+      if (shopEl) {
+        shopEl.innerHTML = '';
+        ARENA_TITLES.forEach(t => {
+          const owned = state.ownedTitles.includes(t.id);
+          const equipped = state.equippedTitle === t.id;
+          const row = document.createElement('div');
+          row.className = 'title-shop-row';
+          row.innerHTML = `
+            <div>
+              <strong style="color:${t.color}">● ${t.name}</strong>
+              <div style="font-size:10px;color:#94a3b8">Yêu cầu: ${t.costFame} Điểm Danh Vọng</div>
+            </div>
+            <button style="padding:5px 10px;border-radius:5px;border:none;font-weight:800;font-size:11px;cursor:pointer;background:${equipped ? '#10b981' : (owned ? '#3b82f6' : '#f59e0b')};color:${equipped || !owned ? '#090d16' : '#fff'}"
+              onclick="buyOrEquipArenaTitle('${t.id}')">
+              ${equipped ? '✔ Đang Dùng' : (owned ? 'Trang Bị' : `Đổi (${t.costFame} 🎖️)`)}
+            </button>
+          `;
+          shopEl.appendChild(row);
+        });
+      }
+
+      const summaryEl = document.getElementById('arena-my-fighter-summary');
+      if (summaryEl) {
+        const hero = HEROES[playerSnap.heroId];
+        const wObj = EQUIPMENT_DB.find(i => i.id === playerSnap.weaponId) || EQUIPMENT_DB[0];
+        summaryEl.innerHTML = `
+          <div>👤 <strong>Đấu Sĩ:</strong> <span style="color:#fde047">${playerSnap.name}</span> (${hero.name} - Lv.${playerSnap.level})</div>
+          <div>🗡️ <strong>Trang bị:</strong> ${wObj.name} | Skin: <span style="color:#86efac">${playerSnap.skinId}</span></div>
+          <div>📊 <strong>Chỉ số thực:</strong> ATK ${playerSnap.atk.toLocaleString()} | HP ${playerSnap.maxHp.toLocaleString()} | Lực chiến: <strong style="color:#f87171">${playerSnap.power.toLocaleString()}</strong></div>
+        `;
+      }
+    }
+
+    function challengeLeaderboardEntry(idx) {
+      const entries = window._currentArenaEntries || getArenaLeaderboardEntries(state.arenaBoardTab);
+      const target = entries[idx];
+      if (!target) return;
+      startArenaBattle(target);
+    }
+
+    function startRandomArenaMatch() {
+      const pool = state.arenaBoardTab === 'sandbox'
+        ? getArenaLeaderboardEntries('sandbox')
+        : getArenaLeaderboardEntries('official').filter(e => !e.isPlayerSelf);
+      const chosen = pool[Math.floor(Math.random() * pool.length)] || getArenaLeaderboardEntries('official')[0];
+      startArenaBattle(chosen);
+    }
+
+    function startArenaBattle(opponentRaw) {
+      if (state.stamina < 5) {
+        alert('Cần 5 ⚡ Thể Lực để vào Đấu Trường Online! Hãy dùng Bình Thể Lực 🧪 ở thanh trên.');
+        return;
+      }
+      const validated = validateFighterStats(opponentRaw);
+      const opp = validated.clampedFighter;
+      if (!opp) return alert('Dữ liệu đối thủ không hợp lệ!');
+
+      state.stamina -= 5;
+      saveGameState();
+      renderTopBar();
+      setupHighDPICanvases();
+      clearVFXPool();
+
+      const pStats = getHeroStats();
+      const isFairMode = state.arenaMode === 'fair';
+
+      // Chế độ "Võ Đài Công Bằng": Chuẩn hóa HP/ATK/DEF ngang tầm nhau, giữ nguyên Vũ khí, Skin & Combo
+      const playerHero = HEROES[state.currentHero];
+      const oppHero = HEROES[opp.heroId] || HEROES.long;
+      const oppWeapon = EQUIPMENT_DB.find(i => i.id === opp.weaponId) || EQUIPMENT_DB.find(i => i.cat === oppHero.weaponClass) || EQUIPMENT_DB[0];
+
+      const pHp = isFairMode ? Math.round(playerHero.baseHp * 16) : pStats.maxHp;
+      const pAtk = isFairMode ? Math.round(playerHero.baseAtk * 15) : pStats.atk;
+      const pDef = isFairMode ? Math.round(playerHero.baseDef * 12) : pStats.def;
+
+      const eHp = isFairMode ? Math.round(oppHero.baseHp * 16) : (( !state.isDevAccount && validated.isSandbox ) ? opp.legitMaxHp : opp.maxHp);
+      const eAtk = isFairMode ? Math.round(oppHero.baseAtk * 15) : (( !state.isDevAccount && validated.isSandbox ) ? opp.legitAtk : opp.atk);
+      const eDef = isFairMode ? Math.round(oppHero.baseDef * 12) : (( !state.isDevAccount && validated.isSandbox ) ? opp.legitDef : opp.def);
+      const eArmor = Math.round(eHp * (opp.heroId === 'cyber' ? 0.32 : 0.22));
+
+      const wSkillMaxCd = Math.max(120, Math.round(300 / pStats.spdMult));
+      const dashMaxCd = Math.max(65, Math.round(150 / pStats.spdMult));
+
+      battle = {
+        active: true,
+        isPvP: true,
+        pvpMode: state.arenaMode,
+        pvpOpponent: opp,
+        chapter: 6,
+        stage: 13,
+        isBoss13: false,
+        difficultyScale: 1,
+        theme: ARENA_THEMES[2],
+        wave: 1, maxWaves: 1, tick: 0, shake: 0, hitstopTimer: 0, groundY: 385,
+        camX: 0, camY: 0, camZoom: 1, targetZoom: 1, flashAlpha: 0, flashColor: '#ffffff',
+        inputBuffer: [], lastInputTime: 0, queuedKey: null, quickComboCd: 0,
+        hitStreak: 0, maxHitStreak: 0, hitTimer: 0,
+        enemyComboStreak: 0, enemyComboResetTimer: 0,
+        player: {
+          x: 240, y: 385, vx: 0, vy: 0, facing: 1, prevFacing: 1,
+          hp: pHp, maxHp: pHp, atk: pAtk, def: pDef, crit: pStats.crit,
+          spdMult: pStats.spdMult,
+          // Đầu trận PvP: Cả 2 bên bắt đầu với 0% Nộ Final (L) và Kỹ năng Vũ khí (U) hồi 3 giây (180 ticks)
+          rage: 0, wSkillCd: 180, wSkillMaxCd, dashCd: 0, dashMaxCd, invincibleTimer: 0,
+          actionState: 'idle', actionTimer: 0, attackLockTimer: 0,
+          landingTimer: 0, turnTimer: 0, hitReactionTimer: 0, stunTimer: 0, wasInAir: false
+        },
+        afterimages: [], wSkillScene: null, finalScene: null,
+        enemyWSkillScene: null, enemyFinalScene: null,
+        enemies: [
+          {
+            id: ++enemyUidCounter,
+            isBoss: true,
+            isEnemyHero: true,
+            type: 'enemy_hero',
+            name: opp.name,
+            heroId: opp.heroId,
+            level: opp.level,
+            fame: opp.fame,
+            skinId: opp.skinId,
+            weaponId: opp.weaponId,
+            helmetId: opp.helmetId,
+            armorId: opp.armorId,
+            bootsId: opp.bootsId,
+            skillMult: oppWeapon.skillMult || 4.5,
+            x: 920, y: 385, vx: 0, vy: 0, facing: -1,
+            hp: eHp, maxHp: eHp,
+            armor: eArmor, maxArmor: eArmor,
+            atk: eAtk, def: eDef, crit: opp.crit || 20, spdMult: opp.spdMult || 1.15,
+            // Đầu trận PvP: 0% Nộ Final (L) & Kỹ năng Vũ khí (U) hồi 3 giây (180 ticks)
+            rage: 0, wSkillCd: 180, wSkillMaxCd: 240,
+            dashCd: 0, dashMaxCd: 120, breakerCd: 0, invincibleTimer: 0,
+            actionState: 'idle', actionTimer: 0, attackLockTimer: 0,
+            hitReactionTimer: 0, comboHitTaken: 0, comboResetTimer: 0,
+            cd: 25, stun: 0, hitFlash: 0, wasInAir: false, landingTimer: 0
+          }
+        ],
+        projectiles: [], warnings: [], particles: [], texts: []
+      };
+
+      clearAllHoldKeys();
+      document.body.classList.add('in-battle');
+      document.getElementById('hub-screen').classList.add('hidden');
+      document.getElementById('battle-screen').classList.remove('hidden');
+
+      document.getElementById('hud-hero-name').textContent = `${state.playerName.toUpperCase()} (${playerHero.name.toUpperCase()})`;
+      document.getElementById('hud-stage-label').textContent = isFairMode ? '⚖️ Võ Đài Công Bằng (1v1)' : '🐉 Bá Chủ Huyết Long (1v1)';
+      document.getElementById('hud-wave-badge').textContent = 'HIỆP 1 / ĐẤU TRƯỜNG 1v1';
+
+      document.getElementById('boss-hud-box').style.visibility = 'visible';
+      document.getElementById('hud-boss-name').textContent = `${opp.name.toUpperCase()} — ${oppHero.name.toUpperCase()} (Lv.${opp.level})`;
+      const armorTextEl = document.getElementById('hud-boss-armor-text');
+      if (armorTextEl) {
+        armorTextEl.textContent = 'NỘI NĂNG HỘ THỂ: 100% | NỘ FINAL ĐỐI THỦ: 0%';
+      }
+
+      try {
+        AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
+        AudioEngine.startAmbient(6);
+        AudioEngine.play('notification', { source: 'ui', bypassCooldown: true });
+      } catch (e) {}
+    }
+
+    // Bộ não AI Võ Sư chuyên biệt theo đúng đặc trưng 3 phái (Long Võ Sư, Pháp Sư, Thiết Quyền Cyber)
+    function updateEnemyHeroAI(en) {
+      const b = battle;
+      const p = b.player;
+
+      if (en.wSkillCd > 0) en.wSkillCd--;
+      if (en.dashCd > 0) en.dashCd--;
+      if (en.breakerCd > 0) en.breakerCd--;
+      if (en.invincibleTimer > 0) en.invincibleTimer--;
+      if (en.hitReactionTimer > 0) en.hitReactionTimer--;
+      if (en.landingTimer > 0) en.landingTimer--;
+      if (en.comboResetTimer > 0) {
+        en.comboResetTimer--;
+        if (en.comboResetTimer === 0) en.comboHitTaken = 0;
+      }
+      if (en.attackLockTimer > 0) en.attackLockTimer--;
+      if (en.actionTimer > 0) {
+        en.actionTimer--;
+        if (en.actionTimer === 0) en.actionState = 'idle';
+      }
+
+      // Vật lý trọng lực cho Tướng đối thủ
+      en.x = Math.max(45, Math.min(1135, en.x + (en.vx || 0)));
+      en.vx = (en.vx || 0) * 0.78;
+      en.y = (en.y || b.groundY) + (en.vy || 0);
+      if (en.y < b.groundY) {
+        en.vy = (en.vy || 0) + 0.72;
+        en.wasInAir = true;
+      } else {
+        if (en.wasInAir) {
+          en.wasInAir = false;
+          en.landingTimer = 8;
+          spawnLandingDust(en.x, b.groundY);
+        }
+        en.y = b.groundY;
+        en.vy = 0;
+      }
+
+      if (en.stun > 0) {
+        en.stun--;
+        if (en.stun === 0 && en.maxArmor > 0) {
+          en.armor = Math.round(en.maxArmor * 0.85);
+          b.texts.push({ x: en.x, y: en.y - 85, text: '🛡️ HỒI NỘI NĂNG HỘ THỂ!', color: '#38bdf8', life: 35 });
+        }
+        return;
+      }
+
+      if (b.enemyWSkillScene || b.enemyFinalScene) return;
+
+      const dx = p.x - en.x;
+      const absDx = Math.abs(dx);
+      const dir = dx >= 0 ? 1 : -1;
+      en.facing = dir;
+
+      // Ưu tiên tung Tuyệt Kỹ Final (L) khi đủ 100% Nộ
+      if (en.rage >= 100 && absDx < 460 && en.attackLockTimer <= 0) {
+        triggerEnemyHeroFinal(en);
+        return;
+      }
+
+      // Ưu tiên tung Tuyệt Kỹ Vũ Khí (U) khi hết 3s hồi đầu trận và trong tầm
+      if (en.wSkillCd <= 0 && absDx < 420 && en.attackLockTimer <= 0) {
+        triggerEnemyHeroWSkill(en);
+        return;
+      }
+
+      if (en.cd > 0) en.cd--;
+
+      // 1. AI LONG VÕ SƯ ('long'): Áp sát cực nhanh, dùng chuỗi J-J-K, nhảy W-K và lướt né
+      if (en.heroId === 'long') {
+        if (en.dashCd <= 0 && ((b.wSkillScene && absDx < 260) || absDx > 300)) {
+          en.dashCd = en.dashMaxCd;
+          en.invincibleTimer = 18;
+          en.actionState = 'dash';
+          en.actionTimer = 14;
+          const dashDir = b.wSkillScene ? -dir : dir;
+          for (let i = 1; i <= 4; i++) {
+            b.afterimages.push({
+              x: en.x + dashDir * i * 22, y: en.y, facing: en.facing, life: 14,
+              heroId: en.heroId,
+              customGear: { skinId: en.skinId, weaponId: en.weaponId, helmetId: en.helmetId, armorId: en.armorId, bootsId: en.bootsId }
+            });
+          }
+          en.x = Math.max(50, Math.min(1130, en.x + dashDir * 130));
+          try { AudioEngine.play('dash', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+          return;
+        }
+
+        if (absDx > 95) {
+          en.vx = dir * 5.6;
+        }
+        if (en.cd <= 0 && en.attackLockTimer <= 0) {
+          if (absDx <= 190 && absDx > 115 && en.y >= b.groundY - 4) {
+            // Nhảy Phi Long Xung Thiên Kích (W-K)
+            en.y -= 6;
+            en.vy = -12.5;
+            en.vx = dir * 13;
+            executeEnemyHeroAttack(en, 'W-K');
+            en.cd = 36;
+          } else if (absDx <= 135) {
+            const roll = Math.random();
+            if (roll < 0.55) {
+              executeEnemyHeroAttack(en, 'J-J-K');
+              en.cd = 38;
+            } else {
+              executeEnemyHeroAttack(en, roll < 0.8 ? 'J' : 'K');
+              en.cd = 22;
+            }
+          }
+        }
+      }
+      // 2. AI PHÁP SƯ ('mage'): Giữ khoảng cách, cấu rỉa tầm xa, nhảy W-J và tung kỹ năng khi người chơi lao vào
+      else if (en.heroId === 'mage') {
+        if (absDx < 165) {
+          if (en.dashCd <= 0) {
+            // Lướt lùi giữ khoảng cách an toàn
+            en.dashCd = en.dashMaxCd;
+            en.invincibleTimer = 18;
+            en.actionState = 'dash';
+            en.actionTimer = 14;
+            const retreatDir = en.x > 980 ? dir : -dir;
+            en.x = Math.max(60, Math.min(1120, en.x + retreatDir * 145));
+            try { AudioEngine.play('dash', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+          } else if (en.y >= b.groundY - 4 && en.cd <= 0) {
+            // Nhảy W-J Thiên Lôi Phạt Tội khi người chơi áp sát
+            en.y -= 8;
+            en.vy = -13;
+            executeEnemyHeroAttack(en, 'W-J');
+            en.cd = 42;
+          } else {
+            en.vx = -dir * 4.2;
+          }
+        } else if (absDx > 430) {
+          en.vx = dir * 3.8;
+        }
+
+        if (en.cd <= 0 && en.attackLockTimer <= 0) {
+          const roll = Math.random();
+          if (roll < 0.38) {
+            executeEnemyHeroAttack(en, 'J-J-K');
+            en.cd = 46;
+          } else if (roll < 0.72) {
+            executeEnemyHeroAttack(en, 'J');
+            en.cd = 28;
+          } else {
+            executeEnemyHeroAttack(en, 'K');
+            en.cd = 32;
+          }
+        }
+      }
+      // 3. AI THIẾT QUYỀN CYBER ('cyber'): Đấu sức cận chiến, tận dụng Giáp Hộ Thể và phản công hạng nặng
+      else {
+        if (absDx > 90) {
+          en.vx = dir * 4.3;
+        }
+        // Tái kích hoạt Giáp Hộ Thể phản công khi bị áp sát
+        if (en.dashCd <= 0 && absDx <= 130 && en.armor < en.maxArmor * 0.5) {
+          en.dashCd = en.dashMaxCd;
+          en.armor = Math.min(en.maxArmor, en.armor + Math.round(en.maxArmor * 0.35));
+          b.texts.push({ x: en.x, y: en.y - 82, text: '🦾 GIÁP HỘ THỂ PHẢN CÔNG!', color: '#f97316', life: 30 });
+        }
+        if (en.cd <= 0 && en.attackLockTimer <= 0 && absDx <= 165) {
+          const roll = Math.random();
+          if (roll < 0.5) {
+            executeEnemyHeroAttack(en, 'J-J-K');
+            en.cd = 40;
+          } else if (roll < 0.78) {
+            executeEnemyHeroAttack(en, 'W-J');
+            en.cd = 36;
+          } else {
+            executeEnemyHeroAttack(en, 'J');
+            en.cd = 24;
+          }
+        }
+      }
+    }
+
+    function executeEnemyHeroAttack(en, code) {
+      const b = battle;
+      const p = b.player;
+      const isCombo = code.length > 1;
+      const mult = isCombo ? 2.15 : (code === 'K' ? 1.25 : 1.0);
+
+      en.actionState = isCombo ? 'combo_attack' : (code === 'K' ? 'kick' : 'punch');
+      en.actionTimer = isCombo ? 20 : 15;
+      en.attackLockTimer = isCombo ? 20 : 14;
+      en.rage = Math.min(100, (en.rage || 0) + (isCombo ? 8 : 5));
+
+      if (en.heroId === 'mage') {
+        const count = isCombo ? 3 : 1;
+        for (let i = 0; i < count; i++) {
+          b.projectiles.push({
+            fromPlayer: false,
+            x: en.x + en.facing * (34 + i * 24),
+            y: en.y - 26 - (i % 2) * 12,
+            vx: en.facing * (isCombo ? 14 : 11.5),
+            r: isCombo ? 13 : 9,
+            color: isCombo ? '#c084fc' : '#38bdf8',
+            dmg: en.atk * (mult / count) * 0.85
+          });
+        }
+        try { AudioEngine.play('spell-cast', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+        return;
+      }
+
+      const range = en.heroId === 'long' ? (isCombo ? 210 : 145) : (isCombo ? 195 : 135);
+      try {
+        AudioEngine.play(en.heroId === 'long' ? 'sword-swing' : 'punch', { source: 'enemy', sourceX: en.x });
+      } catch (e) {}
+
+      spawnPooledVFX({
+        kind: en.heroId === 'long' ? 'weapon_trail' : 'shockwave',
+        x: en.x + en.facing * 44,
+        y: en.y - 26,
+        r: range * 0.45,
+        maxR: range * 0.68,
+        color: en.heroId === 'long' ? '#ef4444' : '#f97316',
+        subColor: '#fde047',
+        dir: en.facing,
+        life: 13
+      });
+
+      const dx = p.x - en.x;
+      if ((dx * en.facing >= -40) && Math.abs(dx) <= range && Math.abs(p.y - en.y) < 110) {
+        damagePlayer(en.atk * mult * 0.85);
+        if (isCombo && p.invincibleTimer <= 0) {
+          p.stunTimer = 24;
+        }
+      }
+    }
+
+    function triggerEnemyHeroWSkill(en) {
+      const b = battle;
+      en.wSkillCd = en.wSkillMaxCd || 240;
+      en.actionState = 'wskill';
+      en.actionTimer = 42;
+      en.attackLockTimer = 42;
+      b.texts.push({ x: en.x, y: en.y - 92, text: `⚡ ĐỐI THỦ TUNG TUYỆT KỸ VŨ KHÍ (U)!`, color: '#38bdf8', life: 36 });
+      try { AudioEngine.play('fireball', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+
+      b.enemyWSkillScene = {
+        hero: en.heroId,
+        timer: 0,
+        maxTimer: 46,
+        slashX: en.x + en.facing * 45,
+        slashY: en.y - 38,
+        dir: en.facing,
+        hitPlayer: false
+      };
+    }
+
+    function triggerEnemyHeroFinal(en) {
+      const b = battle;
+      en.rage = 0;
+      en.invincibleTimer = 45;
+      en.actionState = 'final_skill';
+      en.actionTimer = 65;
+      en.attackLockTimer = 65;
+      b.shake = 20;
+      b.flashAlpha = 0.35;
+      b.flashColor = '#ef4444';
+      b.texts.push({ x: en.x, y: en.y - 102, text: `🔥 ĐỐI THỦ TUNG SKILL FINAL (L)!`, color: '#fde047', life: 45 });
+      try { AudioEngine.play('dragon-roar', { source: 'boss', sourceX: en.x }); } catch (e) {}
+
+      b.enemyFinalScene = {
+        hero: en.heroId,
+        timer: 0,
+        maxTimer: 70,
+        orbX: Math.max(160, Math.min(1020, en.x + en.facing * 220)),
+        orbY: b.groundY - 95
+      };
+    }
+
+    function updateEnemyPvPSkills() {
+      const b = battle;
+      const en = b.enemies.find(e => e.isEnemyHero);
+      const p = b.player;
+      if (!en) {
+        b.enemyWSkillScene = null;
+        b.enemyFinalScene = null;
+        return;
+      }
+
+      if (b.enemyWSkillScene) {
+        const ws = b.enemyWSkillScene;
+        ws.timer++;
+        if (ws.hero === 'long') {
+          ws.slashX += ws.dir * 19;
+          if (!ws.hitPlayer && Math.abs(p.x - ws.slashX) < 95 && Math.abs(p.y - b.groundY) < 110) {
+            ws.hitPlayer = true;
+            damagePlayer(en.atk * 2.8);
+          }
+        } else if (ws.hero === 'mage') {
+          if (ws.timer % 12 === 0) {
+            const dx = (p.x - en.x) * en.facing;
+            if (dx >= -20 && dx <= 430) damagePlayer(en.atk * 0.75);
+          }
+        } else {
+          if (ws.timer === 28) {
+            b.shake = 20;
+            spawnPooledVFX({ kind: 'shockwave', x: en.x, y: b.groundY, r: 20, maxR: 310, color: '#38bdf8', subColor: '#f97316', life: 18 });
+            if (Math.abs(p.x - en.x) <= 340) damagePlayer(en.atk * 2.9);
+          }
+        }
+        if (ws.timer >= ws.maxTimer) b.enemyWSkillScene = null;
+      }
+
+      if (b.enemyFinalScene) {
+        const sc = b.enemyFinalScene;
+        sc.timer++;
+        if (sc.timer % 14 === 0 && sc.timer <= 56) {
+          if (Math.abs(p.x - en.x) <= 580) {
+            damagePlayer(en.atk * 1.15);
+          }
+        }
+        if (sc.timer >= sc.maxTimer) b.enemyFinalScene = null;
+      }
+    }
+
+    function drawEnemyPvPSkills(ctx, b) {
+      const en = b.enemies.find(e => e.isEnemyHero);
+      if (!en) return;
+
+      if (b.enemyWSkillScene) {
+        const ws = b.enemyWSkillScene;
+        ctx.save();
+        if (ws.hero === 'long') {
+          drawBloodDragonSpirit(ctx, ws.slashX, ws.slashY, ws.dir, b.tick, 0.78, false, 0.9);
+        } else if (ws.hero === 'mage') {
+          drawProceduralLightningArc(ctx, en.x + en.facing * 25, en.y - 30, en.x + en.facing * 410, en.y - 25, 7, 18, '#c084fc', '#ffffff', 3.5, b.tick);
+        } else {
+          ctx.strokeStyle = '#f97316';
+          ctx.lineWidth = 3.5;
+          ctx.beginPath();
+          ctx.arc(en.x, en.y - 25, 45 + (ws.timer % 8) * 4, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      if (b.enemyFinalScene) {
+        const sc = b.enemyFinalScene;
+        ctx.save();
+        if (sc.hero === 'long') {
+          drawBloodDragonSpirit(ctx, en.x + en.facing * 80, en.y - 75, en.facing, b.tick, 1.22, sc.timer > 40, 0.92);
+        } else if (sc.hero === 'mage') {
+          const r = 28 + sc.timer * 0.9;
+          const g = ctx.createRadialGradient(sc.orbX, sc.orbY, 4, sc.orbX, sc.orbY, r);
+          g.addColorStop(0, '#ffffff');
+          g.addColorStop(0.45, '#c084fc');
+          g.addColorStop(1, 'rgba(56,189,248,0)');
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(sc.orbX, sc.orbY, r, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          const mx = en.x + en.facing * 36;
+          const my = en.y - 32;
+          ctx.fillStyle = 'rgba(249, 115, 22, 0.65)';
+          ctx.fillRect(mx, my - 26, en.facing * 860, 52);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(mx, my - 8, en.facing * 860, 16);
+        }
+        ctx.restore();
+      }
+    }
+
+    function drawEnemyHeroFighter(ctx, en, tick) {
+      const b = battle;
+      const resolvedState = resolveEntityActionState(en, en.actionState, b.enemyWSkillScene, b.enemyFinalScene);
+      const customGear = {
+        skinId: en.skinId,
+        weaponId: en.weaponId,
+        helmetId: en.helmetId,
+        armorId: en.armorId,
+        bootsId: en.bootsId,
+        resolvedState
+      };
+
+      drawHeroCharacter(ctx, en.x, en.y, en.facing, tick, en.heroId, resolvedState, 1, 'side', customGear);
+
+      // Thanh trạng thái nổi trên đầu Tướng Đối Thủ
+      ctx.save();
+      ctx.translate(en.x, en.y - 92);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.2;
+      ctx.fillRect(-44, -18, 88, 12);
+      ctx.strokeRect(-44, -18, 88, 12);
+
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${en.name} (Lv.${en.level})`, 0, -9);
+
+      // Thanh Máu đỏ
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-40, -3, 80, 5);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(-40, -3, 80 * Math.max(0, en.hp / en.maxHp), 5);
+
+      // Thanh Nội Năng Hộ Thể & Nộ
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(-40, 3, 80, 3.5);
+      ctx.fillStyle = en.armor > 0 ? '#38bdf8' : '#f97316';
+      const subPct = en.armor > 0 ? (en.armor / Math.max(1, en.maxArmor)) : ((en.rage || 0) / 100);
+      ctx.fillRect(-40, 3, 80 * Math.max(0, Math.min(1, subPct)), 3.5);
+      ctx.restore();
+    }
+
+    function completeArenaMatch(win) {
+      const b = battle;
+      const opp = b.pvpOpponent || { name: 'Đấu Sĩ', level: state.level, fame: 150 };
+      try {
+        AudioEngine.stopAmbient();
+        AudioEngine.setSnapshot('UI_PAUSE_OPEN', true);
+      } catch (e) {}
+
+      const modal = document.getElementById('modal-overlay');
+      modal.classList.remove('hidden');
+      const replayBtn = document.getElementById('modal-replay-btn');
+      if (replayBtn) replayBtn.textContent = '🔄 Tái Đấu PvP (-5 ⚡)';
+
+      if (win) {
+        const fameGain = b.pvpMode === 'overlord' ? 35 : 25;
+        const goldGain = Math.floor(1200 + opp.level * 180 + state.arenaStreak * 250);
+        const expGain = Math.floor(900 + opp.level * 120);
+
+        state.arenaFame = (state.arenaFame || 0) + fameGain;
+        state.arenaWins = (state.arenaWins || 0) + 1;
+        state.arenaStreak = (state.arenaStreak || 0) + 1;
+        state.gold += goldGain;
+        addExp(expGain);
+
+        try {
+          AudioEngine.play('victory', { source: 'ui', bypassCooldown: true });
+          AudioEngine.playCoinBurst(5, 110);
+        } catch (e) {}
+
+        saveGameState();
+        document.getElementById('modal-title').textContent = '🏆 ĐẠI THẮNG VÕ ĐÀI PVP!';
+        document.getElementById('modal-desc').textContent =
+          `Hạ gục Đấu Sĩ "${opp.name}" trong chế độ ${b.pvpMode === 'fair' ? 'Võ Đài Công Bằng' : 'Bá Chủ Huyết Long'}! Nhận +${fameGain} Điểm Danh Vọng 🎖️, +${goldGain.toLocaleString()} Vàng 💰 và +${expGain.toLocaleString()} EXP (Chuỗi thắng: ${state.arenaStreak}).`;
+      } else {
+        state.arenaStreak = 0;
+        state.arenaFame = (state.arenaFame || 0) + 5;
+        try { AudioEngine.play('game-over', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+        saveGameState();
+        document.getElementById('modal-title').textContent = '💀 THẤT BẠI TRÊN VÕ ĐÀI!';
+        document.getElementById('modal-desc').textContent =
+          `Đấu Sĩ "${opp.name}" đã chiến thắng! Bạn nhận +5 Điểm Danh Vọng khích lệ. Mẹo: Bấm Shift khi có >= 30% Nộ lúc bị trúng đòn để kích hoạt Bộc Phá Thoát Hiểm!`;
+      }
+    }
+
+
+    // ============================================================================
+    // 10. GIAI ĐOẠN 2: KIẾN TRÚC MẠNG P2P 1v1 (WEBRTC - PEERJS v1.5.4 "HOST AUTHORITY")
+    //     & ĐỒNG BỘ BẢNG XẾP HẠNG ĐÁM MÂY (CLASS CloudLeaderboard - FETCH REST API)
+    // ============================================================================
+
+    /**
+     * CLASS CloudLeaderboard
+     * Sử dụng chuẩn fetch() API tương thích Firebase Realtime Database REST API & Supabase PostgREST.
+     * Điền trực tiếp URL vào DEFAULT_CLOUD_CONFIG bên dưới hoặc nhập qua nút "☁️ Cloud API" trên giao diện.
+     */
+    const DEFAULT_CLOUD_CONFIG = {
+      provider: 'firebase', // 'firebase' hoặc 'supabase'
+      // Điền URL Firebase Realtime Database REST API của bạn vào đây (VD: 'https://your-project-id-default-rtdb.asia-southeast1.firebasedatabase.app')
+      firebaseDatabaseUrl: '',
+      // Hoặc điền URL Supabase & Anon Key của bạn vào đây (VD: 'https://your-project-id.supabase.co')
+      supabaseUrl: '',
+      supabaseAnonKey: '',
+      supabaseTable: 'arena_leaderboard'
+    };
+
+    class CloudLeaderboard {
+      constructor(config = {}) {
+        const savedCfg = this._loadSavedConfig();
+        this.provider = config.provider || savedCfg.provider || DEFAULT_CLOUD_CONFIG.provider;
+        this.firebaseDatabaseUrl = (config.firebaseDatabaseUrl ?? savedCfg.firebaseDatabaseUrl ?? DEFAULT_CLOUD_CONFIG.firebaseDatabaseUrl).replace(/\/+$/, '');
+        this.supabaseUrl = (config.supabaseUrl ?? savedCfg.supabaseUrl ?? DEFAULT_CLOUD_CONFIG.supabaseUrl).replace(/\/+$/, '');
+        this.supabaseAnonKey = config.supabaseAnonKey ?? savedCfg.supabaseAnonKey ?? DEFAULT_CLOUD_CONFIG.supabaseAnonKey;
+        this.supabaseTable = config.supabaseTable || DEFAULT_CLOUD_CONFIG.supabaseTable;
+        this.cacheKey = 'cyber_hlq_cloud_leaderboard_v44';
+        this.cachedBoards = this._loadCache();
+        this.lastSyncTime = null;
+        this.lastError = null;
+      }
+
+      _loadSavedConfig() {
+        try {
+          const raw = localStorage.getItem('cyber_hlq_cloud_cfg_v44');
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      saveConfig(newCfg = {}) {
+        if (newCfg.provider) this.provider = newCfg.provider;
+        if (typeof newCfg.firebaseDatabaseUrl === 'string') this.firebaseDatabaseUrl = newCfg.firebaseDatabaseUrl.trim().replace(/\/+$/, '');
+        if (typeof newCfg.supabaseUrl === 'string') this.supabaseUrl = newCfg.supabaseUrl.trim().replace(/\/+$/, '');
+        if (typeof newCfg.supabaseAnonKey === 'string') this.supabaseAnonKey = newCfg.supabaseAnonKey.trim();
+        try {
+          localStorage.setItem('cyber_hlq_cloud_cfg_v44', JSON.stringify({
+            provider: this.provider,
+            firebaseDatabaseUrl: this.firebaseDatabaseUrl,
+            supabaseUrl: this.supabaseUrl,
+            supabaseAnonKey: this.supabaseAnonKey
+          }));
+        } catch (e) {}
+      }
+
+      _loadCache() {
+        try {
+          const raw = localStorage.getItem(this.cacheKey);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') return parsed;
+          }
+        } catch (e) {}
+        return { official: [], sandbox: [] };
+      }
+
+      _saveCache() {
+        try {
+          localStorage.setItem(this.cacheKey, JSON.stringify(this.cachedBoards));
+        } catch (e) {}
+      }
+
+      isCloudUrlConfigured() {
+        if (this.provider === 'supabase') {
+          return Boolean(this.supabaseUrl && this.supabaseUrl.startsWith('http'));
+        }
+        return Boolean(this.firebaseDatabaseUrl && this.firebaseDatabaseUrl.startsWith('http'));
+      }
+
+      /**
+       * Lấy danh sách Top Đấu Sĩ từ Đám Mây (Firebase Realtime Database REST API hoặc Supabase REST API)
+       * @param {'official'|'sandbox'} boardType
+       * @param {number} limit
+       */
+      async fetchTopPlayers(boardType = 'official', limit = 10) {
+        const cleanBoard = boardType === 'sandbox' ? 'sandbox' : 'official';
+        this._updateStatusBanner('⏳ Đang tải Bảng Xếp Hạng Đám Mây...', '#fde047');
+
+        if (this.isCloudUrlConfigured()) {
+          try {
+            let rawRecords = [];
+            if (this.provider === 'firebase') {
+              const endpoint = `${this.firebaseDatabaseUrl}/leaderboards/${cleanBoard}.json`;
+              const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+              });
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              const data = await response.json();
+              if (data && typeof data === 'object') {
+                rawRecords = Array.isArray(data) ? data.filter(Boolean) : Object.values(data);
+              }
+            } else {
+              const endpoint = `${this.supabaseUrl}/rest/v1/${this.supabaseTable}?board_type=eq.${cleanBoard}&order=fame.desc,power.desc&limit=${limit}`;
+              const headers = {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              };
+              if (this.supabaseAnonKey) {
+                headers['apikey'] = this.supabaseAnonKey;
+                headers['Authorization'] = `Bearer ${this.supabaseAnonKey}`;
+              }
+              const response = await fetch(endpoint, { method: 'GET', headers });
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              const data = await response.json();
+              if (Array.isArray(data)) rawRecords = data;
+            }
+
+            const sanitized = [];
+            rawRecords.forEach(rec => {
+              const check = validateFighterStats(rec);
+              if (check.clampedFighter) {
+                if (cleanBoard === 'official' && check.isSandbox) return;
+                sanitized.push(Object.assign({}, check.clampedFighter, {
+                  fame: Math.max(0, Number(rec.fame) || 100),
+                  isPlayerSelf: rec.name === state.playerName
+                }));
+              }
+            });
+
+            if (sanitized.length > 0) {
+              sanitized.sort((a, b) => (b.fame - a.fame) || (b.power - a.power));
+              this.cachedBoards[cleanBoard] = sanitized.slice(0, limit);
+              this._saveCache();
+              this.lastSyncTime = new Date();
+              this.lastError = null;
+              this._updateStatusBanner(`✔ Đã đồng bộ Cloud (${this.provider.toUpperCase()}): ${this.cachedBoards[cleanBoard].length} Đấu Sĩ`, '#86efac');
+              return this.cachedBoards[cleanBoard];
+            }
+          } catch (err) {
+            this.lastError = err.message || String(err);
+            this._updateStatusBanner(`⚠️ Lỗi kết nối Cloud (${this.lastError}) — Đang dùng Cache/Local`, '#fca5a5');
+          }
+        } else {
+          this._updateStatusBanner('☁️ CloudLeaderboard sẵn sàng (Điền URL Firebase/Supabase để đồng bộ toàn cầu)', '#86efac');
+        }
+
+        const localEntries = getArenaLeaderboardEntries(cleanBoard);
+        const merged = [...(this.cachedBoards[cleanBoard] || []), ...localEntries];
+        const uniqueByName = new Map();
+        merged.forEach(item => {
+          const prev = uniqueByName.get(item.name);
+          if (!prev || item.fame >= prev.fame) {
+            uniqueByName.set(item.name, item);
+          }
+        });
+        const finalTop = Array.from(uniqueByName.values())
+          .sort((a, b) => (b.fame - a.fame) || (b.power - a.power))
+          .slice(0, limit);
+        return finalTop;
+      }
+
+      /**
+       * Đẩy thông tin Đấu Sĩ & Điểm Danh Vọng của người chơi lên Đám Mây (submitPlayerScore)
+       */
+      async submitPlayerScore(fighterSnapshot = null) {
+        const snap = fighterSnapshot || buildPlayerFighterSnapshot();
+        const check = validateFighterStats(snap);
+        const boardType = (state.isDevAccount || check.isSandbox) ? 'sandbox' : 'official';
+        const fighterKey = String(snap.name || 'fighter')
+          .toLowerCase()
+          .replace(/[^a-z0-9_-]/g, '_')
+          .slice(0, 28) || 'player_1';
+
+        const payload = Object.assign({}, check.clampedFighter, {
+          name: snap.name,
+          fame: state.arenaFame || 120,
+          wins: state.arenaWins || 0,
+          streak: state.arenaStreak || 0,
+          board_type: boardType,
+          modularLayers: Object.assign({}, modularLayerEnabled),
+          updatedAt: new Date().toISOString()
+        });
+
+        // Cập nhật bộ nhớ đệm cục bộ trước
+        const boardArr = this.cachedBoards[boardType] || [];
+        const existingIdx = boardArr.findIndex(e => e.name === payload.name);
+        if (existingIdx >= 0) boardArr[existingIdx] = payload;
+        else boardArr.push(payload);
+        boardArr.sort((a, b) => (b.fame - a.fame) || (b.power - a.power));
+        this.cachedBoards[boardType] = boardArr.slice(0, 20);
+        this._saveCache();
+
+        if (!this.isCloudUrlConfigured()) {
+          this._updateStatusBanner(`💾 Đã lưu hạng "${payload.name}" (${payload.fame} 🎖️) vào bộ nhớ Cloud Cache`, '#fde047');
+          return { ok: true, mode: 'local_cache', boardType, payload };
+        }
+
+        try {
+          if (this.provider === 'firebase') {
+            const endpoint = `${this.firebaseDatabaseUrl}/leaderboards/${boardType}/${fighterKey}.json`;
+            const response = await fetch(endpoint, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          } else {
+            const endpoint = `${this.supabaseUrl}/rest/v1/${this.supabaseTable}`;
+            const headers = {
+              'Content-Type': 'application/json',
+              'Prefer': 'resolution=merge-duplicates'
+            };
+            if (this.supabaseAnonKey) {
+              headers['apikey'] = this.supabaseAnonKey;
+              headers['Authorization'] = `Bearer ${this.supabaseAnonKey}`;
+            }
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          }
+          this._updateStatusBanner(`☁️ Đã đồng bộ "${payload.name}" (${payload.fame} 🎖️) lên ${this.provider.toUpperCase()}!`, '#86efac');
+          return { ok: true, mode: this.provider, boardType, payload };
+        } catch (err) {
+          this.lastError = err.message || String(err);
+          this._updateStatusBanner(`⚠️ Lỗi đẩy điểm lên Cloud (${this.lastError}) — Đã lưu Cache`, '#fca5a5');
+          return { ok: false, error: this.lastError, boardType, payload };
+        }
+      }
+
+      // Bí danh tiện lợi cho các chuẩn đặt tên hàm phổ biến
+      async upsertPlayerScore(fighterSnapshot = null) {
+        return this.submitPlayerScore(fighterSnapshot);
+      }
+
+      async syncPlayerRank(fighterSnapshot = null) {
+        return this.submitPlayerScore(fighterSnapshot);
+      }
+
+      _updateStatusBanner(msg, color = '#86efac') {
+        const el = document.getElementById('cloud-leaderboard-status');
+        if (el) {
+          el.textContent = msg;
+          el.style.color = color;
+        }
+      }
+    }
+
+    window.CloudLeaderboard = CloudLeaderboard;
+    window.cloudLeaderboard = new CloudLeaderboard();
+
+    function toggleCloudConfigPanel() {
+      const panel = document.getElementById('cloud-config-panel');
+      if (!panel) return;
+      panel.classList.toggle('hidden');
+      if (!panel.classList.contains('hidden')) {
+        const provSel = document.getElementById('cloud-provider-select');
+        const urlInp = document.getElementById('cloud-api-url-input');
+        const keyInp = document.getElementById('cloud-api-key-input');
+        if (provSel) provSel.value = window.cloudLeaderboard.provider;
+        if (urlInp) {
+          urlInp.value = window.cloudLeaderboard.provider === 'supabase'
+            ? window.cloudLeaderboard.supabaseUrl
+            : window.cloudLeaderboard.firebaseDatabaseUrl;
+        }
+        if (keyInp) keyInp.value = window.cloudLeaderboard.supabaseAnonKey || '';
+      }
+    }
+
+    function onCloudProviderChange(val) {
+      const urlInp = document.getElementById('cloud-api-url-input');
+      if (!urlInp) return;
+      if (val === 'supabase') {
+        urlInp.placeholder = 'Điền URL Supabase (VD: https://xxx.supabase.co)...';
+        urlInp.value = window.cloudLeaderboard.supabaseUrl || '';
+      } else {
+        urlInp.placeholder = 'Điền URL Firebase RTDB (VD: https://xxx.firebasedatabase.app)...';
+        urlInp.value = window.cloudLeaderboard.firebaseDatabaseUrl || '';
+      }
+    }
+
+    async function saveCloudConfigFromUI() {
+      const prov = document.getElementById('cloud-provider-select')?.value || 'firebase';
+      const urlVal = document.getElementById('cloud-api-url-input')?.value || '';
+      const keyVal = document.getElementById('cloud-api-key-input')?.value || '';
+      if (prov === 'supabase') {
+        window.cloudLeaderboard.saveConfig({ provider: 'supabase', supabaseUrl: urlVal, supabaseAnonKey: keyVal });
+      } else {
+        window.cloudLeaderboard.saveConfig({ provider: 'firebase', firebaseDatabaseUrl: urlVal });
+      }
+      document.getElementById('cloud-config-panel')?.classList.add('hidden');
+      await refreshCloudLeaderboard();
+    }
+
+    async function refreshCloudLeaderboard() {
+      if (!window.cloudLeaderboard) return;
+      const topList = await window.cloudLeaderboard.fetchTopPlayers(state.arenaBoardTab, 10);
+      if (Array.isArray(topList) && topList.length > 0) {
+        window._currentArenaEntries = topList;
+        const boardList = document.getElementById('arena-leaderboard-list');
+        if (boardList) {
+          boardList.innerHTML = '';
+          topList.forEach((item, idx) => {
+            const rank = idx + 1;
+            const hero = HEROES[item.heroId] || HEROES.long;
+            const row = document.createElement('div');
+            row.className = `arena-rank-row ${rank <= 3 ? 'top-' + rank : ''} ${item.isPlayerSelf ? 'is-player-row' : ''}`;
+            row.innerHTML = `
+              <div style="display:flex;align-items:center;gap:4px">
+                <span class="rank-badge-num">${rank}</span>
+                <div>
+                  <div style="font-weight:800;color:${item.isPlayerSelf ? '#6ee7b7' : '#f8fafc'}">
+                    ${item.name} ${item.isPlayerSelf ? '(Bạn)' : ''}
+                  </div>
+                  <div style="font-size:11px;color:#94a3b8">
+                    ${hero.name} • Lv.${item.level} • ⚔️ ${(item.power || 0).toLocaleString()} • 🎖️ ${item.fame}
+                  </div>
+                </div>
+              </div>
+              <button class="arena-challenge-btn" ${state.stamina < 5 ? 'disabled' : ''} onclick="challengeLeaderboardEntry(${idx})">
+                ${item.isPlayerSelf ? '👻 Đấu Phân Thân (-5⚡)' : '⚔️ Khiêu Chiến (-5⚡)'}
+              </button>
+            `;
+            boardList.appendChild(row);
+          });
+        }
+      }
+    }
+
+    // ============================================================================
+    // HỆ THỐNG MẠNG P2P 1v1 (PEERJS v1.5.4 + BROADCASTCHANNEL MULTI-TAB FALLBACK)
+    // KIẾN TRÚC: HOST AUTHORITY (PLAYER 1 = HOST, PLAYER 2 = CLIENT 60Hz)
+    // ============================================================================
+    const PEER_ID_PREFIX = 'CYBER-HLQ-P2P-';
+    const P2P_DISCONNECT_TIMEOUT_MS = 3000; // Quá 3 giây rớt mạng -> báo trên #modal-overlay & kết thúc trận
+
+    const p2pSession = {
+      role: null,            // 'host' | 'client' | null
+      roomCode: '',          // Mã 6 ký tự (VD: 'CYBER9')
+      peer: null,            // Thực thể PeerJS (v1.5.4)
+      conn: null,            // DataConnection của PeerJS
+      bcChannel: null,       // Kênh dự phòng BroadcastChannel (cho phép ghép phòng 2 tab tức thì cả khi offline)
+      loopbackBot: false,    // Chế độ giả lập đối thủ P2P gửi gói tin 60Hz để test nhanh trên 1 màn hình
+      connected: false,
+      matchStarted: false,
+      lastRemotePacketTime: 0,
+      lastPingSentTime: 0,
+      inputSeq: 0,
+      clientActionQueue: [], // Hàng đợi phím bấm/touch của Client (Player 2) gửi lên Host ở 60Hz
+      remoteInput: {         // Trạng thái phím của Player 2 mà Host nhận được
+        left: false,
+        right: false,
+        actions: []
+      },
+      pendingSounds: [],     // Danh sách tín hiệu âm thanh ('punch', 'kick', 'metal-impact'...) phát sinh trên Host trong tick hiện tại
+      pendingVFX: [],        // Danh sách hiệu ứng VFX phát sinh trên Host trong tick hiện tại
+      hostProfile: null,
+      clientProfile: null
+    };
+
+    // Hook AudioEngine.play & AudioEngine.scheduleUltimate để Host tự động thu thập tín hiệu âm thanh gửi về Client
+    (function installHostAudioAuthorityHook() {
+      if (!window.AudioEngine || AudioEngine._p2pHookInstalled) return;
+      AudioEngine._p2pHookInstalled = true;
+      const origPlay = AudioEngine.play.bind(AudioEngine);
+      AudioEngine.play = function(id, opts = {}) {
+        if (
+          battle &&
+          battle.active &&
+          battle.isP2P &&
+          battle.p2pRole === 'host' &&
+          !opts._fromRemoteSync &&
+          p2pSession.pendingSounds.length < 16
+        ) {
+          p2pSession.pendingSounds.push({
+            id,
+            source: opts.source || 'player',
+            sourceX: typeof opts.sourceX === 'number' ? Math.round(opts.sourceX) : 590,
+            pitchCents: opts.pitchCents || 0,
+            volDb: opts.volDb || 0
+          });
+        }
+        return origPlay(id, opts);
+      };
+
+      if (typeof AudioEngine.scheduleUltimate === 'function') {
+        const origUlt = AudioEngine.scheduleUltimate.bind(AudioEngine);
+        AudioEngine.scheduleUltimate = function(heroId, ticksUntilDetonation, opts = {}) {
+          if (
+            battle &&
+            battle.active &&
+            battle.isP2P &&
+            battle.p2pRole === 'host' &&
+            !opts._fromRemoteSync
+          ) {
+            p2pSession.pendingSounds.push({
+              id: '__ULTIMATE__',
+              heroId,
+              ticksUntilDetonation
+            });
+          }
+          return origUlt(heroId, ticksUntilDetonation, opts);
+        };
+      }
+    })();
+
+    // Hook spawnPooledVFX để Host đồng bộ hiệu ứng va chạm/kiếm khí sang Client
+    (function installHostVFXAuthorityHook() {
+      const origSpawnVFX = spawnPooledVFX;
+      window.spawnPooledVFX = spawnPooledVFX = function(opts = {}) {
+        if (
+          battle &&
+          battle.active &&
+          battle.isP2P &&
+          battle.p2pRole === 'host' &&
+          !opts._fromRemoteSync &&
+          p2pSession.pendingVFX.length < 24
+        ) {
+          p2pSession.pendingVFX.push({
+            kind: opts.kind || 'spark',
+            x: Math.round(opts.x || 0),
+            y: Math.round(opts.y || 0),
+            vx: Number((opts.vx || 0).toFixed(2)),
+            vy: Number((opts.vy || 0).toFixed(2)),
+            r: Math.round(opts.r || 12),
+            maxR: Math.round(opts.maxR || opts.r || 12),
+            color: opts.color || '#fde047',
+            subColor: opts.subColor || '#ffffff',
+            life: opts.life || 16,
+            dir: opts.dir || 1,
+            gravity: opts.gravity || 0
+          });
+        }
+        return origSpawnVFX(opts);
+      };
+    })();
+
+    function generateSixCharRoomCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let prefix = 'CYB';
+      let suffix = '';
+      for (let i = 0; i < 3; i++) {
+        suffix += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return (prefix + suffix).slice(0, 6);
+    }
+
+    function setP2PMatchmakingStatus(text, color = '#fef08a') {
+      const el = document.getElementById('p2p-matchmaking-status');
+      if (el) {
+        el.textContent = text;
+        el.style.color = color;
+      }
+    }
+
+    function buildP2PFighterInitPayload() {
+      const snap = buildPlayerFighterSnapshot();
+      const validated = validateFighterStats(snap);
+      const fighter = validated.clampedFighter || snap;
+      return {
+        name: fighter.name,
+        heroId: fighter.heroId,
+        level: fighter.level,
+        fame: state.arenaFame || 120,
+        skinId: fighter.skinId,
+        weaponId: fighter.weaponId,
+        helmetId: fighter.helmetId,
+        armorId: fighter.armorId,
+        bootsId: fighter.bootsId,
+        titleId: fighter.titleId,
+        atk: fighter.atk,
+        maxHp: fighter.maxHp,
+        def: fighter.def,
+        crit: fighter.crit,
+        spdMult: fighter.spdMult || 1.15,
+        power: fighter.power,
+        arenaMode: state.arenaMode || 'fair',
+        // Đồng bộ đầy đủ trạng thái 14 lớp nhân vật (Modular Character System)
+        modularLayers: Object.assign({}, modularLayerEnabled)
+      };
+    }
+
+    function sendP2PPacket(packet) {
+      if (!packet) return;
+      if (p2pSession.loopbackBot) {
+        handleLoopbackPacket(packet);
+        return;
+      }
+      if (p2pSession.conn && p2pSession.conn.open) {
+        try {
+          p2pSession.conn.send(packet);
+          return;
+        } catch (e) {}
+      }
+      if (p2pSession.bcChannel) {
+        try {
+          p2pSession.bcChannel.postMessage(packet);
+        } catch (e) {}
+      }
+    }
+
+    function setupBroadcastChannelFallback(roomCode) {
+      if (typeof BroadcastChannel === 'undefined') return;
+      try {
+        if (p2pSession.bcChannel) p2pSession.bcChannel.close();
+      } catch (e) {}
+      const bc = new BroadcastChannel('cyber_hlq_p2p_' + roomCode);
+      bc.onmessage = (ev) => {
+        const data = ev.data;
+        if (!data || data._senderRole === p2pSession.role) return;
+        handleIncomingP2PPacket(data);
+      };
+      p2pSession.bcChannel = bc;
+    }
+
+    /**
+     * HOST (Player 1) bấm "Tạo Phòng":
+     * Khởi tạo Peer, sinh mã 6 ký tự (VD: CYBER9), hiện chữ "Đang chờ đối thủ..."
+     */
+    function createP2PRoom() {
+      disconnectP2PSession(false);
+      const roomCode = generateSixCharRoomCode();
+      p2pSession.role = 'host';
+      p2pSession.roomCode = roomCode;
+      p2pSession.connected = false;
+      p2pSession.matchStarted = false;
+      p2pSession.hostProfile = buildP2PFighterInitPayload();
+
+      const codeWrap = document.getElementById('p2p-room-code-wrap');
+      const codeDisp = document.getElementById('p2p-room-code-display');
+      const cancelBtn = document.getElementById('btn-p2p-cancel-room');
+      const rolePill = document.getElementById('p2p-role-pill');
+      const authLabel = document.getElementById('p2p-auth-label');
+      const netTag = document.getElementById('p2p-net-transport-tag');
+
+      if (codeWrap) codeWrap.classList.remove('hidden');
+      if (codeDisp) codeDisp.textContent = roomCode;
+      if (cancelBtn) cancelBtn.classList.remove('hidden');
+      if (rolePill) {
+        rolePill.textContent = `HOST (P1) • Phòng ${roomCode}`;
+        rolePill.className = 'anti-cheat-pill clean';
+      }
+      if (authLabel) authLabel.textContent = 'HOST (Bạn - P1)';
+      setP2PMatchmakingStatus('Đang chờ đối thủ...', '#fde047');
+
+      // Mở song song kênh BroadcastChannel để hỗ trợ test 2 tab nội bộ tức thì
+      setupBroadcastChannelFallback(roomCode);
+
+      // Khởi tạo WebRTC PeerJS v1.5.4
+      if (typeof window.Peer === 'function') {
+        try {
+          const fullPeerId = PEER_ID_PREFIX + roomCode;
+          const peer = new Peer(fullPeerId, { debug: 1 });
+          p2pSession.peer = peer;
+
+          peer.on('open', () => {
+            if (netTag) netTag.textContent = 'WebRTC PeerJS Ready';
+            setP2PMatchmakingStatus('Đang chờ đối thủ...', '#fde047');
+          });
+
+          peer.on('connection', (conn) => {
+            p2pSession.conn = conn;
+            bindPeerConnectionEvents(conn);
+          });
+
+          peer.on('error', (err) => {
+            if (netTag) netTag.textContent = 'PeerJS/Local Hybrid';
+            // Giữ nguyên trạng thái "Đang chờ đối thủ..." để hỗ trợ kết nối qua mã phòng
+            if (!p2pSession.connected) {
+              setP2PMatchmakingStatus('Đang chờ đối thủ...', '#fde047');
+            }
+          });
+        } catch (err) {
+          if (netTag) netTag.textContent = 'Local P2P Channel';
+        }
+      } else {
+        if (netTag) netTag.textContent = 'Local P2P Channel';
+      }
+
+      try { AudioEngine.play('confirm', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+    }
+
+    function copyP2PRoomCode() {
+      if (!p2pSession.roomCode) return;
+      try { navigator.clipboard.writeText(p2pSession.roomCode); } catch (e) {}
+      setP2PMatchmakingStatus(`✔ Đã sao chép mã phòng ${p2pSession.roomCode} — Đang chờ đối thủ...`, '#86efac');
+    }
+
+    /**
+     * CLIENT (Player 2) nhập mã 6 ký tự vào ô Input và bấm "Kết nối": Liên kết tới Host
+     */
+    function connectP2PRoom() {
+      const inp = document.getElementById('p2p-join-code-input');
+      const code = (inp ? inp.value : '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (code.length !== 6) {
+        alert('Vui lòng nhập đúng Mã Phòng 6 ký tự (VD: CYBER9) do Host tạo!');
+        return;
+      }
+
+      disconnectP2PSession(false);
+      p2pSession.role = 'client';
+      p2pSession.roomCode = code;
+      p2pSession.connected = false;
+      p2pSession.matchStarted = false;
+      p2pSession.clientProfile = buildP2PFighterInitPayload();
+
+      const rolePill = document.getElementById('p2p-role-pill');
+      const authLabel = document.getElementById('p2p-auth-label');
+      const cancelBtn = document.getElementById('btn-p2p-cancel-room');
+      const netTag = document.getElementById('p2p-net-transport-tag');
+
+      if (rolePill) {
+        rolePill.textContent = `CLIENT (P2) • Phòng ${code}`;
+        rolePill.className = 'anti-cheat-pill sandbox';
+      }
+      if (authLabel) authLabel.textContent = 'CLIENT (Chỉ gửi Input 60Hz & Render)';
+      if (cancelBtn) cancelBtn.classList.remove('hidden');
+      setP2PMatchmakingStatus(`Đang kết nối tới phòng ${code}...`, '#38bdf8');
+
+      // Kênh BroadcastChannel nội bộ (nếu Host đang mở ở tab bên cạnh)
+      setupBroadcastChannelFallback(code);
+      if (p2pSession.bcChannel) {
+        p2pSession.bcChannel.postMessage({
+          type: 'INIT_MATCH',
+          _senderRole: 'client',
+          roomCode: code,
+          fighter: p2pSession.clientProfile,
+          timestamp: performance.now()
+        });
+      }
+
+      // Kết nối qua PeerJS v1.5.4 WebRTC
+      if (typeof window.Peer === 'function') {
+        try {
+          const peer = new Peer(undefined, { debug: 1 });
+          p2pSession.peer = peer;
+
+          peer.on('open', () => {
+            if (netTag) netTag.textContent = 'WebRTC Connecting...';
+            const conn = peer.connect(PEER_ID_PREFIX + code, { reliable: true });
+            p2pSession.conn = conn;
+            bindPeerConnectionEvents(conn);
+          });
+
+          peer.on('error', () => {
+            if (!p2pSession.connected) {
+              setP2PMatchmakingStatus(`Đang tìm phòng ${code} qua WebRTC / Local...`, '#fde047');
+            }
+          });
+        } catch (e) {}
+      }
+    }
+
+    function bindPeerConnectionEvents(conn) {
+      if (!conn) return;
+      conn.on('open', () => {
+        p2pSession.connected = true;
+        p2pSession.lastRemotePacketTime = performance.now();
+        const netTag = document.getElementById('p2p-net-transport-tag');
+        if (netTag) netTag.textContent = 'WebRTC DataChannel (60Hz)';
+
+        if (p2pSession.role === 'client') {
+          // Client chủ động gửi gói tin INIT_MATCH lên Host ngay khi mở kênh
+          conn.send({
+            type: 'INIT_MATCH',
+            _senderRole: 'client',
+            roomCode: p2pSession.roomCode,
+            fighter: p2pSession.clientProfile,
+            timestamp: performance.now()
+          });
+        }
+      });
+
+      conn.on('data', (data) => {
+        handleIncomingP2PPacket(data);
+      });
+
+      conn.on('close', () => {
+        // Khi kết nối đóng, không xóa lastRemotePacketTime để bộ đếm 3 giây rớt mạng xử lý đúng đặc tả
+        p2pSession.connected = false;
+      });
+
+      conn.on('error', () => {
+        p2pSession.connected = false;
+      });
+    }
+
+    function handleIncomingP2PPacket(packet) {
+      if (!packet || typeof packet !== 'object') return;
+      p2pSession.lastRemotePacketTime = performance.now();
+
+      // 1. Gói tin INIT_MATCH: Trao đổi Tướng, Trang bị 14 lớp, Skin VIP giữa Host và Client
+      if (packet.type === 'INIT_MATCH') {
+        if (p2pSession.role === 'host' && packet._senderRole === 'client') {
+          p2pSession.connected = true;
+          p2pSession.clientProfile = packet.fighter;
+          // Host phản hồi gói INIT_MATCH kèm hồ sơ Tướng 14 lớp của Host
+          sendP2PPacket({
+            type: 'INIT_MATCH',
+            _senderRole: 'host',
+            roomCode: p2pSession.roomCode,
+            fighter: p2pSession.hostProfile,
+            arenaMode: state.arenaMode || 'fair',
+            timestamp: performance.now()
+          });
+          setP2PMatchmakingStatus(`✔ Đã ghép đôi với "${packet.fighter.name}" — Bắt đầu đếm ngược 3-2-1!`, '#86efac');
+          if (!p2pSession.matchStarted) {
+            p2pSession.matchStarted = true;
+            launchP2PBattleMatch(p2pSession.hostProfile, p2pSession.clientProfile, 'host');
+          }
+        } else if (p2pSession.role === 'client' && packet._senderRole === 'host') {
+          p2pSession.connected = true;
+          p2pSession.hostProfile = packet.fighter;
+          setP2PMatchmakingStatus(`✔ Đã kết nối Host "${packet.fighter.name}" — Bắt đầu đếm ngược 3-2-1!`, '#86efac');
+          if (!p2pSession.matchStarted) {
+            p2pSession.matchStarted = true;
+            launchP2PBattleMatch(p2pSession.hostProfile, p2pSession.clientProfile, 'client');
+          }
+        }
+        return;
+      }
+
+      // 2. Gói tin INPUT_TICK (60Hz từ Client gửi lên Host)
+      if (packet.type === 'INPUT_TICK' && p2pSession.role === 'host') {
+        p2pSession.remoteInput.left = Boolean(packet.left);
+        p2pSession.remoteInput.right = Boolean(packet.right);
+        if (Array.isArray(packet.actions) && packet.actions.length > 0) {
+          p2pSession.remoteInput.actions.push(...packet.actions.slice(0, 6));
+        }
+        return;
+      }
+
+      // 3. Gói tin STATE_SYNC (60Hz từ Host gửi về Client)
+      if (packet.type === 'STATE_SYNC' && p2pSession.role === 'client') {
+        applyHostStateOnClient(packet);
+        return;
+      }
+
+      // 4. Gói tin MATCH_END (Kết thúc trận đấu từ Host)
+      if (packet.type === 'MATCH_END' && p2pSession.role === 'client') {
+        if (battle && battle.active) {
+          battle.active = false;
+          completeArenaMatch(!packet.hostWon);
+        }
+        return;
+      }
+
+      // 5. Gói tin PING / PONG giữ nhịp kết nối
+      if (packet.type === 'PING') {
+        sendP2PPacket({ type: 'PONG', _senderRole: p2pSession.role, t: performance.now() });
+      }
+    }
+
+    /**
+     * Khởi chạy trận đấu 1v1 P2P sau khi trao đổi xong INIT_MATCH:
+     * Tự động ẩn #hub-screen, mở #battle-screen và bắt đầu đếm ngược 3-2-1 (180 ticks)
+     */
+    function launchP2PBattleMatch(hostFighterRaw, clientFighterRaw, myRole) {
+      const hostValidated = validateFighterStats(hostFighterRaw).clampedFighter || hostFighterRaw;
+      const clientValidated = validateFighterStats(clientFighterRaw).clampedFighter || clientFighterRaw;
+
+      const isFairMode = (hostFighterRaw.arenaMode || state.arenaMode) === 'fair';
+      const p1Hero = HEROES[hostValidated.heroId] || HEROES.long;
+      const p2Hero = HEROES[clientValidated.heroId] || HEROES.long;
+
+      const p1Weapon = EQUIPMENT_DB.find(i => i.id === hostValidated.weaponId) || EQUIPMENT_DB.find(i => i.cat === p1Hero.weaponClass) || EQUIPMENT_DB[0];
+      const p2Weapon = EQUIPMENT_DB.find(i => i.id === clientValidated.weaponId) || EQUIPMENT_DB.find(i => i.cat === p2Hero.weaponClass) || EQUIPMENT_DB[0];
+
+      const p1Hp = isFairMode ? Math.round(p1Hero.baseHp * 16) : hostValidated.maxHp;
+      const p1Atk = isFairMode ? Math.round(p1Hero.baseAtk * 15) : hostValidated.atk;
+      const p1Def = isFairMode ? Math.round(p1Hero.baseDef * 12) : hostValidated.def;
+      const p1Armor = Math.round(p1Hp * (hostValidated.heroId === 'cyber' ? 0.32 : 0.22));
+
+      const p2Hp = isFairMode ? Math.round(p2Hero.baseHp * 16) : clientValidated.maxHp;
+      const p2Atk = isFairMode ? Math.round(p2Hero.baseAtk * 15) : clientValidated.atk;
+      const p2Def = isFairMode ? Math.round(p2Hero.baseDef * 12) : clientValidated.def;
+      const p2Armor = Math.round(p2Hp * (clientValidated.heroId === 'cyber' ? 0.32 : 0.22));
+
+      const p1Spd = hostValidated.spdMult || 1.15;
+      const p2Spd = clientValidated.spdMult || 1.15;
+
+      setupHighDPICanvases();
+      clearVFXPool();
+      p2pSession.pendingSounds = [];
+      p2pSession.pendingVFX = [];
+      p2pSession.clientActionQueue = [];
+      p2pSession.remoteInput = { left: false, right: false, actions: [] };
+      p2pSession.lastRemotePacketTime = performance.now();
+
+      battle = {
+        active: true,
+        isPvP: true,
+        isP2P: true,
+        p2pRole: myRole, // 'host' (Player 1) hoặc 'client' (Player 2)
+        p2pRoomCode: p2pSession.roomCode,
+        countdownTicks: 180, // Đếm ngược 3 - 2 - 1 (3 giây = 180 ticks ở 60Hz)
+        pvpMode: isFairMode ? 'fair' : 'overlord',
+        pvpOpponent: myRole === 'host' ? clientValidated : hostValidated,
+        chapter: 6,
+        stage: 13,
+        isBoss13: false,
+        difficultyScale: 1,
+        theme: ARENA_THEMES[2],
+        wave: 1, maxWaves: 1, tick: 0, shake: 0, hitstopTimer: 0, groundY: 385,
+        camX: 0, camY: 0, camZoom: 1, targetZoom: 1, flashAlpha: 0, flashColor: '#ffffff',
+        inputBuffer: [], lastInputTime: 0, queuedKey: null, quickComboCd: 0,
+        hitStreak: 0, maxHitStreak: 0, hitTimer: 0,
+        enemyComboStreak: 0, enemyComboResetTimer: 0,
+        // PLAYER 1 (HOST): Luôn đứng bên trái lúc xuất phát (x = 240)
+        player: {
+          name: hostValidated.name,
+          heroId: hostValidated.heroId,
+          level: hostValidated.level,
+          skinId: hostValidated.skinId,
+          weaponId: hostValidated.weaponId,
+          helmetId: hostValidated.helmetId,
+          armorId: hostValidated.armorId,
+          bootsId: hostValidated.bootsId,
+          customGear: {
+            skinId: hostValidated.skinId,
+            weaponId: hostValidated.weaponId,
+            helmetId: hostValidated.helmetId,
+            armorId: hostValidated.armorId,
+            bootsId: hostValidated.bootsId,
+            modularLayers: hostFighterRaw.modularLayers || null
+          },
+          x: 240, y: 385, vx: 0, vy: 0, facing: 1, prevFacing: 1,
+          hp: p1Hp, maxHp: p1Hp, armor: p1Armor, maxArmor: p1Armor,
+          atk: p1Atk, def: p1Def, crit: hostValidated.crit || 20,
+          spdMult: p1Spd,
+          rage: 0, wSkillCd: 180, wSkillMaxCd: Math.max(120, Math.round(300 / p1Spd)),
+          dashCd: 0, dashMaxCd: Math.max(65, Math.round(150 / p1Spd)),
+          invincibleTimer: 0,
+          actionState: 'idle', actionTimer: 0, attackLockTimer: 0,
+          landingTimer: 0, turnTimer: 0, hitReactionTimer: 0, stunTimer: 0, wasInAir: false
+        },
+        afterimages: [], wSkillScene: null, finalScene: null,
+        enemyWSkillScene: null, enemyFinalScene: null,
+        // PLAYER 2 (CLIENT): Luôn đứng bên phải lúc xuất phát (x = 920)
+        enemies: [
+          {
+            id: ++enemyUidCounter,
+            isBoss: true,
+            isEnemyHero: true,
+            isP2PPlayer2: true,
+            type: 'enemy_hero',
+            name: clientValidated.name,
+            heroId: clientValidated.heroId,
+            level: clientValidated.level,
+            fame: clientValidated.fame,
+            skinId: clientValidated.skinId,
+            weaponId: clientValidated.weaponId,
+            helmetId: clientValidated.helmetId,
+            armorId: clientValidated.armorId,
+            bootsId: clientValidated.bootsId,
+            modularLayers: clientFighterRaw.modularLayers || null,
+            skillMult: p2Weapon.skillMult || 4.5,
+            x: 920, y: 385, vx: 0, vy: 0, facing: -1,
+            hp: p2Hp, maxHp: p2Hp,
+            armor: p2Armor, maxArmor: p2Armor,
+            atk: p2Atk, def: p2Def, crit: clientValidated.crit || 20, spdMult: p2Spd,
+            rage: 0, wSkillCd: 180, wSkillMaxCd: Math.max(120, Math.round(300 / p2Spd)),
+            dashCd: 0, dashMaxCd: Math.max(65, Math.round(150 / p2Spd)),
+            breakerCd: 0, invincibleTimer: 0,
+            actionState: 'idle', actionTimer: 0, attackLockTimer: 0,
+            hitReactionTimer: 0, comboHitTaken: 0, comboResetTimer: 0,
+            inputBuffer: [], lastInputTime: 0, quickComboCd: 0,
+            cd: 0, stun: 0, hitFlash: 0, wasInAir: false, landingTimer: 0
+          }
+        ],
+        projectiles: [], warnings: [], particles: [], texts: []
+      };
+
+      clearAllHoldKeys();
+      document.body.classList.add('in-battle');
+      // Tự động ẩn #hub-screen và mở #battle-screen theo đúng đặc tả
+      document.getElementById('hub-screen').classList.add('hidden');
+      document.getElementById('battle-screen').classList.remove('hidden');
+      document.getElementById('modal-overlay').classList.add('hidden');
+
+      const waveBadge = document.getElementById('hud-wave-badge');
+      if (waveBadge) {
+        waveBadge.textContent = `P2P 1v1 [${p2pSession.roomCode}] • ${myRole === 'host' ? 'HOST (P1)' : 'CLIENT (P2)'}`;
+      }
+      document.getElementById('boss-hud-box').style.visibility = 'visible';
+
+      if (myRole === 'host') {
+        document.getElementById('hud-hero-name').textContent = `[P1 HOST] ${hostValidated.name.toUpperCase()} (${p1Hero.name.toUpperCase()})`;
+        document.getElementById('hud-boss-name').textContent = `[P2 CLIENT] ${clientValidated.name.toUpperCase()} — ${p2Hero.name.toUpperCase()} (Lv.${clientValidated.level})`;
+      } else {
+        document.getElementById('hud-hero-name').textContent = `[P2 CLIENT] ${clientValidated.name.toUpperCase()} (${p2Hero.name.toUpperCase()})`;
+        document.getElementById('hud-boss-name').textContent = `[P1 HOST] ${hostValidated.name.toUpperCase()} — ${p1Hero.name.toUpperCase()} (Lv.${hostValidated.level})`;
+      }
+      document.getElementById('hud-stage-label').textContent = isFairMode ? '⚖️ P2P Công Bằng (60Hz)' : '🐉 P2P Thực Chiến (60Hz)';
+
+      try {
+        AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
+        AudioEngine.startAmbient(6);
+        AudioEngine.play('notification', { source: 'ui', bypassCooldown: true });
+      } catch (e) {}
+    }
+
+    /**
+     * CLIENT (Player 2): Đưa phím hành động vào hàng đợi để gửi lên Host ở tốc độ 60Hz
+     */
+    function queueP2PClientAction(actionCode) {
+      if (!battle || !battle.active || !battle.isP2P || battle.p2pRole !== 'client') return;
+      p2pSession.clientActionQueue.push(actionCode);
+      const bufEl = document.getElementById('hud-input-buffer');
+      if (bufEl) {
+        battle.inputBuffer.push(actionCode.replace('COMBO:', ''));
+        if (battle.inputBuffer.length > 4) battle.inputBuffer.shift();
+        bufEl.textContent = battle.inputBuffer.join(' ➔ ');
+      }
+    }
+
+    /**
+     * CLIENT (Player 2): Mỗi tick 60Hz:
+     * (1) Đọc phím bấm/touch của Player 2 gửi lên Host ở tốc độ 60Hz
+     * (2) Cập nhật hiệu ứng hạt/VFX thuần hiển thị trên Client
+     */
+    function stepClientVisualOnlyAndSendInput60Hz() {
+      const b = battle;
+      if (!b || !b.active) return;
+
+      // (1) Gửi gói tin INPUT_TICK ở tốc độ 60Hz lên Host
+      sendP2PPacket({
+        type: 'INPUT_TICK',
+        _senderRole: 'client',
+        seq: ++p2pSession.inputSeq,
+        left: Boolean(keys['A'] || keys['ARROWLEFT']),
+        right: Boolean(keys['D'] || keys['ARROWRIGHT']),
+        actions: p2pSession.clientActionQueue.splice(0, 6)
+      });
+
+      // Cập nhật suy giảm hiệu ứng VFX / chữ sát thương trên Client để chuyển động mượt 60fps
+      if (b.shake > 0) {
+        b.shake *= 0.85;
+        if (b.shake < 0.4) b.shake = 0;
+      }
+      if (b.flashAlpha > 0) {
+        b.flashAlpha = Math.max(0, b.flashAlpha - 0.04);
+      }
+      for (let i = 0; i < VFX_POOL_MAX; i++) {
+        const vp = vfxPool[i];
+        if (vp.active) {
+          vp.x += vp.vx;
+          vp.y += vp.vy;
+          vp.vy += vp.gravity;
+          vp.angle += vp.spin;
+          vp.life--;
+          if (vp.life <= 0) vp.active = false;
+        }
+      }
+    }
+
+    /**
+     * HOST (Player 1): Cập nhật vật lý, di chuyển, nhảy, lướt/Bộc Phá và đòn đánh của Player 2 từ Input 60Hz của Client
+     */
+    function updateP2PPlayer2OnHost(en) {
+      const b = battle;
+      const p = b.player;
+      const inp = p2pSession.remoteInput;
+
+      // Nếu đang ở chế độ Test Loopback 1 máy, sinh input thông minh ở 60Hz cho Player 2 để người dùng trải nghiệm ngay
+      if (p2pSession.loopbackBot) {
+        stepLoopbackBotInput60Hz(en, p);
+      }
+
+      if (en.wSkillCd > 0) en.wSkillCd--;
+      if (en.dashCd > 0) en.dashCd--;
+      if (en.breakerCd > 0) en.breakerCd--;
+      if (en.invincibleTimer > 0) en.invincibleTimer--;
+      if (en.hitReactionTimer > 0) en.hitReactionTimer--;
+      if (en.landingTimer > 0) en.landingTimer--;
+      if (en.quickComboCd > 0) en.quickComboCd--;
+      if (en.comboResetTimer > 0) {
+        en.comboResetTimer--;
+        if (en.comboResetTimer === 0) en.comboHitTaken = 0;
+      }
+      if (en.attackLockTimer > 0) en.attackLockTimer--;
+      if (en.actionTimer > 0) {
+        en.actionTimer--;
+        if (en.actionTimer === 0) en.actionState = 'idle';
+      }
+
+      // Xử lý phím Shift (Bộc Phá Thoát Hiểm khi đang bị trúng đòn/choáng >= 30% Nộ)
+      const shiftIdx = inp.actions.indexOf('SHIFT');
+      if (shiftIdx !== -1) {
+        inp.actions.splice(shiftIdx, 1);
+        const underHitOrStun = en.stun > 0 || en.hitReactionTimer > 0 || (en.comboHitTaken || 0) >= 2;
+        if (underHitOrStun && (en.rage || 0) >= 30) {
+          en.rage = Math.max(0, en.rage - 30);
+          en.stun = 0;
+          en.hitReactionTimer = 0;
+          en.comboHitTaken = 0;
+          en.invincibleTimer = 21; // 0.35s bất tử
+          en.actionState = 'energy_release';
+          en.actionTimer = 16;
+          b.shake = 16;
+          b.flashAlpha = 0.3;
+          b.flashColor = '#f43f5e';
+          try {
+            AudioEngine.play('explosion-small', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+            AudioEngine.play('shield-hit', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          } catch (e) {}
+          spawnPooledVFX({ kind: 'shockwave', x: en.x, y: en.y - 25, r: 18, maxR: 205, color: '#f43f5e', subColor: '#fde047', life: 16 });
+          const pushDir = p.x <= en.x ? -1 : 1;
+          p.x = Math.max(40, Math.min(1140, p.x + pushDir * 145));
+          p.vx = pushDir * 9;
+          p.hitReactionTimer = 12;
+          b.texts.push({ x: en.x, y: en.y - 95, text: '💥 P2 BỘC PHÁ THOÁT HIỂM (-30% NỘ)!', color: '#f43f5e', life: 36 });
+          return;
+        } else if (en.dashCd <= 0 && en.stun <= 0) {
+          en.dashCd = en.dashMaxCd || 120;
+          en.invincibleTimer = 21;
+          en.actionState = 'dash';
+          en.actionTimer = 14;
+          try { AudioEngine.play('dash', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+          for (let i = 1; i <= 4; i++) {
+            b.afterimages.push({
+              x: en.x + en.facing * i * 22, y: en.y, facing: en.facing, life: 14,
+              heroId: en.heroId,
+              customGear: { skinId: en.skinId, weaponId: en.weaponId, helmetId: en.helmetId, armorId: en.armorId, bootsId: en.bootsId }
+            });
+          }
+          en.x = Math.max(45, Math.min(1135, en.x + en.facing * 135));
+          b.texts.push({ x: en.x, y: en.y - 75, text: '💨 P2 TỐC BIẾN!', color: '#38bdf8', life: 22 });
+        }
+      }
+
+      if (en.stun > 0) {
+        en.stun--;
+        if (en.stun === 0 && en.maxArmor > 0) {
+          en.armor = Math.round(en.maxArmor * 0.85);
+          b.texts.push({ x: en.x, y: en.y - 85, text: '🛡️ P2 HỒI NỘI NĂNG HỘ THỂ!', color: '#38bdf8', life: 35 });
+        }
+        inp.actions.length = 0;
+        return;
+      }
+
+      // Di chuyển ngang A / D của Player 2
+      const moveSpd = 6.2 * Math.min(1.25, 0.9 + (en.spdMult || 1.15) * 0.1);
+      if (inp.left) {
+        en.vx = -moveSpd;
+        en.facing = -1;
+      } else if (inp.right) {
+        en.vx = moveSpd;
+        en.facing = 1;
+      } else {
+        en.vx = (en.vx || 0) * 0.75;
+      }
+
+      en.x = Math.max(45, Math.min(1135, en.x + (en.vx || 0)));
+      en.y = (en.y || b.groundY) + (en.vy || 0);
+      if (en.y < b.groundY) {
+        en.vy = (en.vy || 0) + 0.72;
+        en.wasInAir = true;
+      } else {
+        if (en.wasInAir) {
+          en.wasInAir = false;
+          en.landingTimer = 8;
+          try { AudioEngine.play('land', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+          spawnLandingDust(en.x, b.groundY);
+        }
+        en.y = b.groundY;
+        en.vy = 0;
+      }
+
+      // Xử lý các hành động chiến đấu từ hàng đợi 60Hz của Player 2
+      while (inp.actions.length > 0) {
+        const act = inp.actions.shift();
+        if (act === 'W') {
+          if (en.y >= b.groundY - 4) {
+            try { AudioEngine.play('jump', { source: 'enemy', sourceX: en.x }); } catch (e) {}
+            spawnLandingDust(en.x, en.y);
+            en.y -= 6;
+            en.vy = -13.5;
+            en.wasInAir = true;
+          }
+          en.inputBuffer = en.inputBuffer || [];
+          en.inputBuffer.push('W');
+          if (en.inputBuffer.length > 4) en.inputBuffer.shift();
+        } else if (act === 'U') {
+          if (en.wSkillCd <= 0 && !b.enemyWSkillScene) {
+            triggerEnemyHeroWSkill(en);
+          }
+        } else if (act === 'L') {
+          if ((en.rage || 0) >= 100 && !b.enemyFinalScene) {
+            triggerEnemyHeroFinal(en);
+          }
+        } else if (act.startsWith('COMBO:')) {
+          if (en.attackLockTimer <= 0 && (en.quickComboCd || 0) <= 0) {
+            const comboCode = act.replace('COMBO:', '');
+            if (comboCode.includes('W') && en.y >= b.groundY - 4) {
+              en.y -= 6;
+              en.vy = -13.5;
+              en.wasInAir = true;
+            }
+            en.quickComboCd = 55;
+            executeP2PPlayer2AttackOnHost(en, comboCode);
+          }
+        } else if (act === 'J' || act === 'K') {
+          if (en.attackLockTimer <= 0) {
+            const now = performance.now();
+            if (!en.inputBuffer || now - (en.lastInputTime || 0) > 1500) en.inputBuffer = [];
+            en.lastInputTime = now;
+            en.inputBuffer.push(act);
+            if (en.inputBuffer.length > 4) en.inputBuffer.shift();
+
+            const s4 = en.inputBuffer.slice(-4).join('-');
+            const s3 = en.inputBuffer.slice(-3).join('-');
+            const s2 = en.inputBuffer.slice(-2).join('-');
+            if (s4 === 'J-K-J-K') {
+              en.vx = en.facing * 12;
+              executeP2PPlayer2AttackOnHost(en, 'J-K-J-K');
+              en.inputBuffer = [];
+            } else if (s3 === 'J-J-K' || s3 === 'J-K-W') {
+              executeP2PPlayer2AttackOnHost(en, s3);
+              en.inputBuffer = [];
+            } else if (s2 === 'W-J' || s2 === 'W-K') {
+              executeP2PPlayer2AttackOnHost(en, s2);
+              en.inputBuffer = [];
+            } else {
+              executeP2PPlayer2AttackOnHost(en, act);
+            }
+          }
+        }
+      }
+    }
+
+    function executeP2PPlayer2AttackOnHost(en, code) {
+      const b = battle;
+      const p = b.player;
+      const isCombo = code.length > 1;
+      const mult = isCombo ? 2.2 : (code === 'K' ? 1.28 : 1.0);
+      const armorDmg = isCombo ? 65 : (code === 'K' ? 24 : 18);
+
+      en.actionState = isCombo ? 'combo_attack' : (code === 'K' ? 'kick' : 'punch');
+      en.actionTimer = isCombo ? 20 : 15;
+      en.attackLockTimer = isCombo ? 20 : 14;
+      en.rage = Math.min(100, (en.rage || 0) + (isCombo ? 8 : 5));
+
+      // Xuất tín hiệu âm thanh chuẩn từ Host ('punch', 'kick', 'metal-impact', 'sword-swing'...)
+      try {
+        if (!isCombo) {
+          if (en.heroId === 'long') {
+            AudioEngine.play('sword-swing', { source: 'enemy', sourceX: en.x });
+            AudioEngine.play(code === 'K' ? 'kick' : 'punch', { source: 'enemy', sourceX: en.x });
+          } else if (en.heroId === 'mage') {
+            AudioEngine.play(code === 'K' ? 'laser-shot' : 'spell-cast', { source: 'enemy', sourceX: en.x });
+          } else {
+            AudioEngine.play(code === 'K' ? 'kick' : 'punch', { source: 'enemy', sourceX: en.x });
+            AudioEngine.play('metal-impact', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          }
+        } else {
+          AudioEngine.play('kick', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          AudioEngine.play('metal-impact', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          AudioEngine.play('explosion-small', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+        }
+      } catch (e) {}
+
+      if (en.heroId === 'mage') {
+        const count = isCombo ? 3 : 1;
+        for (let i = 0; i < count; i++) {
+          b.projectiles.push({
+            fromPlayer: false,
+            x: en.x + en.facing * (34 + i * 24),
+            y: en.y - 26 - (i % 2) * 12,
+            vx: en.facing * (isCombo ? 14 : 11.5),
+            r: isCombo ? 13 : 9,
+            color: isCombo ? '#c084fc' : '#38bdf8',
+            dmg: en.atk * (mult / count) * 0.9
+          });
+        }
+        return;
+      }
+
+      const range = en.heroId === 'long' ? (isCombo ? 215 : 145) : (isCombo ? 195 : 135);
+      spawnPooledVFX({
+        kind: en.heroId === 'long' ? 'weapon_trail' : 'shockwave',
+        x: en.x + en.facing * 44,
+        y: en.y - 26,
+        r: range * 0.45,
+        maxR: range * 0.68,
+        color: en.heroId === 'long' ? '#ef4444' : '#f97316',
+        subColor: '#fde047',
+        dir: en.facing,
+        life: 13
+      });
+
+      const dx = p.x - en.x;
+      if ((dx * en.facing >= -42) && Math.abs(dx) <= range && Math.abs(p.y - en.y) < 112) {
+        if (p.armor && p.armor > 0) {
+          p.armor = Math.max(0, p.armor - armorDmg);
+          try { AudioEngine.play('metal-impact', { source: 'player', sourceX: p.x }); } catch (e) {}
+        }
+        damagePlayer(en.atk * mult * 0.88);
+        if (isCombo && p.invincibleTimer <= 0) {
+          p.stunTimer = 22;
+        }
+      }
+    }
+
+    /**
+     * HOST (Player 1): Đóng gói trạng thái trận đấu gửi về Client ở tốc độ 60Hz
+     */
+    function broadcastHostState60Hz() {
+      const b = battle;
+      if (!b || !b.isP2P || b.p2pRole !== 'host') return;
+      const p1 = b.player;
+      const p2 = b.enemies[0] || {};
+
+      const packet = {
+        type: 'STATE_SYNC',
+        _senderRole: 'host',
+        tick: b.tick,
+        countdownTicks: b.countdownTicks || 0,
+        shake: Number((b.shake || 0).toFixed(1)),
+        flashAlpha: Number((b.flashAlpha || 0).toFixed(2)),
+        flashColor: b.flashColor || '#ffffff',
+        hitStreak: b.hitStreak || 0,
+        p1: {
+          x: Math.round(p1.x),
+          y: Math.round(p1.y),
+          vx: Number((p1.vx || 0).toFixed(1)),
+          vy: Number((p1.vy || 0).toFixed(1)),
+          facing: p1.facing,
+          hp: Math.max(0, Math.round(p1.hp)),
+          maxHp: p1.maxHp,
+          armor: Math.max(0, Math.round(p1.armor || 0)),
+          maxArmor: p1.maxArmor || 100,
+          rage: Math.floor(p1.rage || 0),
+          wSkillCd: p1.wSkillCd || 0,
+          wSkillMaxCd: p1.wSkillMaxCd || 240,
+          actionState: p1.actionState || 'idle',
+          invincibleTimer: p1.invincibleTimer || 0,
+          stunTimer: p1.stunTimer || 0
+        },
+        p2: {
+          x: Math.round(p2.x || 920),
+          y: Math.round(p2.y || 385),
+          vx: Number((p2.vx || 0).toFixed(1)),
+          vy: Number((p2.vy || 0).toFixed(1)),
+          facing: p2.facing || -1,
+          hp: Math.max(0, Math.round(p2.hp || 0)),
+          maxHp: p2.maxHp || 1000,
+          armor: Math.max(0, Math.round(p2.armor || 0)),
+          maxArmor: p2.maxArmor || 100,
+          rage: Math.floor(p2.rage || 0),
+          wSkillCd: p2.wSkillCd || 0,
+          wSkillMaxCd: p2.wSkillMaxCd || 240,
+          actionState: p2.actionState || 'idle',
+          invincibleTimer: p2.invincibleTimer || 0,
+          stun: p2.stun || 0,
+          hitFlash: p2.hitFlash || 0
+        },
+        wSkillScene: b.wSkillScene ? {
+          hero: b.wSkillScene.hero,
+          timer: b.wSkillScene.timer,
+          maxTimer: b.wSkillScene.maxTimer,
+          slashX: b.wSkillScene.slashX,
+          slashY: b.wSkillScene.slashY,
+          dir: b.wSkillScene.dir,
+          debris: (b.wSkillScene.debris || []).slice(0, 14)
+        } : null,
+        finalScene: b.finalScene ? {
+          hero: b.finalScene.hero,
+          timer: b.finalScene.timer,
+          maxTimer: b.finalScene.maxTimer,
+          orbX: b.finalScene.orbX,
+          orbY: b.finalScene.orbY,
+          orbRadius: b.finalScene.orbRadius
+        } : null,
+        enemyWSkillScene: b.enemyWSkillScene ? Object.assign({}, b.enemyWSkillScene) : null,
+        enemyFinalScene: b.enemyFinalScene ? Object.assign({}, b.enemyFinalScene) : null,
+        projectiles: b.projectiles.map(pr => ({
+          fromPlayer: pr.fromPlayer,
+          visualKind: pr.visualKind,
+          x: Math.round(pr.x),
+          y: Math.round(pr.y),
+          vx: pr.vx,
+          r: pr.r,
+          color: pr.color
+        })),
+        afterimages: b.afterimages.slice(-10),
+        particles: b.particles.slice(-12),
+        texts: b.texts.slice(-10),
+        sounds: p2pSession.pendingSounds.splice(0, 16),
+        vfx: p2pSession.pendingVFX.splice(0, 24)
+      };
+
+      sendP2PPacket(packet);
+    }
+
+    /**
+     * CLIENT (Player 2): Nhận gói STATE_SYNC từ Host để cập nhật tọa độ, hoạt ảnh, thanh Máu & phát âm thanh
+     */
+    function applyHostStateOnClient(pkt) {
+      const b = battle;
+      if (!b || !b.active || !b.isP2P || b.p2pRole !== 'client') return;
+
+      b.tick = pkt.tick;
+      b.countdownTicks = pkt.countdownTicks || 0;
+      b.shake = pkt.shake || 0;
+      b.flashAlpha = pkt.flashAlpha || 0;
+      b.flashColor = pkt.flashColor || '#ffffff';
+      b.hitStreak = pkt.hitStreak || 0;
+
+      if (pkt.p1) {
+        Object.assign(b.player, pkt.p1);
+      }
+      if (pkt.p2 && b.enemies[0]) {
+        Object.assign(b.enemies[0], pkt.p2);
+      }
+
+      b.wSkillScene = pkt.wSkillScene || null;
+      b.finalScene = pkt.finalScene || null;
+      b.enemyWSkillScene = pkt.enemyWSkillScene || null;
+      b.enemyFinalScene = pkt.enemyFinalScene || null;
+      b.projectiles = Array.isArray(pkt.projectiles) ? pkt.projectiles : [];
+      b.afterimages = Array.isArray(pkt.afterimages) ? pkt.afterimages : [];
+      b.particles = Array.isArray(pkt.particles) ? pkt.particles : [];
+      b.texts = Array.isArray(pkt.texts) ? pkt.texts : [];
+
+      // Camera trên Client bám theo trung điểm 2 đấu sĩ
+      const en = b.enemies[0];
+      const focusX = en ? (en.x * 0.65 + b.player.x * 0.35) : b.player.x;
+      b.camX += ((focusX - 590) * 0.14 - b.camX) * 0.2;
+
+      // Tái tạo hiệu ứng VFX từ Host
+      if (Array.isArray(pkt.vfx)) {
+        pkt.vfx.forEach(vo => {
+          spawnPooledVFX(Object.assign({}, vo, { _fromRemoteSync: true }));
+        });
+      }
+
+      // Phát tín hiệu âm thanh ('punch', 'kick', 'metal-impact'...) do Host chỉ định
+      if (Array.isArray(pkt.sounds)) {
+        pkt.sounds.forEach(snd => {
+          try {
+            if (snd.id === '__ULTIMATE__') {
+              AudioEngine.scheduleUltimate(snd.heroId, snd.ticksUntilDetonation, { forceRestart: true, _fromRemoteSync: true });
+            } else {
+              AudioEngine.play(snd.id, {
+                source: snd.source || 'player',
+                sourceX: snd.sourceX || 590,
+                pitchCents: snd.pitchCents || 0,
+                volDb: snd.volDb || 0,
+                bypassCooldown: true,
+                _fromRemoteSync: true
+              });
+            }
+          } catch (e) {}
+        });
+      }
+    }
+
+    /**
+     * Cập nhật HUD cho CLIENT (Player 2):
+     * Khung bên trái hiển thị Máu, Hồi chiêu U, Nộ Final L của chính Player 2 (Client)
+     * Khung bên phải hiển thị Máu, Giáp Nội Năng & Nộ của Player 1 (Host)
+     */
+    function updateP2PClientBattleHUD() {
+      const b = battle;
+      const p1 = b.player;
+      const p2 = b.enemies[0];
+      if (!p2) return;
+
+      document.getElementById('hud-hp-fill').style.width = `${Math.max(0, (p2.hp / p2.maxHp) * 100)}%`;
+      document.getElementById('hud-hp-text').textContent = `${Math.max(0, p2.hp).toLocaleString()} / ${p2.maxHp.toLocaleString()}`;
+
+      const wMax = p2.wSkillMaxCd || 240;
+      const wCd = p2.wSkillCd || 0;
+      const wPct = Math.floor(((wMax - wCd) / wMax) * 100);
+      document.getElementById('hud-wskill-fill').style.width = `${Math.max(0, Math.min(100, wPct))}%`;
+      document.getElementById('hud-wskill-text').textContent = wCd <= 0 ? 'TUYỆT KỸ VŨ KHÍ (U): SẴN SÀNG!' : `HỒI CHIÊU (U): ${(wCd / 60).toFixed(1)}s`;
+
+      const p2Rage = Math.min(100, Math.floor(p2.rage || 0));
+      document.getElementById('hud-rage-fill').style.width = `${p2Rage}%`;
+      document.getElementById('hud-rage-text').textContent = `NỘ FINAL (L): ${p2Rage}%`;
+
+      // Khung phải: Trạng thái của Host (Player 1)
+      document.getElementById('hud-boss-hp-fill').style.width = `${Math.max(0, (p1.hp / p1.maxHp) * 100)}%`;
+      document.getElementById('hud-boss-hp-text').textContent = `${Math.max(0, p1.hp).toLocaleString()} / ${p1.maxHp.toLocaleString()}`;
+
+      const p1ArmorPct = p1.maxArmor > 0 ? Math.max(0, Math.round(((p1.armor || 0) / p1.maxArmor) * 100)) : 0;
+      const p1RagePct = Math.min(100, Math.floor(p1.rage || 0));
+      document.getElementById('hud-boss-armor-fill').style.width = `${(p1.armor || 0) > 0 ? p1ArmorPct : p1RagePct}%`;
+      const armorTextEl = document.getElementById('hud-boss-armor-text');
+      if (armorTextEl) {
+        armorTextEl.textContent = `NỘI NĂNG HOST (P1): ${p1ArmorPct}% | NỘ FINAL: ${p1RagePct}%`;
+      }
+      document.getElementById('hud-boss-state').textContent = p1.stunTimer > 0
+        ? `CHOÁNG (${(p1.stunTimer / 60).toFixed(1)}s)`
+        : (p1.invincibleTimer > 0 ? 'BẤT TỬ (0.35s)' : `NỘ: ${p1RagePct}%`);
+    }
+
+    function drawPlayer1FloatingPlate(ctx, p1, b) {
+      ctx.save();
+      ctx.translate(p1.x, p1.y - 92);
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 1.2;
+      ctx.fillRect(-46, -18, 92, 12);
+      ctx.strokeRect(-46, -18, 92, 12);
+
+      ctx.fillStyle = '#6ee7b7';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      const label = b.isP2P ? `P1: ${p1.name || state.playerName}` : (state.playerName || 'BẠN');
+      ctx.fillText(label.slice(0, 16), 0, -9);
+
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(-42, -3, 84, 5);
+      ctx.fillStyle = '#22c55e';
+      ctx.fillRect(-42, -3, 84 * Math.max(0, p1.hp / Math.max(1, p1.maxHp)), 5);
+
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(-42, 3, 84, 3.5);
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(-42, 3, 84 * Math.max(0, Math.min(1, (p1.rage || 0) / 100)), 3.5);
+      ctx.restore();
+    }
+
+    function drawP2PBattleOverlay(ctx, b, W, H) {
+      ctx.save();
+      // Badge trạng thái đồng bộ P2P góc trên phải
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.82)';
+      ctx.strokeStyle = b.p2pRole === 'host' ? '#10b981' : '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(W - 265, 12, 250, 26);
+      ctx.strokeRect(W - 265, 12, 250, 26);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(`🌐 P2P [${b.p2pRoomCode || 'LOCAL'}] • ${b.p2pRole === 'host' ? 'HOST AUTHORITY' : 'CLIENT 60Hz'}`, W - 24, 29);
+
+      // Đếm ngược 3 - 2 - 1 đầu trận
+      if (b.countdownTicks && b.countdownTicks > 0) {
+        ctx.fillStyle = 'rgba(8, 11, 18, 0.55)';
+        ctx.fillRect(0, 0, W, H);
+
+        const sec = Math.ceil(b.countdownTicks / 60);
+        const pulse = 1 + ((b.countdownTicks % 60) / 60) * 0.25;
+        ctx.translate(W * 0.5, H * 0.45);
+        ctx.scale(pulse, pulse);
+        ctx.textAlign = 'center';
+        ctx.fillStyle = sec === 1 ? '#ef4444' : (sec === 2 ? '#f59e0b' : '#38bdf8');
+        ctx.font = '900 76px sans-serif';
+        ctx.fillText(String(sec), 0, 12);
+
+        ctx.fillStyle = '#fde047';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.fillText(`ĐỒNG BỘ TRANG BỊ 14 LỚP & SKIN VIP HOÀN TẤT — CHUẨN BỊ GIAO CHIẾN!`, 0, 52);
+      }
+      ctx.restore();
+    }
+
+    /**
+     * KIỂM TRA MẤT MẠNG (DISCONNECT > 3 GIÂY):
+     * Nếu 1 trong 2 rớt mạng quá 3 giây, hiện thông báo trên #modal-overlay và kết thúc trận.
+     */
+    function checkP2PConnectionHealth(now = performance.now()) {
+      if (!battle || !battle.active || !battle.isP2P) return;
+
+      if (p2pSession.loopbackBot) {
+        p2pSession.lastRemotePacketTime = now;
+        return;
+      }
+
+      if (now - p2pSession.lastPingSentTime > 500) {
+        p2pSession.lastPingSentTime = now;
+        sendP2PPacket({ type: 'PING', _senderRole: p2pSession.role, t: now });
+      }
+
+      const silenceMs = now - (p2pSession.lastRemotePacketTime || now);
+      if (silenceMs > P2P_DISCONNECT_TIMEOUT_MS) {
+        triggerP2PDisconnectModal(
+          `Mất tín hiệu từ đối thủ quá 3 giây (${(silenceMs / 1000).toFixed(1)}s). Trận đấu P2P đã tự động kết thúc để bảo vệ dữ liệu Host Authority!`
+        );
+      }
+    }
+
+    function triggerP2PDisconnectModal(reasonText) {
+      if (!battle) return;
+      battle.active = false;
+      try {
+        AudioEngine.stopAmbient();
+        AudioEngine.setSnapshot('UI_PAUSE_OPEN', true);
+        AudioEngine.play('error', { source: 'ui', bypassCooldown: true });
+      } catch (e) {}
+
+      const modal = document.getElementById('modal-overlay');
+      const titleEl = document.getElementById('modal-title');
+      const descEl = document.getElementById('modal-desc');
+      const replayBtn = document.getElementById('modal-replay-btn');
+
+      if (titleEl) titleEl.textContent = '⚠️ MẤT KẾT NỐI MẠNG P2P!';
+      if (descEl) {
+        descEl.textContent = reasonText || 'Đối thủ đã mất kết nối quá 3 giây. Trận đấu tay đôi 1v1 P2P đã kết thúc!';
+      }
+      if (replayBtn) replayBtn.textContent = '🔄 Về Đấu Trường';
+      if (modal) modal.classList.remove('hidden');
+
+      disconnectP2PSession(false);
+    }
+
+    function disconnectP2PSession(resetUI = true) {
+      p2pSession.connected = false;
+      p2pSession.matchStarted = false;
+      p2pSession.loopbackBot = false;
+      try {
+        if (p2pSession.conn) p2pSession.conn.close();
+      } catch (e) {}
+      try {
+        if (p2pSession.peer) p2pSession.peer.destroy();
+      } catch (e) {}
+      try {
+        if (p2pSession.bcChannel) p2pSession.bcChannel.close();
+      } catch (e) {}
+      p2pSession.conn = null;
+      p2pSession.peer = null;
+      p2pSession.bcChannel = null;
+
+      if (resetUI) {
+        p2pSession.role = null;
+        p2pSession.roomCode = '';
+        document.getElementById('p2p-room-code-wrap')?.classList.add('hidden');
+        document.getElementById('btn-p2p-cancel-room')?.classList.add('hidden');
+        const rolePill = document.getElementById('p2p-role-pill');
+        if (rolePill) {
+          rolePill.textContent = 'PeerJS v1.5.4 • Host Authority';
+          rolePill.className = 'anti-cheat-pill clean';
+        }
+        setP2PMatchmakingStatus('Đã hủy phiên P2P. Bấm "Tạo Phòng" hoặc nhập mã 6 ký tự để kết nối.', '#94a3b8');
+      }
+    }
+
+    // Gửi thông báo kết thúc trận từ Host sang Client khi có người thắng/thua trong P2P
+    (function hookCompleteArenaMatchForP2P() {
+      const origCompleteArena = completeArenaMatch;
+      window.completeArenaMatch = completeArenaMatch = function(win) {
+        if (battle && battle.isP2P && battle.p2pRole === 'host') {
+          sendP2PPacket({
+            type: 'MATCH_END',
+            _senderRole: 'host',
+            hostWon: Boolean(win)
+          });
+        }
+        origCompleteArena(win);
+        if (window.cloudLeaderboard) {
+          window.cloudLeaderboard.submitPlayerScore().catch(() => {});
+        }
+      };
+    })();
+
+    /**
+     * Chế độ Kiểm Thử Nhanh P2P Loopback ngay trên 1 màn hình:
+     * Mô phỏng đầy đủ Tạo Phòng -> Gói tin INIT_MATCH -> Đếm ngược 3-2-1 -> Đồng bộ Input 60Hz
+     */
+    function startP2PLoopbackTestMatch() {
+      createP2PRoom();
+      p2pSession.loopbackBot = true;
+      const sampleOpponent = OFFICIAL_ARENA_SEED[Math.floor(Math.random() * 3)];
+      const calc = computeFighterStatsFromConfig(sampleOpponent);
+      const mockClientProfile = {
+        name: sampleOpponent.name + ' [P2P]',
+        heroId: sampleOpponent.heroId,
+        level: sampleOpponent.level,
+        fame: sampleOpponent.fame,
+        skinId: sampleOpponent.skinId,
+        weaponId: sampleOpponent.weaponId,
+        helmetId: sampleOpponent.helmetId,
+        armorId: sampleOpponent.armorId,
+        bootsId: sampleOpponent.bootsId,
+        titleId: sampleOpponent.titleId,
+        atk: calc.atk,
+        maxHp: calc.maxHp,
+        def: calc.def,
+        crit: calc.crit,
+        spdMult: calc.spdMult,
+        power: calc.power,
+        arenaMode: state.arenaMode || 'fair',
+        modularLayers: Object.assign({}, modularLayerEnabled)
+      };
+      handleIncomingP2PPacket({
+        type: 'INIT_MATCH',
+        _senderRole: 'client',
+        roomCode: p2pSession.roomCode,
+        fighter: mockClientProfile,
+        timestamp: performance.now()
+      });
+    }
+
+    function handleLoopbackPacket(packet) {
+      // Trong chế độ loopback 1 máy, gói tin từ Host được ghi nhận tức thì
+      p2pSession.lastRemotePacketTime = performance.now();
+    }
+
+    function stepLoopbackBotInput60Hz(en, p) {
+      const dx = p.x - en.x;
+      const absDx = Math.abs(dx);
+      p2pSession.remoteInput.left = dx < -115;
+      p2pSession.remoteInput.right = dx > 115;
+      if (battle.tick % 28 === 0) {
+        if ((en.rage || 0) >= 100 && absDx < 420) {
+          p2pSession.remoteInput.actions.push('L');
+        } else if (en.wSkillCd <= 0 && absDx < 380) {
+          p2pSession.remoteInput.actions.push('U');
+        } else if (en.stun > 0 && (en.rage || 0) >= 30) {
+          p2pSession.remoteInput.actions.push('SHIFT');
+        } else if (absDx <= 165) {
+          p2pSession.remoteInput.actions.push(Math.random() < 0.45 ? 'COMBO:J-J-K' : (Math.random() < 0.5 ? 'J' : 'K'));
+        }
       }
     }
 
