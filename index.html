@@ -5,7 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>VÕ ĐÀI CYBER: HUYẾT LONG QUYẾT - Master Release v4.4 (1v1 P2P WebRTC & Cloud Leaderboard)</title>
   <!-- CDN PeerJS v1.5.4 cho Kiến Trúc Mạng P2P Host Authority -->
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="vendor/peerjs.min.js"></script>
+  <!-- PWA: cài đặt như app trên điện thoại & PC -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#080b12" />
+  <meta name="description" content="Võ Đài Cyber: Huyết Long Quyết - game đối kháng cyberpunk, đấu 1v1 P2P và bảng xếp hạng." />
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Võ Đài Cyber" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background: #080b12; color: #e2e8f0; min-height: 100vh; overflow-x: hidden; }
@@ -612,21 +622,55 @@
     <canvas id="battle-canvas" width="1180" height="460"></canvas>
 
     <div id="touch-controls-bar" class="touch-controls">
-      <div class="touch-dpad">
-        <button class="touch-btn"
-          onmousedown="setHoldKey('A',true)" onmouseup="setHoldKey('A',false)" onmouseleave="setHoldKey('A',false)"
-          ontouchstart="setHoldKey('A',true);event.preventDefault()" ontouchend="setHoldKey('A',false)" ontouchcancel="setHoldKey('A',false)">◀<small>Trái</small></button>
-        <button class="touch-btn"
-          onmousedown="setHoldKey('D',true)" onmouseup="setHoldKey('D',false)" onmouseleave="setHoldKey('D',false)"
-          ontouchstart="setHoldKey('D',true);event.preventDefault()" ontouchend="setHoldKey('D',false)" ontouchcancel="setHoldKey('D',false)">▶<small>Phải</small></button>
-        <button class="touch-btn" onclick="playerJump()" ontouchstart="playerJump();event.preventDefault()">▲<small>Nhảy (W)</small></button>
-        <button class="touch-btn t-dash" onclick="triggerDash()" ontouchstart="triggerDash();event.preventDefault()">💨<small>Lướt</small></button>
+      <!-- GÓC DƯỚI BÊN TRÁI: Thanh kéo / Cần gạt di chuyển Trái - Phải -->
+      <div class="cyber-joy-wrap" id="cyber-joy-wrap">
+        <div class="cyber-joy-hint">KÉO TRÁI / PHẢI ĐỂ DI CHUYỂN</div>
+        <div class="cyber-joy-track" id="cyber-joy-track">
+          <span class="joy-side-label joy-lbl-left">◀ TRÁI</span>
+          <span class="joy-side-label joy-lbl-right">PHẢI ▶</span>
+          <div class="cyber-joy-knob" id="cyber-joy-knob">
+            <span class="knob-arrows">⟷</span>
+            <small id="cyber-joy-state">GIỮ & KÉO</small>
+          </div>
+        </div>
       </div>
-      <div class="touch-actions">
-        <button class="touch-btn t-atk" onclick="triggerQuickAction('J')" ontouchstart="triggerQuickAction('J');event.preventDefault()">👊<small>Đấm (J)</small></button>
-        <button class="touch-btn t-atk" onclick="triggerQuickAction('K')" ontouchstart="triggerQuickAction('K');event.preventDefault()">🦶<small>Đá (K)</small></button>
-        <button class="touch-btn t-u" onclick="triggerWeaponSkill()" ontouchstart="triggerWeaponSkill();event.preventDefault()">🗡️<small>Skill U</small></button>
-        <button class="touch-btn t-l" onclick="triggerFinalSkill()" ontouchstart="triggerFinalSkill();event.preventDefault()">🔥<small>Final L</small></button>
+
+      <!-- GÓC DƯỚI BÊN PHẢI: Cụm 6 nút thao tác (Đấm, Đá, Nhảy, Lướt, Skill U, Skill L) -->
+      <div class="cyber-action-pad">
+        <div class="cyber-action-row cyber-row-top">
+          <button id="tbtn-skill-u" class="touch-btn t-u" onclick="triggerWeaponSkill()" ontouchstart="triggerWeaponSkill();event.preventDefault()">
+            <span class="t-ico">🗡️</span>
+            <span class="t-lbl">SKILL U</span>
+            <small id="tbtn-u-sub">Sẵn sàng</small>
+          </button>
+          <button id="tbtn-skill-l" class="touch-btn t-l" onclick="triggerFinalSkill()" ontouchstart="triggerFinalSkill();event.preventDefault()">
+            <span class="t-ico">🔥</span>
+            <span class="t-lbl">SKILL L</span>
+            <small id="tbtn-l-sub">Nộ 0%</small>
+          </button>
+          <button id="tbtn-jump" class="touch-btn t-jump" onclick="playerJump()" ontouchstart="playerJump();event.preventDefault()">
+            <span class="t-ico">▲</span>
+            <span class="t-lbl">NHẢY</span>
+            <small>Phím W</small>
+          </button>
+        </div>
+        <div class="cyber-action-row cyber-row-bottom">
+          <button id="tbtn-dash" class="touch-btn t-dash" onclick="triggerDash()" ontouchstart="triggerDash();event.preventDefault()">
+            <span class="t-ico">💨</span>
+            <span class="t-lbl">LƯỚT</span>
+            <small id="tbtn-dash-sub">Né đòn</small>
+          </button>
+          <button id="tbtn-kick" class="touch-btn t-kick" onclick="triggerQuickAction('K')" ontouchstart="triggerQuickAction('K');event.preventDefault()">
+            <span class="t-ico">🦶</span>
+            <span class="t-lbl">ĐÁ</span>
+            <small>Phím K</small>
+          </button>
+          <button id="tbtn-punch" class="touch-btn t-punch" onclick="triggerQuickAction('J')" ontouchstart="triggerQuickAction('J');event.preventDefault()">
+            <span class="t-ico">👊</span>
+            <span class="t-lbl">ĐẤM</span>
+            <small>Phím J</small>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -11680,6 +11724,2047 @@ window.AUDIO_BUNDLE = {
     renderAllHub();
     loopHeroPreview();
     requestAnimationFrame(updateBattleLoop);
+  </script>
+  <!-- ================= BẢN CẬP NHẬT PVP P2P HOÀN CHỈNH (ĐỢT 1 + ĐỢT 2) ================= -->
+  <script>
+    (function applyP2PMasterUpdate() {
+      // 1. Cập nhật Badge phiên bản trên thanh Top Bar
+      const brandBadge = document.querySelector('.brand-badge');
+      if (brandBadge) brandBadge.textContent = 'MASTER v4.4';
+
+      // 2. Thêm CSS cho Phòng Chờ P2P & sửa lỗi vỡ 3 cột trên điện thoại (<=900px)
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `
+        @media (max-width: 900px) {
+          .campaign-layout, .equip-layout, .upgrade-layout, .heroes-grid, .arena-layout { grid-template-columns: 1fr !important; height: auto; }
+        }
+        .p2p-lobby-box { background: #090d16; border: 1px solid #38bdf8; border-radius: 8px; padding: 9px; display: flex; flex-direction: column; gap: 8px; }
+        .p2p-score-banner { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, #1e1b4b, #0f172a); border: 1px solid #4f46e5; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 900; color: #fde047; }
+        .p2p-mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        .p2p-mode-btn { background: #111827; color: #94a3b8; border: 1px solid #334155; border-radius: 6px; padding: 6px 8px; font-size: 11px; font-weight: 800; cursor: pointer; transition: 0.15s; }
+        .p2p-mode-btn.active-fair { background: rgba(2, 132, 199, 0.22); color: #38bdf8; border-color: #38bdf8; }
+        .p2p-mode-btn.active-overlord { background: rgba(220, 38, 38, 0.22); color: #f87171; border-color: #ef4444; }
+        .p2p-mode-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+        .p2p-vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+        .p2p-slot-card { background: #111827; border: 1px solid #334155; border-radius: 7px; padding: 7px 8px; font-size: 11px; display: flex; flex-direction: column; gap: 3px; }
+        .p2p-slot-card.is-ready { border-color: #10b981; background: rgba(16, 185, 129, 0.1); }
+        .p2p-hero-pick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+        .p2p-hero-pick-btn { background: #111827; color: #e2e8f0; border: 1px solid #334155; border-radius: 6px; padding: 6px 4px; font-size: 10px; font-weight: 800; cursor: pointer; text-align: center; transition: 0.15s; }
+        .p2p-hero-pick-btn.active { border-color: #fde047; background: rgba(250, 204, 21, 0.16); color: #fde047; box-shadow: 0 0 8px rgba(250, 204, 21, 0.25); }
+        .p2p-hero-pick-btn:disabled { opacity: 0.4; cursor: not-allowed; filter: grayscale(0.8); }
+        .p2p-ready-btn { width: 100%; padding: 9px; border-radius: 7px; border: 1px solid #10b981; background: linear-gradient(135deg, #059669, #10b981); color: #052e16; font-weight: 900; font-size: 12px; cursor: pointer; transition: 0.15s; }
+        .p2p-ready-btn.is-ready { background: linear-gradient(135deg, #b45309, #f59e0b); color: #090d16; border-color: #fde047; }
+        .modal-actions { flex-wrap: wrap; }
+      `;
+      document.head.appendChild(styleEl);
+
+      // 3. Nâng cấp giao diện Cột 3 (.p2p-box) thêm Phòng Chờ & Chọn Tướng
+      const p2pBox = document.querySelector('#tab-arena .p2p-box');
+      if (p2pBox) {
+        p2pBox.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:6px">
+            <strong style="font-size:12px;color:#38bdf8">⚡ Ghép Phòng Trực Tuyến (Host Authority 60Hz)</strong>
+            <span id="p2p-net-transport-tag" style="font-size:10px;color:#86efac;font-weight:700">Sẵn sàng</span>
+          </div>
+
+          <div id="p2p-setup-controls" style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:6px;align-items:center">
+              <button id="btn-p2p-create-room" class="p2p-host-btn" style="flex:1" onclick="createP2PRoom()">
+                🏠 Tạo Phòng (HOST - P1)
+              </button>
+            </div>
+
+            <div class="p2p-input-row">
+              <input id="p2p-join-code-input" class="p2p-code-input" maxlength="6" placeholder="Nhập mã 6 ký tự (VD: A8K2M9)" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6)" onkeydown="if(event.key==='Enter') connectP2PRoom()" />
+              <button id="btn-p2p-connect-room" class="p2p-connect-btn" onclick="connectP2PRoom()">
+                🔗 Kết nối
+              </button>
+            </div>
+          </div>
+
+          <div id="p2p-room-code-wrap" class="p2p-code-banner hidden">
+            <div>
+              <div style="font-size:10px;color:#94a3b8">Mã Phòng 6 Ký Tự (Gửi cho Player 2):</div>
+              <div id="p2p-room-code-display" class="p2p-code-value">------</div>
+            </div>
+            <div style="display:flex;gap:5px">
+              <button class="preview-mini-btn" style="padding:6px 9px;color:#fde047;border-color:#eab308" onclick="copyP2PRoomCode()">📋 Copy Mã</button>
+              <button id="btn-p2p-cancel-room" class="preview-mini-btn hidden" style="padding:6px 9px;background:#7f1d1d;color:#fff;border-color:#f87171" onclick="leaveP2PRoomByButton()">
+                🚪 Rời Phòng
+              </button>
+            </div>
+          </div>
+
+          <div id="p2p-lobby-panel" class="p2p-lobby-box hidden">
+            <div class="p2p-score-banner">
+              <span>🏆 TỈ SỐ PHÒNG:</span>
+              <span id="p2p-lobby-score-text">P1 (0) — (0) P2</span>
+            </div>
+
+            <div>
+              <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;display:flex;justify-content:space-between">
+                <span>Chế độ đấu (Do Host P1 quyết định):</span>
+                <span id="p2p-lobby-mode-hint" style="color:#38bdf8;font-weight:700">Mở tự do 3 Anh Hùng</span>
+              </div>
+              <div class="p2p-mode-switch">
+                <button id="p2p-mode-btn-fair" class="p2p-mode-btn active-fair" onclick="setP2PLobbyModeByHost('fair')">⚖️ Công Bằng (Chuẩn Hóa)</button>
+                <button id="p2p-mode-btn-overlord" class="p2p-mode-btn" onclick="setP2PLobbyModeByHost('overlord')">🐉 Bá Chủ (Lực Chiến Gốc)</button>
+              </div>
+            </div>
+
+            <div class="p2p-vs-grid">
+              <div id="p2p-slot-host" class="p2p-slot-card">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <strong style="color:#38bdf8">P1 (HOST)</strong>
+                  <span id="p2p-host-ready-badge" style="font-size:10px;color:#fde047">⏳ Đang chọn</span>
+                </div>
+                <div id="p2p-host-fighter-info" style="color:#e2e8f0;font-weight:700">---</div>
+              </div>
+              <div id="p2p-slot-client" class="p2p-slot-card">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <strong style="color:#c084fc">P2 (CLIENT)</strong>
+                  <span id="p2p-client-ready-badge" style="font-size:10px;color:#fde047">⏳ Đang chọn</span>
+                </div>
+                <div id="p2p-client-fighter-info" style="color:#e2e8f0;font-weight:700">Đang chờ P2...</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="font-size:10px;color:#94a3b8;margin-bottom:4px">Chọn Anh Hùng xuất chiến của bạn:</div>
+              <div class="p2p-hero-pick-grid">
+                <button id="p2p-pick-long" class="p2p-hero-pick-btn active" onclick="selectP2PLobbyHero('long')">🗡️ Long Võ Sư</button>
+                <button id="p2p-pick-mage" class="p2p-hero-pick-btn" onclick="selectP2PLobbyHero('mage')">🔮 Pháp Sư</button>
+                <button id="p2p-pick-cyber" class="p2p-hero-pick-btn" onclick="selectP2PLobbyHero('cyber')">🦾 Thiết Quyền</button>
+              </div>
+            </div>
+
+            <button id="btn-p2p-ready" class="p2p-ready-btn" onclick="toggleP2PLobbyReady()">
+              ⚡ SẴN SÀNG CHIẾN ĐẤU (0 ⚡)
+            </button>
+          </div>
+
+          <div class="p2p-status-bar">
+            <span id="p2p-matchmaking-status">Bấm "Tạo Phòng" (Host P1) hoặc nhập mã 6 ký tự rồi bấm "Kết nối" (Client P2).</span>
+          </div>
+
+          <div class="p2p-telemetry-row">
+            <span>Quyền vật lý: <strong id="p2p-auth-label" style="color:#fde047">HOST (P1)</strong></span>
+            <span>Ping: <strong id="p2p-ping-label" style="color:#86efac">-- ms</strong></span>
+            <span>Timeout: <strong style="color:#f87171">3.0s</strong></span>
+          </div>
+
+          <button class="preview-mini-btn" style="width:100%;padding:7px;background:#1e1b4b;border-color:#6366f1;color:#c7d2fe" onclick="startP2PLoopbackTestMatch()">
+            🧪 Test Nhanh Luồng P2P (Tạo Phòng ➔ Phòng Chờ ➔ Sẵn Sàng)
+          </button>
+        `;
+      }
+
+      // 4. Nâng cấp Modal Kết Quả (#modal-overlay) tách riêng 3 nút cho P2P
+      const modalCard = document.querySelector('#modal-overlay .modal-card');
+      if (modalCard) {
+        modalCard.style.width = '480px';
+        modalCard.innerHTML = `
+          <h2 id="modal-title">CHIẾN THẮNG!</h2>
+          <p id="modal-desc" style="margin-top:10px;line-height:1.5;color:#cbd5e1"></p>
+          <div id="modal-standard-actions" class="modal-actions">
+            <button id="modal-replay-btn" onclick="replayCurrentStage()">🔄 Chơi Lại (-10 ⚡)</button>
+            <button class="primary-btn" onclick="closeModalToHub()">🏠 Về Sảnh Chính</button>
+          </div>
+          <div id="modal-p2p-actions" class="modal-actions hidden">
+            <button id="modal-p2p-rematch-btn" style="background:#10b981;color:#052e16" onclick="voteP2PRematchNow()">🔄 Tái Đấu Ngay (0/2)</button>
+            <button id="modal-p2p-lobby-btn" style="background:#0284c7;color:#fff" onclick="requestP2PBackToLobby()">🛋️ Về Phòng Chờ (Đổi Tướng)</button>
+            <button id="modal-p2p-leave-btn" class="primary-btn" onclick="leaveP2PRoomFromModal()">🚪 Rời Phòng</button>
+          </div>
+        `;
+      }
+
+      // 5. Mở rộng trạng thái phiên P2P
+      Object.assign(p2pSession, {
+        phase: 'IDLE',
+        roomMode: 'fair',
+        selectedHeroId: null,
+        hostReady: false,
+        clientReady: false,
+        hostRematchVote: false,
+        clientRematchVote: false,
+        rttMs: 0,
+        score: { host: 0, client: 0 }
+      });
+
+      window.showStandardModalActions = function() {
+        document.getElementById('modal-standard-actions')?.classList.remove('hidden');
+        document.getElementById('modal-p2p-actions')?.classList.add('hidden');
+      };
+
+      window.showP2PModalActions = function(onlyLeave = false) {
+        document.getElementById('modal-standard-actions')?.classList.add('hidden');
+        document.getElementById('modal-p2p-actions')?.classList.remove('hidden');
+        const rematchBtn = document.getElementById('modal-p2p-rematch-btn');
+        const lobbyBtn = document.getElementById('modal-p2p-lobby-btn');
+        if (rematchBtn) rematchBtn.classList.toggle('hidden', Boolean(onlyLeave));
+        if (lobbyBtn) lobbyBtn.classList.toggle('hidden', Boolean(onlyLeave));
+        updateP2PRematchButtonUI();
+      };
+
+      window.updateP2PRematchButtonUI = function() {
+        const rematchBtn = document.getElementById('modal-p2p-rematch-btn');
+        if (!rematchBtn) return;
+        const count = (p2pSession.hostRematchVote ? 1 : 0) + (p2pSession.clientRematchVote ? 1 : 0);
+        const myVoted = p2pSession.role === 'host' ? p2pSession.hostRematchVote : p2pSession.clientRematchVote;
+        rematchBtn.textContent = myVoted
+          ? `⏳ Đang chờ đối thủ... (${count}/2)`
+          : `🔄 Tái Đấu Ngay (${count}/2)`;
+        rematchBtn.style.background = myVoted ? '#f59e0b' : '#10b981';
+      };
+
+      const _origCompleteStage = completeStage;
+      window.completeStage = completeStage = function(win) {
+        if (!battle || !battle.isPvP) {
+          showStandardModalActions();
+        }
+        return _origCompleteStage(win);
+      };
+
+      window.generateSixCharRoomCode = generateSixCharRoomCode = function() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 6; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+      };
+
+      window.buildP2PFighterInitPayload = buildP2PFighterInitPayload = function(overrideHeroId) {
+        const targetHeroId = (overrideHeroId && HEROES[overrideHeroId])
+          ? overrideHeroId
+          : (p2pSession.selectedHeroId && HEROES[p2pSession.selectedHeroId] ? p2pSession.selectedHeroId : state.currentHero);
+
+        const prevHero = state.currentHero;
+        state.currentHero = targetHeroId;
+        const snap = buildPlayerFighterSnapshot();
+        state.currentHero = prevHero;
+
+        const validated = validateFighterStats(snap);
+        const fighter = validated.clampedFighter || snap;
+        return {
+          name: fighter.name,
+          heroId: targetHeroId,
+          level: fighter.level,
+          fame: state.arenaFame || 120,
+          skinId: fighter.skinId,
+          weaponId: fighter.weaponId,
+          helmetId: fighter.helmetId,
+          armorId: fighter.armorId,
+          bootsId: fighter.bootsId,
+          titleId: fighter.titleId,
+          atk: fighter.atk,
+          maxHp: fighter.maxHp,
+          def: fighter.def,
+          crit: fighter.crit,
+          spdMult: fighter.spdMult || 1.15,
+          power: fighter.power,
+          arenaMode: p2pSession.roomMode || state.arenaMode || 'fair',
+          modularLayers: Object.assign({}, modularLayerEnabled)
+        };
+      };
+
+      window.enterP2PLobbyUI = function() {
+        p2pSession.phase = 'LOBBY';
+        p2pSession.matchStarted = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+        document.getElementById('p2p-setup-controls')?.classList.add('hidden');
+        document.getElementById('p2p-room-code-wrap')?.classList.remove('hidden');
+        document.getElementById('btn-p2p-cancel-room')?.classList.remove('hidden');
+        document.getElementById('p2p-lobby-panel')?.classList.remove('hidden');
+        renderP2PLobbyUI();
+      };
+
+      window.renderP2PLobbyUI = function() {
+        const isHost = p2pSession.role === 'host';
+        const isFair = p2pSession.roomMode === 'fair';
+
+        if (!isFair && p2pSession.selectedHeroId && !state.unlockedHeroes.includes(p2pSession.selectedHeroId)) {
+          p2pSession.selectedHeroId = state.unlockedHeroes[0] || 'long';
+        }
+
+        const scoreEl = document.getElementById('p2p-lobby-score-text');
+        if (scoreEl) {
+          const hName = p2pSession.hostProfile ? p2pSession.hostProfile.name : 'P1';
+          const cName = p2pSession.clientProfile ? p2pSession.clientProfile.name : 'P2';
+          scoreEl.textContent = `${hName} (${p2pSession.score.host}) — (${p2pSession.score.client}) ${cName}`;
+        }
+
+        const fairBtn = document.getElementById('p2p-mode-btn-fair');
+        const overBtn = document.getElementById('p2p-mode-btn-overlord');
+        const modeHint = document.getElementById('p2p-lobby-mode-hint');
+        if (fairBtn && overBtn) {
+          fairBtn.className = 'p2p-mode-btn' + (isFair ? ' active-fair' : '');
+          overBtn.className = 'p2p-mode-btn' + (!isFair ? ' active-overlord' : '');
+          fairBtn.disabled = !isHost;
+          overBtn.disabled = !isHost;
+        }
+        if (modeHint) {
+          modeHint.textContent = isFair ? '⚖️ Mở tự do cả 3 Anh Hùng' : '🐉 Chỉ chọn Anh Hùng đã mở khóa';
+          modeHint.style.color = isFair ? '#38bdf8' : '#f87171';
+        }
+
+        const hostSlot = document.getElementById('p2p-slot-host');
+        const clientSlot = document.getElementById('p2p-slot-client');
+        const hostBadge = document.getElementById('p2p-host-ready-badge');
+        const clientBadge = document.getElementById('p2p-client-ready-badge');
+        const hostInfo = document.getElementById('p2p-host-fighter-info');
+        const clientInfo = document.getElementById('p2p-client-fighter-info');
+
+        if (hostSlot) hostSlot.className = 'p2p-slot-card' + (p2pSession.hostReady ? ' is-ready' : '');
+        if (clientSlot) clientSlot.className = 'p2p-slot-card' + (p2pSession.clientReady ? ' is-ready' : '');
+        if (hostBadge) {
+          hostBadge.textContent = p2pSession.hostReady ? '✔ SẴN SÀNG' : '⏳ Đang chọn';
+          hostBadge.style.color = p2pSession.hostReady ? '#6ee7b7' : '#fde047';
+        }
+        if (clientBadge) {
+          clientBadge.textContent = p2pSession.clientReady ? '✔ SẴN SÀNG' : '⏳ Đang chọn';
+          clientBadge.style.color = p2pSession.clientReady ? '#6ee7b7' : '#fde047';
+        }
+
+        if (hostInfo) {
+          if (p2pSession.hostProfile) {
+            const hHero = HEROES[p2pSession.hostProfile.heroId] || HEROES.long;
+            hostInfo.innerHTML = `${p2pSession.hostProfile.name}<br/><span style="color:#fde047;font-size:10px">${hHero.name} (Lv.${p2pSession.hostProfile.level})</span>`;
+          } else {
+            hostInfo.textContent = 'Đang chờ...';
+          }
+        }
+        if (clientInfo) {
+          if (p2pSession.clientProfile) {
+            const cHero = HEROES[p2pSession.clientProfile.heroId] || HEROES.long;
+            clientInfo.innerHTML = `${p2pSession.clientProfile.name}<br/><span style="color:#fde047;font-size:10px">${cHero.name} (Lv.${p2pSession.clientProfile.level})</span>`;
+          } else {
+            clientInfo.textContent = 'Đang chờ P2 kết nối...';
+          }
+        }
+
+        ['long', 'mage', 'cyber'].forEach(hid => {
+          const btn = document.getElementById('p2p-pick-' + hid);
+          if (!btn) return;
+          const unlocked = isFair || state.unlockedHeroes.includes(hid);
+          btn.disabled = !unlocked;
+          btn.className = 'p2p-hero-pick-btn' + (p2pSession.selectedHeroId === hid ? ' active' : '');
+          const labelMap = { long: '🗡️ Long Võ Sư', mage: '🔮 Pháp Sư', cyber: '🦾 Thiết Quyền' };
+          btn.textContent = unlocked ? labelMap[hid] : `🔒 ${labelMap[hid].slice(2)}`;
+        });
+
+        const myReady = isHost ? p2pSession.hostReady : p2pSession.clientReady;
+        const readyBtn = document.getElementById('btn-p2p-ready');
+        if (readyBtn) {
+          readyBtn.disabled = !p2pSession.connected;
+          readyBtn.className = 'p2p-ready-btn' + (myReady ? ' is-ready' : '');
+          readyBtn.textContent = myReady
+            ? '✖ HỦY SẴN SÀNG (Đang chờ đối thủ...)'
+            : '⚡ SẴN SÀNG CHIẾN ĐẤU (0 ⚡)';
+        }
+      };
+
+      window.selectP2PLobbyHero = function(heroId) {
+        if (!HEROES[heroId]) return;
+        const isFair = p2pSession.roomMode === 'fair';
+        if (!isFair && !state.unlockedHeroes.includes(heroId)) {
+          alert('Ở chế độ 🐉 Bá Chủ, bạn chỉ được chọn Anh Hùng mà tài khoản đã mở khóa!');
+          return;
+        }
+        p2pSession.selectedHeroId = heroId;
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+
+        const freshSnap = buildP2PFighterInitPayload(heroId);
+        if (p2pSession.role === 'host') {
+          p2pSession.hostProfile = freshSnap;
+        } else if (p2pSession.role === 'client') {
+          p2pSession.clientProfile = freshSnap;
+        }
+
+        sendP2PPacket({
+          type: 'LOBBY_UPDATE',
+          _senderRole: p2pSession.role,
+          roomMode: p2pSession.roomMode,
+          fighter: freshSnap
+        });
+        renderP2PLobbyUI();
+        setP2PMatchmakingStatus(`Đã chọn ${HEROES[heroId].name}. Hãy bấm "Sẵn Sàng Chiến Đấu"!`, '#fde047');
+      };
+
+      window.setP2PLobbyModeByHost = function(mode) {
+        if (p2pSession.role !== 'host') return;
+        if (mode !== 'fair' && mode !== 'overlord') return;
+        p2pSession.roomMode = mode;
+        state.arenaMode = mode;
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+
+        if (mode === 'overlord' && !state.unlockedHeroes.includes(p2pSession.selectedHeroId)) {
+          p2pSession.selectedHeroId = state.unlockedHeroes[0] || 'long';
+        }
+        p2pSession.hostProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+
+        sendP2PPacket({
+          type: 'LOBBY_UPDATE',
+          _senderRole: 'host',
+          roomMode: mode,
+          fighter: p2pSession.hostProfile
+        });
+        renderP2PLobbyUI();
+        setP2PMatchmakingStatus(
+          `Host đã chuyển sang chế độ ${mode === 'fair' ? '⚖️ Công Bằng' : '🐉 Bá Chủ'}. Cả 2 vui lòng bấm Sẵn Sàng lại!`,
+          '#38bdf8'
+        );
+      };
+
+      window.toggleP2PLobbyReady = function() {
+        if (!p2pSession.connected) return;
+        const isHost = p2pSession.role === 'host';
+        const latestProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+
+        if (isHost) {
+          p2pSession.hostReady = !p2pSession.hostReady;
+          p2pSession.hostProfile = latestProfile;
+        } else {
+          p2pSession.clientReady = !p2pSession.clientReady;
+          p2pSession.clientProfile = latestProfile;
+        }
+
+        const myReady = isHost ? p2pSession.hostReady : p2pSession.clientReady;
+        sendP2PPacket({
+          type: 'LOBBY_READY',
+          _senderRole: p2pSession.role,
+          ready: myReady,
+          fighter: latestProfile
+        });
+
+        renderP2PLobbyUI();
+
+        if (p2pSession.loopbackBot && isHost && p2pSession.hostReady) {
+          p2pSession.clientReady = true;
+        }
+
+        if (isHost && p2pSession.hostReady && p2pSession.clientReady) {
+          triggerHostStartMatchFromLobby();
+        } else {
+          setP2PMatchmakingStatus(
+            myReady ? '✔ Bạn đã Sẵn Sàng! Đang chờ đối thủ bấm Sẵn Sàng...' : '⏳ Đã hủy Sẵn Sàng. Hãy chọn lại Anh Hùng.',
+            myReady ? '#86efac' : '#fde047'
+          );
+        }
+      };
+
+      window.triggerHostStartMatchFromLobby = function() {
+        if (p2pSession.role !== 'host') return;
+        p2pSession.hostProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+        p2pSession.hostProfile.arenaMode = p2pSession.roomMode;
+        if (p2pSession.clientProfile) {
+          p2pSession.clientProfile.arenaMode = p2pSession.roomMode;
+        }
+
+        p2pSession.matchStarted = true;
+        p2pSession.phase = 'IN_BATTLE';
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+
+        sendP2PPacket({
+          type: 'MATCH_START',
+          _senderRole: 'host',
+          roomMode: p2pSession.roomMode,
+          hostFighter: p2pSession.hostProfile,
+          clientFighter: p2pSession.clientProfile,
+          score: p2pSession.score,
+          timestamp: performance.now()
+        });
+
+        launchP2PBattleMatch(p2pSession.hostProfile, p2pSession.clientProfile, 'host');
+      };
+
+      window.returnToP2PLobbyFromMatch = function(statusMsg) {
+        if (battle) battle.active = false;
+        p2pSession.matchStarted = false;
+        p2pSession.phase = 'LOBBY';
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+
+        try {
+          AudioEngine.stopAmbient();
+          AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
+        } catch (e) {}
+
+        clearAllHoldKeys();
+        document.body.classList.remove('in-battle');
+        document.getElementById('modal-overlay')?.classList.add('hidden');
+        showStandardModalActions();
+        document.getElementById('battle-screen')?.classList.add('hidden');
+        document.getElementById('hub-screen')?.classList.remove('hidden');
+
+        if (typeof switchTab === 'function') {
+          try { switchTab('arena'); } catch (e) {}
+        }
+        enterP2PLobbyUI();
+        if (statusMsg) {
+          setP2PMatchmakingStatus(statusMsg, '#86efac');
+        }
+      };
+
+      window.voteP2PRematchNow = function() {
+        if (!p2pSession.connected) {
+          alert('Kết nối P2P đã đóng. Vui lòng rời phòng và tạo phòng mới!');
+          return;
+        }
+        if (p2pSession.role === 'host') {
+          p2pSession.hostRematchVote = !p2pSession.hostRematchVote;
+          if (p2pSession.loopbackBot && p2pSession.hostRematchVote) {
+            p2pSession.clientRematchVote = true;
+          }
+        } else if (p2pSession.role === 'client') {
+          p2pSession.clientRematchVote = !p2pSession.clientRematchVote;
+        }
+
+        const myVote = p2pSession.role === 'host' ? p2pSession.hostRematchVote : p2pSession.clientRematchVote;
+        sendP2PPacket({
+          type: 'REMATCH_VOTE',
+          _senderRole: p2pSession.role,
+          vote: myVote
+        });
+        updateP2PRematchButtonUI();
+
+        if (p2pSession.role === 'host' && p2pSession.hostRematchVote && p2pSession.clientRematchVote) {
+          triggerHostStartMatchFromLobby();
+        }
+      };
+
+      window.requestP2PBackToLobby = function() {
+        if (!p2pSession.connected) {
+          leaveP2PRoomFromModal();
+          return;
+        }
+        sendP2PPacket({ type: 'BACK_TO_LOBBY', _senderRole: p2pSession.role });
+        returnToP2PLobbyFromMatch('Đã quay về Phòng Chờ. Hãy chọn Anh Hùng và bấm Sẵn Sàng cho ván tiếp theo!');
+      };
+
+      window.leaveP2PRoomByButton = function() {
+        if (p2pSession.connected) {
+          sendP2PPacket({ type: 'PEER_LEAVE', _senderRole: p2pSession.role, reason: 'Đối thủ đã rời phòng.' });
+        }
+        disconnectP2PSession(true);
+      };
+
+      window.leaveP2PRoomFromModal = function() {
+        if (p2pSession.connected) {
+          sendP2PPacket({ type: 'PEER_LEAVE', _senderRole: p2pSession.role, reason: 'Đối thủ đã rời phòng.' });
+        }
+        disconnectP2PSession(true);
+        document.getElementById('modal-overlay')?.classList.add('hidden');
+        showStandardModalActions();
+        if (battle) battle.active = false;
+        try {
+          AudioEngine.stopAmbient();
+          AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
+        } catch (e) {}
+        clearAllHoldKeys();
+        document.body.classList.remove('in-battle');
+        document.getElementById('battle-screen')?.classList.add('hidden');
+        document.getElementById('hub-screen')?.classList.remove('hidden');
+        renderAllHub();
+      };
+
+      window.leaveBattle = leaveBattle = function() {
+        if (battle && battle.isP2P && battle.active && p2pSession.connected) {
+          battle.active = false;
+          const hostWon = p2pSession.role !== 'host';
+          if (hostWon) {
+            p2pSession.score.host = (p2pSession.score.host || 0) + 1;
+          } else {
+            p2pSession.score.client = (p2pSession.score.client || 0) + 1;
+          }
+          sendP2PPacket({
+            type: 'FORFEIT_TO_LOBBY',
+            _senderRole: p2pSession.role,
+            hostWon,
+            score: p2pSession.score
+          });
+          returnToP2PLobbyFromMatch(
+            `🏳️ Bạn đã rút lui khỏi ván đấu. Tỉ số phòng hiện tại: P1 (${p2pSession.score.host}) - (${p2pSession.score.client}) P2.`
+          );
+          return;
+        }
+
+        if (battle) battle.active = false;
+        try {
+          AudioEngine.stopAmbient();
+          AudioEngine.setSnapshot('UI_PAUSE_OPEN', false);
+        } catch (e) {}
+        clearAllHoldKeys();
+        document.body.classList.remove('in-battle');
+        saveGameState();
+        showStandardModalActions();
+        document.getElementById('battle-screen')?.classList.add('hidden');
+        document.getElementById('hub-screen')?.classList.remove('hidden');
+        renderAllHub();
+      };
+
+      window.createP2PRoom = createP2PRoom = function() {
+        disconnectP2PSession(false);
+        const roomCode = generateSixCharRoomCode();
+        p2pSession.role = 'host';
+        p2pSession.phase = 'WAITING_PEER';
+        p2pSession.roomCode = roomCode;
+        p2pSession.roomMode = state.arenaMode || 'fair';
+        p2pSession.selectedHeroId = state.currentHero || 'long';
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+        p2pSession.score = { host: 0, client: 0 };
+        p2pSession.connected = false;
+        p2pSession.matchStarted = false;
+        p2pSession.hostProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+        p2pSession.clientProfile = null;
+
+        const codeWrap = document.getElementById('p2p-room-code-wrap');
+        const codeDisp = document.getElementById('p2p-room-code-display');
+        const cancelBtn = document.getElementById('btn-p2p-cancel-room');
+        const rolePill = document.getElementById('p2p-role-pill');
+        const authLabel = document.getElementById('p2p-auth-label');
+        const netTag = document.getElementById('p2p-net-transport-tag');
+
+        if (codeWrap) codeWrap.classList.remove('hidden');
+        if (codeDisp) codeDisp.textContent = roomCode;
+        if (cancelBtn) cancelBtn.classList.remove('hidden');
+        if (rolePill) {
+          rolePill.textContent = `HOST (P1) • Phòng ${roomCode}`;
+          rolePill.className = 'anti-cheat-pill clean';
+        }
+        if (authLabel) authLabel.textContent = 'HOST (Bạn - P1)';
+        setP2PMatchmakingStatus(`Phòng ${roomCode} đã mở — Đang chờ đối thủ (P2) kết nối để vào Phòng Chờ...`, '#fde047');
+
+        setupBroadcastChannelFallback(roomCode);
+
+        if (typeof window.Peer === 'function') {
+          try {
+            const fullPeerId = PEER_ID_PREFIX + roomCode;
+            const peer = new Peer(fullPeerId, { debug: 1 });
+            p2pSession.peer = peer;
+
+            peer.on('open', () => {
+              if (netTag) netTag.textContent = 'WebRTC PeerJS Ready';
+            });
+
+            peer.on('connection', (conn) => {
+              if (p2pSession.connected && p2pSession.conn && p2pSession.conn.open && p2pSession.conn !== conn) {
+                conn.on('open', () => {
+                  try { conn.send({ type: 'ROOM_FULL', roomCode }); } catch (e) {}
+                  setTimeout(() => { try { conn.close(); } catch (e) {} }, 250);
+                });
+                return;
+              }
+              p2pSession.conn = conn;
+              bindPeerConnectionEvents(conn);
+            });
+
+            peer.on('error', (err) => {
+              if (err && err.type === 'unavailable-id') {
+                createP2PRoom();
+                return;
+              }
+              if (netTag) netTag.textContent = 'PeerJS/Local Hybrid';
+            });
+          } catch (err) {
+            if (netTag) netTag.textContent = 'Local P2P Channel';
+          }
+        } else {
+          if (netTag) netTag.textContent = 'Local P2P Channel';
+        }
+
+        try { AudioEngine.play('confirm', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+      };
+
+      window.connectP2PRoom = connectP2PRoom = function() {
+        const inp = document.getElementById('p2p-join-code-input');
+        const code = (inp ? inp.value : '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (code.length !== 6) {
+          alert('Vui lòng nhập đúng Mã Phòng 6 ký tự do Host tạo!');
+          return;
+        }
+
+        disconnectP2PSession(false);
+        p2pSession.role = 'client';
+        p2pSession.phase = 'WAITING_PEER';
+        p2pSession.roomCode = code;
+        p2pSession.selectedHeroId = state.currentHero || 'long';
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+        p2pSession.score = { host: 0, client: 0 };
+        p2pSession.connected = false;
+        p2pSession.matchStarted = false;
+        p2pSession.clientProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+        p2pSession.hostProfile = null;
+
+        const rolePill = document.getElementById('p2p-role-pill');
+        const authLabel = document.getElementById('p2p-auth-label');
+        const cancelBtn = document.getElementById('btn-p2p-cancel-room');
+        const codeWrap = document.getElementById('p2p-room-code-wrap');
+        const codeDisp = document.getElementById('p2p-room-code-display');
+        const netTag = document.getElementById('p2p-net-transport-tag');
+
+        if (codeWrap) codeWrap.classList.remove('hidden');
+        if (codeDisp) codeDisp.textContent = code;
+        if (rolePill) {
+          rolePill.textContent = `CLIENT (P2) • Phòng ${code}`;
+          rolePill.className = 'anti-cheat-pill sandbox';
+        }
+        if (authLabel) authLabel.textContent = 'CLIENT (Chỉ gửi Input 60Hz & Render)';
+        if (cancelBtn) cancelBtn.classList.remove('hidden');
+        setP2PMatchmakingStatus(`Đang kết nối tới phòng ${code}...`, '#38bdf8');
+
+        setupBroadcastChannelFallback(code);
+        if (p2pSession.bcChannel) {
+          p2pSession.bcChannel.postMessage({
+            type: 'INIT_MATCH',
+            _senderRole: 'client',
+            roomCode: code,
+            fighter: p2pSession.clientProfile,
+            timestamp: performance.now()
+          });
+        }
+
+        if (typeof window.Peer === 'function') {
+          try {
+            const peer = new Peer(undefined, { debug: 1 });
+            p2pSession.peer = peer;
+
+            peer.on('open', () => {
+              if (netTag) netTag.textContent = 'WebRTC Connecting...';
+              const conn = peer.connect(PEER_ID_PREFIX + code, { reliable: true });
+              p2pSession.conn = conn;
+              bindPeerConnectionEvents(conn);
+            });
+
+            peer.on('error', (err) => {
+              if (!p2pSession.connected && err && err.type === 'peer-unavailable') {
+                setP2PMatchmakingStatus(`❌ Không tìm thấy phòng ${code} trên WebRTC (hoặc Host đã thoát)!`, '#f87171');
+              }
+            });
+          } catch (e) {}
+        }
+      };
+
+      window.bindPeerConnectionEvents = bindPeerConnectionEvents = function(conn) {
+        if (!conn) return;
+        conn.on('open', () => {
+          p2pSession.lastRemotePacketTime = performance.now();
+          const netTag = document.getElementById('p2p-net-transport-tag');
+          if (netTag) netTag.textContent = 'WebRTC DataChannel (60Hz)';
+
+          if (p2pSession.role === 'client' && !p2pSession.connected) {
+            conn.send({
+              type: 'INIT_MATCH',
+              _senderRole: 'client',
+              roomCode: p2pSession.roomCode,
+              fighter: p2pSession.clientProfile,
+              timestamp: performance.now()
+            });
+          }
+        });
+
+        conn.on('data', (data) => {
+          handleIncomingP2PPacket(data);
+        });
+
+        conn.on('close', () => {
+          p2pSession.connected = false;
+        });
+
+        conn.on('error', () => {
+          p2pSession.connected = false;
+        });
+      };
+
+      window.handleIncomingP2PPacket = handleIncomingP2PPacket = function(packet) {
+        if (!packet || typeof packet !== 'object') return;
+        p2pSession.lastRemotePacketTime = performance.now();
+
+        if (packet.type === 'ROOM_FULL' && p2pSession.role === 'client' && !p2pSession.connected) {
+          alert(`Phòng ${packet.roomCode || p2pSession.roomCode} đã đủ 2 người chơi!`);
+          disconnectP2PSession(true);
+          return;
+        }
+
+        if (packet.type === 'PEER_LEAVE') {
+          const msg = packet.reason || 'Đối thủ đã rời khỏi phòng đấu P2P.';
+          if (battle && battle.active && battle.isP2P) {
+            triggerP2PDisconnectModal(msg);
+          } else {
+            disconnectP2PSession(true);
+            document.getElementById('modal-overlay')?.classList.add('hidden');
+            showStandardModalActions();
+            setP2PMatchmakingStatus(`⚠️ ${msg}`, '#f87171');
+          }
+          return;
+        }
+
+        if (packet.type === 'INIT_MATCH') {
+          if (p2pSession.role === 'host' && packet._senderRole === 'client') {
+            if (p2pSession.connected && p2pSession.matchStarted) return;
+            p2pSession.connected = true;
+            p2pSession.clientProfile = packet.fighter;
+            p2pSession.hostProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+            p2pSession.hostReady = false;
+            p2pSession.clientReady = false;
+
+            sendP2PPacket({
+              type: 'INIT_MATCH',
+              _senderRole: 'host',
+              roomCode: p2pSession.roomCode,
+              fighter: p2pSession.hostProfile,
+              arenaMode: p2pSession.roomMode,
+              score: p2pSession.score,
+              timestamp: performance.now()
+            });
+            enterP2PLobbyUI();
+            setP2PMatchmakingStatus(`✔ Đã ghép đôi với "${packet.fighter.name}" — Hãy chọn Anh Hùng và bấm Sẵn Sàng!`, '#86efac');
+          } else if (p2pSession.role === 'client' && packet._senderRole === 'host') {
+            p2pSession.connected = true;
+            p2pSession.hostProfile = packet.fighter;
+            p2pSession.roomMode = packet.arenaMode || 'fair';
+            if (packet.score) p2pSession.score = packet.score;
+            p2pSession.hostReady = false;
+            p2pSession.clientReady = false;
+
+            if (p2pSession.roomMode === 'overlord' && !state.unlockedHeroes.includes(p2pSession.selectedHeroId)) {
+              p2pSession.selectedHeroId = state.unlockedHeroes[0] || 'long';
+              p2pSession.clientProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+              sendP2PPacket({
+                type: 'LOBBY_UPDATE',
+                _senderRole: 'client',
+                roomMode: p2pSession.roomMode,
+                fighter: p2pSession.clientProfile
+              });
+            }
+
+            enterP2PLobbyUI();
+            setP2PMatchmakingStatus(`✔ Đã vào Phòng Chờ của Host "${packet.fighter.name}" — Hãy chọn Anh Hùng và bấm Sẵn Sàng!`, '#86efac');
+          }
+          return;
+        }
+
+        if (packet.type === 'LOBBY_UPDATE') {
+          p2pSession.hostReady = false;
+          p2pSession.clientReady = false;
+          if (packet._senderRole === 'host') {
+            if (packet.roomMode) p2pSession.roomMode = packet.roomMode;
+            if (packet.fighter) p2pSession.hostProfile = packet.fighter;
+            if (p2pSession.roomMode === 'overlord' && !state.unlockedHeroes.includes(p2pSession.selectedHeroId)) {
+              p2pSession.selectedHeroId = state.unlockedHeroes[0] || 'long';
+              p2pSession.clientProfile = buildP2PFighterInitPayload(p2pSession.selectedHeroId);
+              sendP2PPacket({
+                type: 'LOBBY_UPDATE',
+                _senderRole: 'client',
+                roomMode: p2pSession.roomMode,
+                fighter: p2pSession.clientProfile
+              });
+            }
+            setP2PMatchmakingStatus('Host vừa thay đổi cài đặt/Anh Hùng — Vui lòng bấm Sẵn Sàng lại!', '#fde047');
+          } else if (packet._senderRole === 'client') {
+            if (packet.fighter) p2pSession.clientProfile = packet.fighter;
+            setP2PMatchmakingStatus('Player 2 vừa đổi Anh Hùng — Vui lòng bấm Sẵn Sàng lại!', '#fde047');
+          }
+          renderP2PLobbyUI();
+          return;
+        }
+
+        if (packet.type === 'LOBBY_READY') {
+          if (packet._senderRole === 'host') {
+            p2pSession.hostReady = Boolean(packet.ready);
+            if (packet.fighter) p2pSession.hostProfile = packet.fighter;
+          } else if (packet._senderRole === 'client') {
+            p2pSession.clientReady = Boolean(packet.ready);
+            if (packet.fighter) p2pSession.clientProfile = packet.fighter;
+          }
+          renderP2PLobbyUI();
+
+          if (p2pSession.role === 'host' && p2pSession.hostReady && p2pSession.clientReady) {
+            triggerHostStartMatchFromLobby();
+          }
+          return;
+        }
+
+        if (packet.type === 'REMATCH_VOTE') {
+          if (packet._senderRole === 'host') {
+            p2pSession.hostRematchVote = Boolean(packet.vote);
+          } else if (packet._senderRole === 'client') {
+            p2pSession.clientRematchVote = Boolean(packet.vote);
+          }
+          updateP2PRematchButtonUI();
+          if (p2pSession.role === 'host' && p2pSession.hostRematchVote && p2pSession.clientRematchVote) {
+            triggerHostStartMatchFromLobby();
+          }
+          return;
+        }
+
+        if (packet.type === 'MATCH_START' && p2pSession.role === 'client') {
+          p2pSession.roomMode = packet.roomMode || p2pSession.roomMode;
+          p2pSession.hostProfile = packet.hostFighter || p2pSession.hostProfile;
+          p2pSession.clientProfile = packet.clientFighter || p2pSession.clientProfile;
+          if (packet.score) p2pSession.score = packet.score;
+          p2pSession.matchStarted = true;
+          p2pSession.phase = 'IN_BATTLE';
+          p2pSession.hostReady = false;
+          p2pSession.clientReady = false;
+          p2pSession.hostRematchVote = false;
+          p2pSession.clientRematchVote = false;
+          launchP2PBattleMatch(p2pSession.hostProfile, p2pSession.clientProfile, 'client');
+          return;
+        }
+
+        if (packet.type === 'BACK_TO_LOBBY') {
+          returnToP2PLobbyFromMatch('Đối thủ đã quay về Phòng Chờ. Hãy chọn Anh Hùng cho ván mới!');
+          return;
+        }
+
+        if (packet.type === 'FORFEIT_TO_LOBBY') {
+          if (packet.score) p2pSession.score = packet.score;
+          returnToP2PLobbyFromMatch(
+            `🏳️ Đối thủ đã rút lui ván này! Bạn thắng ván đấu — Tỉ số phòng: P1 (${p2pSession.score.host}) - (${p2pSession.score.client}) P2.`
+          );
+          return;
+        }
+
+        if (packet.type === 'INPUT_TICK' && p2pSession.role === 'host') {
+          p2pSession.remoteInput.left = Boolean(packet.left);
+          p2pSession.remoteInput.right = Boolean(packet.right);
+          if (Array.isArray(packet.actions) && packet.actions.length > 0) {
+            p2pSession.remoteInput.actions.push(...packet.actions.slice(0, 6));
+          }
+          return;
+        }
+
+        if (packet.type === 'STATE_SYNC' && p2pSession.role === 'client') {
+          applyHostStateOnClient(packet);
+          return;
+        }
+
+        if (packet.type === 'MATCH_END' && p2pSession.role === 'client') {
+          if (packet.score) p2pSession.score = packet.score;
+          if (battle && battle.active) {
+            battle.active = false;
+            completeArenaMatch(!packet.hostWon);
+          }
+          return;
+        }
+
+        if (packet.type === 'PING') {
+          sendP2PPacket({ type: 'PONG', _senderRole: p2pSession.role, sentAt: packet.t || performance.now() });
+          return;
+        }
+
+        if (packet.type === 'PONG' && typeof packet.sentAt === 'number') {
+          p2pSession.rttMs = Math.max(1, Math.round(performance.now() - packet.sentAt));
+          const pingEl = document.getElementById('p2p-ping-label');
+          if (pingEl) {
+            pingEl.textContent = `${p2pSession.rttMs} ms`;
+            pingEl.style.color = p2pSession.rttMs < 80 ? '#86efac' : (p2pSession.rttMs < 150 ? '#fde047' : '#f87171');
+          }
+        }
+      };
+
+      window.executeP2PPlayer2AttackOnHost = executeP2PPlayer2AttackOnHost = function(en, code) {
+        const b = battle;
+        const p = b.player;
+        const isCombo = code.length > 1;
+        const comboMultMap = { 'J-J-K': 2.15, 'W-J': 2.05, 'W-K': 2.25, 'J-K-W': 2.4, 'J-K-J-K': 2.85 };
+        const mult = isCombo ? (comboMultMap[code] || 2.2) : (code === 'K' ? 1.28 : 1.0);
+        const armorDmg = isCombo ? 65 : (code === 'K' ? 24 : 18);
+
+        en.actionState = isCombo ? 'combo_attack' : (code === 'K' ? 'kick' : 'punch');
+        en.actionTimer = isCombo ? 20 : 15;
+        en.attackLockTimer = isCombo ? 20 : 14;
+        en.rage = Math.min(100, (en.rage || 0) + (isCombo ? 8 : 5));
+
+        try {
+          if (!isCombo) {
+            if (en.heroId === 'long') {
+              AudioEngine.play('sword-swing', { source: 'enemy', sourceX: en.x });
+              AudioEngine.play(code === 'K' ? 'kick' : 'punch', { source: 'enemy', sourceX: en.x });
+            } else if (en.heroId === 'mage') {
+              AudioEngine.play(code === 'K' ? 'laser-shot' : 'spell-cast', { source: 'enemy', sourceX: en.x });
+            } else {
+              AudioEngine.play(code === 'K' ? 'kick' : 'punch', { source: 'enemy', sourceX: en.x });
+              AudioEngine.play('metal-impact', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+            }
+          } else {
+            AudioEngine.play('kick', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+            AudioEngine.play('metal-impact', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+            AudioEngine.play('explosion-small', { source: 'enemy', sourceX: en.x, bypassCooldown: true });
+          }
+        } catch (e) {}
+
+        const isCrit = Math.random() * 100 < (en.crit || 20);
+        const critMult = isCrit ? 1.5 : 1.0;
+
+        if (en.heroId === 'mage') {
+          const count = isCombo ? 3 : 1;
+          for (let i = 0; i < count; i++) {
+            b.projectiles.push({
+              fromPlayer: false,
+              x: en.x + en.facing * (34 + i * 24),
+              y: en.y - 26 - (i % 2) * 12,
+              vx: en.facing * (isCombo ? 14 : 11.5),
+              r: isCombo ? 13 : 9,
+              color: isCombo ? '#c084fc' : '#38bdf8',
+              dmg: en.atk * (mult / count) * critMult
+            });
+          }
+          return;
+        }
+
+        const range = en.heroId === 'long' ? (isCombo ? 215 : 145) : (isCombo ? 195 : 135);
+        spawnPooledVFX({
+          kind: en.heroId === 'long' ? 'weapon_trail' : 'shockwave',
+          x: en.x + en.facing * 44,
+          y: en.y - 26,
+          r: range * 0.45,
+          maxR: range * 0.68,
+          color: en.heroId === 'long' ? '#ef4444' : '#f97316',
+          subColor: '#fde047',
+          dir: en.facing,
+          life: 13
+        });
+
+        const dx = p.x - en.x;
+        if ((dx * en.facing >= -42) && Math.abs(dx) <= range && Math.abs(p.y - en.y) < 112) {
+          if (p.armor && p.armor > 0) {
+            p.armor = Math.max(0, p.armor - armorDmg);
+            try { AudioEngine.play('metal-impact', { source: 'player', sourceX: p.x }); } catch (e) {}
+          }
+          damagePlayer(en.atk * mult * critMult);
+          if (isCombo && p.invincibleTimer <= 0) {
+            p.stunTimer = 22;
+          }
+        }
+      };
+
+      window.checkP2PConnectionHealth = checkP2PConnectionHealth = function(now = performance.now()) {
+        const inActiveP2PBattle = Boolean(battle && battle.active && battle.isP2P);
+        const inActiveP2PLobby = Boolean(p2pSession.connected && (p2pSession.phase === 'LOBBY' || p2pSession.phase === 'POST_MATCH'));
+        if (!inActiveP2PBattle && !inActiveP2PLobby) return;
+
+        if (p2pSession.loopbackBot) {
+          p2pSession.lastRemotePacketTime = now;
+          return;
+        }
+
+        if (now - p2pSession.lastPingSentTime > 500) {
+          p2pSession.lastPingSentTime = now;
+          sendP2PPacket({ type: 'PING', _senderRole: p2pSession.role, t: now });
+        }
+
+        const silenceMs = now - (p2pSession.lastRemotePacketTime || now);
+        if (silenceMs > P2P_DISCONNECT_TIMEOUT_MS) {
+          if (inActiveP2PBattle) {
+            triggerP2PDisconnectModal(
+              `Mất tín hiệu từ đối thủ quá 3 giây (${(silenceMs / 1000).toFixed(1)}s). Trận đấu P2P đã tự động kết thúc!`
+            );
+          } else {
+            disconnectP2PSession(true);
+            setP2PMatchmakingStatus('⚠️ Đối thủ đã mất kết nối quá 3 giây. Phiên phòng chờ đã đóng.', '#f87171');
+          }
+        }
+      };
+
+      window.triggerP2PDisconnectModal = triggerP2PDisconnectModal = function(reasonText) {
+        if (!battle) return;
+        battle.active = false;
+        try {
+          AudioEngine.stopAmbient();
+          AudioEngine.setSnapshot('UI_PAUSE_OPEN', true);
+          AudioEngine.play('error', { source: 'ui', bypassCooldown: true });
+        } catch (e) {}
+
+        const modal = document.getElementById('modal-overlay');
+        const titleEl = document.getElementById('modal-title');
+        const descEl = document.getElementById('modal-desc');
+
+        if (titleEl) titleEl.textContent = '⚠️ MẤT KẾT NỐI MẠNG P2P!';
+        if (descEl) {
+          descEl.textContent = reasonText || 'Đối thủ đã rời phòng hoặc mất kết nối quá 3 giây.';
+        }
+        showP2PModalActions(true);
+        if (modal) modal.classList.remove('hidden');
+
+        disconnectP2PSession(false);
+      };
+
+      window.disconnectP2PSession = disconnectP2PSession = function(resetUI = true) {
+        p2pSession.connected = false;
+        p2pSession.matchStarted = false;
+        p2pSession.loopbackBot = false;
+        p2pSession.phase = 'IDLE';
+        p2pSession.hostReady = false;
+        p2pSession.clientReady = false;
+        p2pSession.hostRematchVote = false;
+        p2pSession.clientRematchVote = false;
+        try { if (p2pSession.conn) p2pSession.conn.close(); } catch (e) {}
+        try { if (p2pSession.peer) p2pSession.peer.destroy(); } catch (e) {}
+        try { if (p2pSession.bcChannel) p2pSession.bcChannel.close(); } catch (e) {}
+        p2pSession.conn = null;
+        p2pSession.peer = null;
+        p2pSession.bcChannel = null;
+
+        if (resetUI) {
+          p2pSession.role = null;
+          p2pSession.roomCode = '';
+          p2pSession.hostProfile = null;
+          p2pSession.clientProfile = null;
+          p2pSession.score = { host: 0, client: 0 };
+          document.getElementById('p2p-setup-controls')?.classList.remove('hidden');
+          document.getElementById('p2p-room-code-wrap')?.classList.add('hidden');
+          document.getElementById('btn-p2p-cancel-room')?.classList.add('hidden');
+          document.getElementById('p2p-lobby-panel')?.classList.add('hidden');
+          const rolePill = document.getElementById('p2p-role-pill');
+          if (rolePill) {
+            rolePill.textContent = 'PeerJS v1.5.4 • Host Authority';
+            rolePill.className = 'anti-cheat-pill clean';
+          }
+          const pingEl = document.getElementById('p2p-ping-label');
+          if (pingEl) pingEl.textContent = '-- ms';
+          setP2PMatchmakingStatus('Đã rời phòng P2P. Bấm "Tạo Phòng" hoặc nhập mã 6 ký tự để kết nối.', '#94a3b8');
+        }
+      };
+
+      window.completeArenaMatch = completeArenaMatch = function(win) {
+        const b = battle;
+        const opp = (b && b.pvpOpponent) || { name: 'Đấu Sĩ', level: state.level, fame: 150 };
+
+        if (b && b.isP2P && b.p2pRole === 'host') {
+          const hostWon = Boolean(win);
+          if (hostWon) {
+            p2pSession.score.host = (p2pSession.score.host || 0) + 1;
+          } else {
+            p2pSession.score.client = (p2pSession.score.client || 0) + 1;
+          }
+          sendP2PPacket({
+            type: 'MATCH_END',
+            _senderRole: 'host',
+            hostWon,
+            score: p2pSession.score
+          });
+        }
+
+        try {
+          AudioEngine.stopAmbient();
+          AudioEngine.setSnapshot('UI_PAUSE_OPEN', true);
+        } catch (e) {}
+
+        const modal = document.getElementById('modal-overlay');
+        if (modal) modal.classList.remove('hidden');
+
+        if (b && b.isP2P) {
+          p2pSession.matchStarted = false;
+          p2pSession.phase = 'POST_MATCH';
+          p2pSession.hostReady = false;
+          p2pSession.clientReady = false;
+          p2pSession.hostRematchVote = false;
+          p2pSession.clientRematchVote = false;
+
+          showP2PModalActions(false);
+          const scoreStr = `P1 (${p2pSession.score.host}) — (${p2pSession.score.client}) P2`;
+          if (win) {
+            try { AudioEngine.play('victory', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+            document.getElementById('modal-title').textContent = '🏆 CHIẾN THẮNG VÁN ĐẤU P2P!';
+            document.getElementById('modal-desc').textContent =
+              `Hạ gục "${opp.name}" trong chế độ ${b.pvpMode === 'fair' ? '⚖️ Võ Đài Công Bằng' : '🐉 Bá Chủ Huyết Long'}! Tỉ số phòng: ${scoreStr} (Miễn phí 0 ⚡, không cộng Vàng/Danh Vọng/EXP).`;
+          } else {
+            try { AudioEngine.play('game-over', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+            document.getElementById('modal-title').textContent = '💀 THẤT BẠI VÁN ĐẤU P2P!';
+            document.getElementById('modal-desc').textContent =
+              `Đấu Sĩ "${opp.name}" đã thắng ván này! Tỉ số phòng: ${scoreStr}. Chọn "Tái Đấu Ngay" hoặc "Về Phòng Chờ" để đổi Anh Hùng!`;
+          }
+          renderP2PLobbyUI();
+          return;
+        }
+
+        showStandardModalActions();
+        const replayBtn = document.getElementById('modal-replay-btn');
+        if (replayBtn) replayBtn.textContent = '🔄 Tái Đấu PvP (-5 ⚡)';
+
+        if (win) {
+          const fameGain = b.pvpMode === 'overlord' ? 35 : 25;
+          const goldGain = Math.floor(1200 + opp.level * 180 + state.arenaStreak * 250);
+          const expGain = Math.floor(900 + opp.level * 120);
+
+          state.arenaFame = (state.arenaFame || 0) + fameGain;
+          state.arenaWins = (state.arenaWins || 0) + 1;
+          state.arenaStreak = (state.arenaStreak || 0) + 1;
+          state.gold += goldGain;
+          addExp(expGain);
+
+          try {
+            AudioEngine.play('victory', { source: 'ui', bypassCooldown: true });
+            AudioEngine.playCoinBurst(5, 110);
+          } catch (e) {}
+
+          saveGameState();
+          document.getElementById('modal-title').textContent = '🏆 ĐẠI THẮNG VÕ ĐÀI PVP!';
+          document.getElementById('modal-desc').textContent =
+            `Hạ gục Đấu Sĩ "${opp.name}" trong chế độ ${b.pvpMode === 'fair' ? 'Võ Đài Công Bằng' : 'Bá Chủ Huyết Long'}! Nhận +${fameGain} Điểm Danh Vọng 🎖️, +${goldGain.toLocaleString()} Vàng 💰 và +${expGain.toLocaleString()} EXP (Chuỗi thắng: ${state.arenaStreak}).`;
+        } else {
+          state.arenaStreak = 0;
+          state.arenaFame = (state.arenaFame || 0) + 5;
+          try { AudioEngine.play('game-over', { source: 'ui', bypassCooldown: true }); } catch (e) {}
+          saveGameState();
+          document.getElementById('modal-title').textContent = '💀 THẤT BẠI TRÊN VÕ ĐÀI!';
+          document.getElementById('modal-desc').textContent =
+            `Đấu Sĩ "${opp.name}" đã chiến thắng! Bạn nhận +5 Điểm Danh Vọng khích lệ.`;
+        }
+        if (window.cloudLeaderboard) {
+          window.cloudLeaderboard.submitPlayerScore().catch(() => {});
+        }
+      };
+
+      window.startP2PLoopbackTestMatch = startP2PLoopbackTestMatch = function() {
+        createP2PRoom();
+        p2pSession.loopbackBot = true;
+        const sampleOpponent = OFFICIAL_ARENA_SEED[Math.floor(Math.random() * 3)];
+        const calc = computeFighterStatsFromConfig(sampleOpponent);
+        const mockClientProfile = {
+          name: sampleOpponent.name + ' [BOT P2]',
+          heroId: sampleOpponent.heroId,
+          level: sampleOpponent.level,
+          fame: sampleOpponent.fame,
+          skinId: sampleOpponent.skinId,
+          weaponId: sampleOpponent.weaponId,
+          helmetId: sampleOpponent.helmetId,
+          armorId: sampleOpponent.armorId,
+          bootsId: sampleOpponent.bootsId,
+          titleId: sampleOpponent.titleId,
+          atk: calc.atk,
+          maxHp: calc.maxHp,
+          def: calc.def,
+          crit: calc.crit,
+          spdMult: calc.spdMult,
+          power: calc.power,
+          arenaMode: p2pSession.roomMode || 'fair',
+          modularLayers: Object.assign({}, modularLayerEnabled)
+        };
+        handleIncomingP2PPacket({
+          type: 'INIT_MATCH',
+          _senderRole: 'client',
+          roomCode: p2pSession.roomCode,
+          fighter: mockClientProfile,
+          timestamp: performance.now()
+        });
+        p2pSession.clientReady = true;
+        renderP2PLobbyUI();
+      };
+
+      window.addEventListener('pagehide', () => {
+        if (p2pSession.connected) {
+          sendP2PPacket({ type: 'PEER_LEAVE', _senderRole: p2pSession.role, reason: 'Đối thủ đã đóng tab hoặc tải lại trang.' });
+          disconnectP2PSession(false);
+        }
+      });
+
+      setInterval(() => {
+        if (p2pSession.connected && (!battle || !battle.active)) {
+          checkP2PConnectionHealth(performance.now());
+        }
+      }, 500);
+    })();
+  </script>
+
+  <!-- ===== GIAO DIỆN KIỂU GAME MOBILE: Sảnh ô menu → Màn hình riêng → ← Quay lại ===== -->
+  <style>
+    .hub-tabs { display: none !important; }
+    #mg-home { display: none; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 4px; }
+    body.mg-home #mg-home { display: grid; }
+    body.mg-home .tab-content { display: none !important; }
+    body.mg-home #mg-bar { display: none; }
+    .mg-tile { position: relative; overflow: hidden; min-height: 150px; border-radius: 14px; padding: 18px; background: linear-gradient(145deg, #111827, #0b1020); border: 1px solid #1f2a44; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; text-align: left; color: #e2e8f0; transition: transform .15s, box-shadow .15s, border-color .15s; }
+    .mg-tile::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 85% 15%, var(--c) 0%, transparent 60%); opacity: .32; pointer-events: none; }
+    .mg-tile .mg-ico { position: absolute; top: 12px; right: 14px; font-size: 46px; line-height: 1; filter: drop-shadow(0 0 12px var(--c)); }
+    .mg-tile .mg-name { position: relative; font-size: 19px; font-weight: 900; letter-spacing: .4px; }
+    .mg-tile .mg-desc { position: relative; font-size: 12px; color: #94a3b8; }
+    .mg-tile .mg-info { position: absolute; top: 14px; left: 16px; font-size: 11px; font-weight: 800; color: #fde68a; background: rgba(0,0,0,.35); border: 1px solid rgba(253,230,138,.35); padding: 2px 8px; border-radius: 999px; }
+    .mg-tile:hover { transform: translateY(-3px); border-color: var(--c); box-shadow: 0 10px 28px -8px var(--c); }
+    .mg-tile:active { transform: scale(.98); }
+    .mg-submenu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; margin: 0 auto; }
+    .mg-submenu .mg-tile { min-height: 130px; }
+    #mg-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; position: sticky; top: 0; z-index: 30; background: rgba(8, 11, 18, .94); backdrop-filter: blur(6px); padding: 8px 0; }
+    .mg-back, .mg-homebtn { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; border-radius: 10px; padding: 9px 14px; font-weight: 800; font-size: 14px; cursor: pointer; white-space: nowrap; }
+    .mg-back:hover, .mg-homebtn:hover { border-color: #f87171; color: #fff; }
+    .mg-homebtn { margin-left: auto; padding: 9px 12px; }
+    .mg-titlebox { min-width: 0; }
+    .mg-crumb { font-size: 11px; color: #64748b; font-weight: 700; }
+    .mg-title { font-size: 18px; font-weight: 900; color: #f8fafc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mg-off { display: none !important; }
+    .mg-single { display: block !important; height: auto !important; }
+    .mg-single > * { max-width: 980px; margin-left: auto !important; margin-right: auto !important; }
+    #tab-campaign .mg-single > .chapter-list { max-width: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; overflow: visible; height: auto; }
+    #tab-campaign .mg-single > .stage-panel { max-width: none; overflow: visible; height: auto; }
+    .mg-single > .preview-card { max-width: 560px; }
+    .mg-anim { animation: mgIn .22s ease-out; }
+    @keyframes mgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    @media (max-width: 700px) {
+      #mg-home, .mg-submenu { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .mg-tile { min-height: 120px; padding: 14px; }
+      .mg-tile .mg-ico { font-size: 34px; }
+      .mg-tile .mg-name { font-size: 16px; }
+    }
+  </style>
+  <script>
+    (function mobileMenuUI() {
+      var hub = document.getElementById('hub-screen');
+      if (!hub || typeof window.switchTab !== 'function') return;
+      var origSwitchTab = window.switchTab;
+      function tap() { try { AudioEngine.play('tap', { source: 'ui' }); } catch (e) {} }
+      function $(s) { return document.querySelector(s); }
+      function $$(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
+
+      // Tách "Cửa hàng danh hiệu" ra khỏi cột Khiêu Chiến thành màn hình riêng
+      (function splitArenaTitles() {
+        var list = document.getElementById('arena-titles-shop');
+        var layout = $('#tab-arena .arena-layout');
+        if (!list || !layout) return;
+        var label = list.previousElementSibling;
+        if (label && !label.id && /Danh Hiệu/i.test(label.textContent)) label.remove();
+        var col = document.createElement('div');
+        col.className = 'arena-col';
+        col.innerHTML = '<h3><span>👑 Cửa Hàng Đổi Danh Hiệu</span></h3>';
+        col.appendChild(list);
+        layout.appendChild(col);
+      })();
+
+      var upCols = $$('#tab-upgrade .upgrade-column');
+      var qCols = $$('#tab-quests .upgrade-column');
+      var arCols = $$('#tab-arena .arena-col');
+
+      var SECTIONS = [
+        { id: 'campaign', icon: '🗺️', name: 'Chiến Dịch', desc: '20 chương • 260 màn • Đánh Boss', c: '#dc2626', flow: true,
+          info: function () { return 'Tiến độ: ' + Math.min(260, state.maxUnlockedStageGlobal || 1) + '/260'; },
+          panels: [
+            { id: 'chapters', el: $('#tab-campaign .chapter-list'), name: 'Chọn Chương' },
+            { id: 'stages', el: $('#tab-campaign .stage-panel'), name: 'Chọn Màn' }
+          ] },
+        { id: 'equipment', icon: '🗡️', name: 'Kho Trang Bị', desc: 'Vũ khí • Mũ • Giáp • Giày', c: '#f59e0b',
+          panels: [
+            { id: 'shop', el: $('#tab-equipment .shop-panel'), icon: '🛒', name: 'Cửa Hàng Trang Bị', desc: 'Mua và mặc vũ khí, mũ, giáp, giày' },
+            { id: 'preview', el: $('#tab-equipment .preview-card'), icon: '👤', name: 'Xem Nhân Vật', desc: 'Ngắm nhân vật với trang bị đang mặc' }
+          ] },
+        { id: 'upgrade', icon: '📈', name: 'Cường Hóa', desc: 'Nâng chỉ số • Mở khóa Combo', c: '#38bdf8',
+          panels: [
+            { id: 'stats', el: upCols[0], icon: '💪', name: 'Cường Hóa Chỉ Số', desc: 'Dùng vàng nâng HP, ATK, DEF...' },
+            { id: 'combo', el: upCols[1], icon: '⚡', name: 'Tổ Hợp Combo', desc: 'Mở khóa & nâng cấp chiêu liên hoàn' }
+          ] },
+        { id: 'heroes', icon: '🦸', name: 'Nhân Vật', desc: 'Chọn anh hùng • Skin VIP', c: '#a855f7' },
+        { id: 'quests', icon: '🎯', name: 'Nhiệm Vụ', desc: 'Nhiệm vụ ngày • Sao lưu dữ liệu', c: '#10b981',
+          panels: [
+            { id: 'daily', el: qCols[0], icon: '🎯', name: 'Nhiệm Vụ Hàng Ngày', desc: 'Nhận vàng & bình thể lực mỗi ngày' },
+            { id: 'backup', el: qCols[1], icon: '📲', name: 'Sao Lưu Dữ Liệu', desc: 'Chuyển tài khoản sang máy khác' }
+          ] },
+        { id: 'arena', icon: '🏆', name: 'Đấu Trường', desc: 'Xếp hạng • Khiêu chiến • 1v1 Online', c: '#ef4444',
+          info: function () { return 'Danh vọng: ' + (state.arenaFame || 0); },
+          panels: [
+            { id: 'challenge', el: arCols[1], icon: '⚔️', name: 'Khiêu Chiến', desc: 'Chọn chế độ & tìm đối thủ ngẫu nhiên' },
+            { id: 'p2p', el: arCols[2], icon: '🌐', name: 'Đấu 1v1 Online', desc: 'Tạo phòng / vào phòng với bạn bè' },
+            { id: 'rank', el: arCols[0], icon: '🏆', name: 'Bảng Xếp Hạng', desc: 'Top đấu sĩ mạnh nhất' },
+            { id: 'titles', el: arCols[3], icon: '👑', name: 'Danh Hiệu', desc: 'Đổi điểm danh vọng lấy danh hiệu' }
+          ] }
+      ];
+      var BY_ID = {};
+      SECTIONS.forEach(function (s) { BY_ID[s.id] = s; });
+
+      function makeTile(o, onClick) {
+        var b = document.createElement('button');
+        b.className = 'mg-tile';
+        b.style.setProperty('--c', o.c);
+        b.innerHTML = '<span class="mg-ico">' + o.icon + '</span>' + (o._info ? '<span class="mg-info">' + o._info + '</span>' : '') +
+          '<span class="mg-name">' + o.name + '</span><span class="mg-desc">' + (o.desc || '') + '</span>';
+        b.onclick = onClick;
+        return b;
+      }
+
+      // Thanh tiêu đề + nút quay lại
+      var bar = document.createElement('div');
+      bar.id = 'mg-bar';
+      bar.innerHTML = '<button class="mg-back">← Quay lại</button><div class="mg-titlebox"><div class="mg-crumb"></div><div class="mg-title"></div></div><button class="mg-homebtn" title="Về sảnh chính">🏠</button>';
+      var home = document.createElement('div');
+      home.id = 'mg-home';
+      var nav = hub.querySelector('.hub-tabs');
+      hub.insertBefore(home, nav ? nav.nextSibling : hub.firstChild);
+      hub.insertBefore(bar, home.nextSibling);
+
+      // Menu con trong từng mục
+      SECTIONS.forEach(function (s) {
+        s.sec = document.getElementById('tab-' + s.id);
+        if (!s.sec) return;
+        s.layout = s.sec.firstElementChild;
+        if (s.panels && !s.flow) {
+          s.sub = document.createElement('div');
+          s.sub.className = 'mg-submenu';
+          s.panels.forEach(function (p) {
+            if (!p.el) return;
+            s.sub.appendChild(makeTile({ icon: p.icon, name: p.name, desc: p.desc, c: s.c }, function () { go(s.id, p.id); }));
+          });
+          s.sec.insertBefore(s.sub, s.sec.firstChild);
+        }
+      });
+
+      function renderHome() {
+        home.innerHTML = '';
+        SECTIONS.forEach(function (s) {
+          var o = { icon: s.icon, name: s.name, desc: s.desc, c: s.c };
+          try { if (s.info) o._info = s.info(); } catch (e) {}
+          home.appendChild(makeTile(o, function () { go(s.id, null); }));
+        });
+      }
+
+      function animate(el) { if (!el) return; el.classList.remove('mg-anim'); void el.offsetWidth; el.classList.add('mg-anim'); }
+
+      function parentOf(tab, panel) {
+        var s = BY_ID[tab];
+        if (!s) return { tab: null, panel: null };
+        if (s.flow) return panel === 'stages' ? { tab: tab, panel: 'chapters' } : { tab: null, panel: null };
+        return panel ? { tab: tab, panel: null } : { tab: null, panel: null };
+      }
+
+      var cur = { tab: null, panel: null };
+      function apply(tab, panel) {
+        var s = BY_ID[tab];
+        if (!s) {
+          if (cur.tab) tap();
+          document.body.classList.add('mg-home');
+          cur = { tab: null, panel: null };
+          renderHome();
+          animate(home);
+          window.scrollTo(0, 0);
+          return;
+        }
+        document.body.classList.remove('mg-home');
+        if (cur.tab !== tab) origSwitchTab(tab); else tap();
+        if (s.flow && !panel) panel = 'chapters';
+        cur = { tab: tab, panel: panel || null };
+
+        var shown = s.layout;
+        if (s.panels) {
+          s.layout.classList.add('mg-single');
+          var showSub = !s.flow && !panel;
+          if (s.sub) s.sub.classList.toggle('mg-off', !showSub);
+          s.layout.classList.toggle('mg-off', showSub);
+          s.panels.forEach(function (p) { if (p.el) p.el.classList.toggle('mg-off', p.id !== panel); });
+          shown = showSub ? s.sub : (s.panels.filter(function (p) { return p.id === panel; })[0] || {}).el;
+        }
+
+        var pObj = s.panels && s.panels.filter(function (p) { return p.id === panel; })[0];
+        var title = s.icon + ' ' + s.name, crumb = 'Sảnh chính';
+        if (s.flow && panel === 'stages') {
+          var ch = state.selectedChapter || 1;
+          var chName = (typeof CHAPTER_NAMES !== 'undefined' && CHAPTER_NAMES[ch - 1]) ? ': ' + CHAPTER_NAMES[ch - 1] : '';
+          title = 'Chương ' + ch + chName; crumb = 'Sảnh chính › ' + s.name;
+        } else if (pObj && !s.flow) {
+          title = pObj.icon + ' ' + pObj.name; crumb = 'Sảnh chính › ' + s.name;
+        }
+        bar.querySelector('.mg-title').textContent = title;
+        bar.querySelector('.mg-crumb').textContent = crumb;
+        bar.querySelector('.mg-homebtn').style.display = crumb === 'Sảnh chính' ? 'none' : '';
+        animate(shown);
+        window.scrollTo(0, 0);
+      }
+
+      // Lịch sử điều hướng: nút Back của điện thoại / trình duyệt sẽ quay lại màn trước
+      var pushes = 0;
+      function go(tab, panel, opts) {
+        opts = opts || {};
+        apply(tab, panel);
+        var st = { mg: { tab: cur.tab, panel: cur.panel } };
+        if (opts.replace) history.replaceState(st, ''); else { history.pushState(st, ''); pushes++; }
+      }
+      function goBack() {
+        if (pushes > 0) { history.back(); return; }
+        var p = parentOf(cur.tab, cur.panel);
+        go(p.tab, p.panel, { replace: true });
+      }
+      window.addEventListener('popstate', function (e) {
+        if (hub.classList.contains('hidden')) {
+          // Đang trong trận đấu: không đổi màn hình sảnh
+          history.pushState({ mg: { tab: cur.tab, panel: cur.panel } }, '');
+          return;
+        }
+        pushes = Math.max(0, pushes - 1);
+        var m = e.state && e.state.mg;
+        apply(m ? m.tab : null, m ? m.panel : null);
+      });
+      bar.querySelector('.mg-back').onclick = goBack;
+      bar.querySelector('.mg-homebtn').onclick = function () { go(null, null); };
+
+      // Chọn chương → mở màn hình chọn màn
+      var chList = document.getElementById('chapter-list');
+      if (chList) chList.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('.chapter-item')) setTimeout(function () { go('campaign', 'stages'); }, 0);
+      });
+
+      // Các đoạn code cũ gọi switchTab(...) (VD: quay lại sảnh sau trận P2P) vẫn hoạt động
+      window.switchTab = function (tab) {
+        if (!BY_ID[tab]) return origSwitchTab(tab);
+        go(tab, tab === 'arena' ? 'p2p' : null, { replace: true });
+      };
+
+      // Cập nhật thông tin trên ô menu khi quay về sảnh sau trận đấu
+      var mo = new MutationObserver(function () {
+        if (!hub.classList.contains('hidden') && document.body.classList.contains('mg-home')) renderHome();
+      });
+      mo.observe(hub, { attributes: true, attributeFilter: ['class'] });
+
+      history.replaceState({ mg: { tab: null, panel: null } }, '');
+      apply(null, null);
+    })();
+  </script>
+
+  <!-- ===== ĐIỀU KHIỂN CHIẾN ĐẤU: Cần gạt kéo Trái/Phải (Góc dưới trái) + 6 Nút Thao Tác (Góc dưới phải) ===== -->
+  <style>
+    body.in-battle .top-bar,
+    body.in-battle .controls-bar,
+    body.in-battle #pwa-install-btn {
+      display: none !important;
+    }
+    body.in-battle .battle-container {
+      max-width: 100vw;
+      margin: 0 auto;
+      padding: 0;
+      position: relative;
+    }
+    body.in-battle .battle-hud {
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      padding: 8px 14px;
+    }
+    body.in-battle #battle-canvas {
+      width: 100%;
+      height: calc(100vh - 96px);
+      max-height: 620px;
+      min-height: 360px;
+      object-fit: cover;
+      border: none;
+    }
+
+    /* Khung phủ 2 góc dưới màn hình khi chiến đấu */
+    #touch-controls-bar.touch-controls {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 95;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 22px 18px 22px;
+      background: transparent !important;
+      border: none !important;
+      margin: 0 !important;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* --- GÓC DƯỚI BÊN TRÁI: THANH KÉO DI CHUYỂN TRÁI / PHẢI --- */
+    .cyber-joy-wrap {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      touch-action: none;
+    }
+    .cyber-joy-hint {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      color: #94a3b8;
+      background: rgba(8, 11, 18, 0.78);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-shadow: 0 1px 2px #000;
+    }
+    .cyber-joy-track {
+      position: relative;
+      width: 228px;
+      height: 74px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.88) 0%, rgba(8, 11, 18, 0.94) 100%);
+      border: 2px solid rgba(71, 85, 105, 0.9);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65), inset 0 0 18px rgba(15, 23, 42, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      touch-action: none;
+      overflow: visible;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .cyber-joy-track::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.35), rgba(148, 163, 184, 0.2) 50%, rgba(56, 189, 248, 0.35));
+      pointer-events: none;
+    }
+    .cyber-joy-track.dir-left {
+      border-color: #38bdf8;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65), -8px 0 22px rgba(56, 189, 248, 0.45), inset 16px 0 24px rgba(56, 189, 248, 0.22);
+    }
+    .cyber-joy-track.dir-right {
+      border-color: #38bdf8;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65), 8px 0 22px rgba(56, 189, 248, 0.45), inset -16px 0 24px rgba(56, 189, 248, 0.22);
+    }
+    .joy-side-label {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: rgba(148, 163, 184, 0.65);
+      pointer-events: none;
+      transition: color 0.12s, transform 0.12s, text-shadow 0.12s;
+    }
+    .joy-lbl-left { left: 16px; }
+    .joy-lbl-right { right: 16px; }
+    .cyber-joy-track.dir-left .joy-lbl-left {
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+      transform: translateY(-50%) scale(1.08);
+    }
+    .cyber-joy-track.dir-right .joy-lbl-right {
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+      transform: translateY(-50%) scale(1.08);
+    }
+    .cyber-joy-knob {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #334155 0%, #0f172a 75%);
+      border: 2.5px solid #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.45), inset 0 2px 6px rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #f8fafc;
+      pointer-events: none;
+      transform: translateX(0px);
+      transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1), background 0.15s, border-color 0.15s;
+      z-index: 2;
+    }
+    .cyber-joy-track.dragging .cyber-joy-knob {
+      transition: none;
+      cursor: grabbing;
+      border-color: #7dd3fc;
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.8), inset 0 2px 8px rgba(255, 255, 255, 0.35);
+    }
+    .cyber-joy-knob .knob-arrows {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+      color: #38bdf8;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+    }
+    .cyber-joy-knob small {
+      font-size: 8.5px;
+      font-weight: 800;
+      color: #cbd5e1;
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+    }
+
+    /* --- GÓC DƯỚI BÊN PHẢI: CỤM 6 NÚT THAO TÁC (ĐẤM, ĐÁ, NHẢY, LƯỚT, SKILL U, SKILL L) --- */
+    .cyber-action-pad {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      touch-action: manipulation;
+    }
+    .cyber-action-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .cyber-row-top {
+      padding-right: 8px;
+    }
+    .cyber-action-pad .touch-btn {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 2.5px solid #475569;
+      background: radial-gradient(circle at 35% 30%, rgba(30, 41, 59, 0.95), rgba(9, 13, 22, 0.95));
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+      transition: transform 0.08s ease, filter 0.12s ease, box-shadow 0.15s ease;
+      padding: 0;
+      touch-action: manipulation;
+    }
+    .cyber-action-pad .touch-btn .t-ico {
+      font-size: 20px;
+      line-height: 1.05;
+    }
+    .cyber-action-pad .touch-btn .t-lbl {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      line-height: 1.1;
+    }
+    .cyber-action-pad .touch-btn small {
+      font-size: 9px;
+      font-weight: 700;
+      opacity: 0.85;
+      line-height: 1;
+    }
+    .cyber-action-pad .touch-btn:active {
+      transform: scale(0.9);
+      filter: brightness(1.25);
+    }
+
+    /* Nút ĐẤM (J) - Nút chủ lực lớn nhất ở góc ngoài cùng bên phải */
+    .cyber-action-pad .touch-btn.t-punch {
+      width: 82px;
+      height: 82px;
+      border-color: #f87171;
+      background: radial-gradient(circle at 35% 30%, #dc2626 0%, #7f1d1d 78%);
+      box-shadow: 0 0 22px rgba(239, 68, 68, 0.55), inset 0 2px 6px rgba(255, 255, 255, 0.25);
+    }
+    .cyber-action-pad .touch-btn.t-punch .t-ico { font-size: 25px; }
+    .cyber-action-pad .touch-btn.t-punch .t-lbl { font-size: 13px; }
+
+    /* Nút ĐÁ (K) */
+    .cyber-action-pad .touch-btn.t-kick {
+      width: 74px;
+      height: 74px;
+      border-color: #fb923c;
+      background: radial-gradient(circle at 35% 30%, #ea580c 0%, #7c2d12 78%);
+      box-shadow: 0 0 18px rgba(249, 115, 22, 0.45), inset 0 2px 6px rgba(255, 255, 255, 0.2);
+    }
+    .cyber-action-pad .touch-btn.t-kick .t-ico { font-size: 22px; }
+    .cyber-action-pad .touch-btn.t-kick .t-lbl { font-size: 12px; }
+
+    /* Nút LƯỚT (Shift) */
+    .cyber-action-pad .touch-btn.t-dash {
+      width: 68px;
+      height: 68px;
+      border-color: #c084fc;
+      background: radial-gradient(circle at 35% 30%, #7e22ce 0%, #3b0764 78%);
+      box-shadow: 0 0 16px rgba(192, 132, 252, 0.4);
+    }
+
+    /* Nút NHẢY (W) */
+    .cyber-action-pad .touch-btn.t-jump {
+      width: 66px;
+      height: 66px;
+      border-color: #4ade80;
+      background: radial-gradient(circle at 35% 30%, #059669 0%, #064e3b 78%);
+      box-shadow: 0 0 16px rgba(74, 222, 128, 0.35);
+    }
+
+    /* Nút SKILL U (Vũ Khí) */
+    .cyber-action-pad .touch-btn.t-u {
+      width: 66px;
+      height: 66px;
+      border-color: #38bdf8;
+      background: radial-gradient(circle at 35% 30%, #0284c7 0%, #0c4a6e 78%);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+    }
+    .cyber-action-pad .touch-btn.t-u.on-cd {
+      opacity: 0.6;
+      filter: saturate(0.45);
+      box-shadow: none;
+    }
+
+    /* Nút SKILL L (Final) */
+    .cyber-action-pad .touch-btn.t-l {
+      width: 66px;
+      height: 66px;
+      border-color: #fde047;
+      background: radial-gradient(circle at 35% 30%, #ca8a04 0%, #713f12 78%);
+      box-shadow: 0 0 16px rgba(250, 204, 21, 0.35);
+    }
+    .cyber-action-pad .touch-btn.t-l.rage-ready {
+      border-color: #fef08a;
+      background: radial-gradient(circle at 35% 30%, #eab308 0%, #991b1b 78%);
+      box-shadow: 0 0 26px rgba(253, 224, 71, 0.9);
+      animation: pulseFinalBtn 0.9s infinite alternate;
+    }
+    @keyframes pulseFinalBtn {
+      from { transform: scale(1); }
+      to { transform: scale(1.07); }
+    }
+
+    @media (max-width: 760px) {
+      #touch-controls-bar.touch-controls {
+        padding: 0 12px 12px 12px;
+      }
+      .cyber-joy-track {
+        width: 188px;
+        height: 64px;
+      }
+      .cyber-joy-knob {
+        width: 58px;
+        height: 58px;
+      }
+      .cyber-action-pad { gap: 8px; }
+      .cyber-action-row { gap: 8px; }
+      .cyber-action-pad .touch-btn { width: 58px; height: 58px; }
+      .cyber-action-pad .touch-btn.t-kick { width: 64px; height: 64px; }
+      .cyber-action-pad .touch-btn.t-punch { width: 72px; height: 72px; }
+    }
+  </style>
+  <script>
+    (function initCyberBattleControls() {
+      var track = document.getElementById('cyber-joy-track');
+      var knob = document.getElementById('cyber-joy-knob');
+      var stateLbl = document.getElementById('cyber-joy-state');
+      if (!track || !knob) return;
+
+      var activeTouchId = null;
+      var mouseActive = false;
+      var anchorX = 0;
+      var DEADZONE = 10;
+
+      function getMaxDx() {
+        return Math.max(44, Math.floor((track.clientWidth - knob.clientWidth) / 2) - 4);
+      }
+
+      function applyDragOffset(dx) {
+        var maxDx = getMaxDx();
+        var clamped = Math.max(-maxDx, Math.min(maxDx, dx));
+        knob.style.transform = 'translateX(' + clamped + 'px)';
+
+        if (clamped < -DEADZONE) {
+          setHoldKey('A', true);
+          setHoldKey('D', false);
+          track.classList.add('dir-left');
+          track.classList.remove('dir-right');
+          if (stateLbl) stateLbl.textContent = '◀ TRÁI';
+        } else if (clamped > DEADZONE) {
+          setHoldKey('D', true);
+          setHoldKey('A', false);
+          track.classList.add('dir-right');
+          track.classList.remove('dir-left');
+          if (stateLbl) stateLbl.textContent = 'PHẢI ▶';
+        } else {
+          setHoldKey('A', false);
+          setHoldKey('D', false);
+          track.classList.remove('dir-left', 'dir-right');
+          if (stateLbl) stateLbl.textContent = 'KÉO ⟷';
+        }
+      }
+
+      function startDrag(clientX) {
+        var rect = track.getBoundingClientRect();
+        var centerX = rect.left + rect.width / 2;
+        track.classList.add('dragging');
+        // Nếu người chơi chạm vào núm ở giữa thì lấy điểm chạm làm mốc kéo;
+        // nếu chạm thẳng sang bên trái/phải của thanh thì di chuyển ngay về phía đó và lấy tâm thanh làm mốc
+        if (Math.abs(clientX - centerX) <= 32) {
+          anchorX = clientX;
+          applyDragOffset(0);
+        } else {
+          anchorX = centerX;
+          applyDragOffset(clientX - centerX);
+        }
+      }
+
+      function moveDrag(clientX) {
+        applyDragOffset(clientX - anchorX);
+      }
+
+      function endDrag() {
+        activeTouchId = null;
+        mouseActive = false;
+        track.classList.remove('dragging', 'dir-left', 'dir-right');
+        knob.style.transform = 'translateX(0px)';
+        if (stateLbl) stateLbl.textContent = 'GIỮ & KÉO';
+        setHoldKey('A', false);
+        setHoldKey('D', false);
+      }
+
+      // Hỗ trợ Cảm Ứng Đa Điểm (Multi-Touch: tay trái kéo di chuyển, tay phải bấm đấm/đá/skill cùng lúc)
+      track.addEventListener('touchstart', function (e) {
+        if (activeTouchId !== null) return;
+        var t = e.changedTouches[0];
+        if (!t) return;
+        activeTouchId = t.identifier;
+        startDrag(t.clientX);
+        e.preventDefault();
+      }, { passive: false });
+
+      window.addEventListener('touchmove', function (e) {
+        if (activeTouchId === null) return;
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === activeTouchId) {
+            moveDrag(e.changedTouches[i].clientX);
+            e.preventDefault();
+            break;
+          }
+        }
+      }, { passive: false });
+
+      function onTouchEndOrCancel(e) {
+        if (activeTouchId === null) return;
+        for (var i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === activeTouchId) {
+            endDrag();
+            break;
+          }
+        }
+      }
+      window.addEventListener('touchend', onTouchEndOrCancel);
+      window.addEventListener('touchcancel', onTouchEndOrCancel);
+
+      // Hỗ trợ Chuột trên PC (Nhấn giữ chuột vào thanh và kéo qua trái / phải)
+      track.addEventListener('mousedown', function (e) {
+        if (e.button !== 0) return;
+        mouseActive = true;
+        startDrag(e.clientX);
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', function (e) {
+        if (!mouseActive) return;
+        moveDrag(e.clientX);
+      });
+      window.addEventListener('mouseup', function () {
+        if (mouseActive) endDrag();
+      });
+      window.addEventListener('blur', endDrag);
+
+      // Đồng bộ trạng thái hồi chiêu Skill U, Nộ Skill L và Lướt lên các nút góc dưới phải
+      var uBtn = document.getElementById('tbtn-skill-u');
+      var uSub = document.getElementById('tbtn-u-sub');
+      var lBtn = document.getElementById('tbtn-skill-l');
+      var lSub = document.getElementById('tbtn-l-sub');
+      var dashSub = document.getElementById('tbtn-dash-sub');
+
+      setInterval(function () {
+        if (typeof battle === 'undefined' || !battle || !battle.active || !battle.player) return;
+        var p = battle.player;
+        if (uBtn && uSub) {
+          if (p.wSkillCd > 0) {
+            uBtn.classList.add('on-cd');
+            uSub.textContent = (p.wSkillCd / 60).toFixed(1) + 's';
+          } else {
+            uBtn.classList.remove('on-cd');
+            uSub.textContent = 'Sẵn sàng';
+          }
+        }
+        if (lBtn && lSub) {
+          var rage = Math.floor(p.rage || 0);
+          if (rage >= 100) {
+            lBtn.classList.add('rage-ready');
+            lSub.textContent = 'MAX NỘ!';
+          } else {
+            lBtn.classList.remove('rage-ready');
+            lSub.textContent = 'Nộ ' + rage + '%';
+          }
+        }
+        if (dashSub) {
+          dashSub.textContent = p.dashCd > 0 ? (p.dashCd / 60).toFixed(1) + 's' : 'Né đòn';
+        }
+      }, 100);
+    })();
+  </script>
+
+  <!-- ===== PWA: Service Worker + nút "Cài App" ===== -->
+  <style>
+    #pwa-install-btn { position: fixed; left: 12px; bottom: 12px; z-index: 99999; background: linear-gradient(90deg, #dc2626, #7c3aed); color: #fff; border: 1px solid #f87171; padding: 8px 14px; border-radius: 999px; font-weight: 800; font-size: 13px; cursor: pointer; box-shadow: 0 4px 18px rgba(220, 38, 38, 0.45); }
+    #pwa-install-btn .x { margin-left: 8px; opacity: .7; }
+    #pwa-toast { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 99999; background: #0f172a; color: #e2e8f0; border: 1px solid #22c55e; padding: 10px 14px; border-radius: 10px; font-size: 13px; max-width: 92vw; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+    #pwa-toast button { margin-left: 10px; background: #22c55e; color: #052e16; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 800; cursor: pointer; }
+  </style>
+  <script>
+    (function () {
+      var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      var DISMISS_KEY = 'vdc_pwa_install_dismissed';
+
+      function toast(html, actionLabel, onAction, ms) {
+        var old = document.getElementById('pwa-toast'); if (old) old.remove();
+        var t = document.createElement('div'); t.id = 'pwa-toast'; t.innerHTML = html;
+        if (actionLabel) { var b = document.createElement('button'); b.textContent = actionLabel; b.onclick = function () { t.remove(); onAction && onAction(); }; t.appendChild(b); }
+        document.body.appendChild(t);
+        if (ms) setTimeout(function () { t.remove(); }, ms);
+      }
+
+      // 1) Đăng ký Service Worker (chỉ chạy trên http(s), không chạy khi mở file trực tiếp)
+      if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('sw.js').then(function (reg) {
+            reg.addEventListener('updatefound', function () {
+              var nw = reg.installing;
+              nw && nw.addEventListener('statechange', function () {
+                if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                  toast('⚡ Có phiên bản game mới!', 'Cập nhật', function () { nw.postMessage('SKIP_WAITING'); });
+                }
+              });
+            });
+          }).catch(function (e) { console.warn('[PWA] SW lỗi:', e); });
+          var reloaded = false;
+          navigator.serviceWorker.addEventListener('controllerchange', function () { if (!reloaded) { reloaded = true; location.reload(); } });
+        });
+      }
+
+      if (isStandalone) return;
+
+      // 2) Nút cài đặt (Chrome / Edge / Android)
+      var deferred = null;
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault(); deferred = e;
+        if (localStorage.getItem(DISMISS_KEY)) return;
+        if (document.getElementById('pwa-install-btn')) return;
+        var btn = document.createElement('button'); btn.id = 'pwa-install-btn';
+        btn.innerHTML = '📲 Cài App <span class="x" title="Ẩn">✕</span>';
+        btn.onclick = function (ev) {
+          if (ev.target.classList.contains('x')) { localStorage.setItem(DISMISS_KEY, '1'); btn.remove(); return; }
+          if (!deferred) return;
+          deferred.prompt();
+          deferred.userChoice.finally(function () { deferred = null; btn.remove(); });
+        };
+        document.body.appendChild(btn);
+      });
+      window.addEventListener('appinstalled', function () {
+        var b = document.getElementById('pwa-install-btn'); if (b) b.remove();
+        toast('✅ Đã cài Võ Đài Cyber! Mở từ màn hình chính để chơi.', null, null, 5000);
+      });
+
+      // 3) iPhone / iPad (Safari không hỗ trợ nút cài tự động)
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isIOS && !localStorage.getItem(DISMISS_KEY)) {
+        setTimeout(function () {
+          toast('📲 Cài game: bấm nút <b>Chia sẻ</b> ⬆️ rồi chọn <b>“Thêm vào MH chính”</b>', 'Đã hiểu', function () { localStorage.setItem(DISMISS_KEY, '1'); });
+        }, 3000);
+      }
+    })();
   </script>
 </body>
 </html>
